@@ -68,7 +68,8 @@ def main():
         "catalog_models.json",
         "product_series_details_rx.json",
         "technical_specifications.json",
-        "catalog_models_hitachi.json"
+        "catalog_models_hitachi.json",
+        "product_series_details_hitachi_x.json"
     ]
     
     for filename in json_files:
@@ -78,11 +79,12 @@ def main():
             shutil.copy2(src, dst)
             print(f"Copied {filename} -> {dst}")
 
-    # 4つの JSON ファイルの読み込み
+    # 5つの JSON ファイルの読み込み
     path_catalog = os.path.join(target_dir, "catalog_models.json")
     path_details = os.path.join(target_dir, "product_series_details_rx.json")
     path_tech = os.path.join(target_dir, "technical_specifications.json")
-    path_hitachi = os.path.join(target_dir, "catalog_models_hitachi.json")
+    path_hitachi_cat = os.path.join(target_dir, "catalog_models_hitachi.json")
+    path_hitachi_det = os.path.join(target_dir, "product_series_details_hitachi_x.json")
     
     with open(path_catalog, 'r', encoding='utf-8') as f:
         catalog_daikin = json.load(f)
@@ -90,8 +92,10 @@ def main():
         details_daikin = json.load(f)
     with open(path_tech, 'r', encoding='utf-8') as f:
         tech_daikin = json.load(f)
-    with open(path_hitachi, 'r', encoding='utf-8') as f:
+    with open(path_hitachi_cat, 'r', encoding='utf-8') as f:
         catalog_hitachi = json.load(f)
+    with open(path_hitachi_det, 'r', encoding='utf-8') as f:
+        details_hitachi_x = json.load(f)
         
     merged_map = {}
     
@@ -167,11 +171,28 @@ def main():
                 "price_sources": [{"source": "catalog_models_hitachi", **item.get("price", {})}],
                 "recommended_features": item.get("recommended_features")
             }
-        else:
+
+    # --- E. 日立 product_series_details_hitachi_x.json の統合 ---
+    for item in details_hitachi_x:
+        base_key = f"HITACHI_{normalize_model_number(item.get('model_number', ''))}"
+        if base_key in merged_map:
             entry = merged_map[base_key]
             entry["full_model_numbers"].add(item["model_number"])
+            if item.get("unique_selling_point"):
+                entry["unique_selling_point_sources"].append(item.get("unique_selling_point"))
+            if item.get("price_total"):
+                entry["price_sources"].append({"source": "product_series_details_hitachi_x", **item.get("price_total")})
+            entry["indoor_unit"] = item.get("indoor_unit")
+            entry["outdoor_unit"] = item.get("outdoor_unit")
+            entry["power_supply_detail"] = item.get("power_supply")
+            entry["piping_detail"] = item.get("piping")
+            entry["dimensions_mm"] = item.get("dimensions_mm")
+            entry["detail_specs"] = item.get("specs")
+            entry["detail_functions"] = item.get("functions")
+            entry["color_variations"] = item.get("color_variations")
+            entry["recommendation_tags"] = item.get("recommendation_tags")
 
-    # --- E. 結合フラット JSON の作成 & コサイン類似度スコアリング ---
+    # --- F. 結合フラット JSON の作成 & コサイン類似度スコアリング ---
     merged_list = []
     for base_key, entry in merged_map.items():
         usp_values = list(set([x for x in entry.get("unique_selling_point_sources", []) if x]))
@@ -218,7 +239,7 @@ def main():
         json.dump(merged_list, f, ensure_ascii=False, indent=2)
     print(f"Successfully saved multi-manufacturer merged JSON -> {output_json_path} (Total: {len(merged_list)} models)")
 
-    # --- F. CSV ファイルの出力 (全37列 / BOM付き UTF-8: utf-8-sig) ---
+    # --- G. CSV ファイルの出力 (全37列 / BOM付き UTF-8: utf-8-sig) ---
     headers = [
         "メーカー名", "製品カテゴリー", "ブランド名", "ベース型番", "全表記型番", "シリーズ名", "愛称", "年式", "畳数目安", "冷房能力(kW)",
         "ユニークセリングポイント (USP)", "USPコサイン類似度スコア", "税込価格 (円)", "税抜価格 (円)", "価格コサイン類似度スコア",
@@ -280,6 +301,10 @@ def main():
         feat_list = []
         if item.get("recommended_features"):
             for c, arr in item["recommended_features"].items():
+                if isinstance(arr, list):
+                    feat_list.extend(arr)
+        if item.get("detail_functions"):
+            for c, arr in item["detail_functions"].items():
                 if isinstance(arr, list):
                     feat_list.extend(arr)
         feat_str = " / ".join(list(set(feat_list)))
