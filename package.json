@@ -1,0 +1,24 @@
+{
+  "name": "vlm",
+  "version": "1.0.0",
+  "description": "VLM (Vision-Language Model) Project.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kuronekopr/VLM-20260809.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/kuronekopr/VLM-20260809/issues"
+  },
+  "homepage": "https://github.com/kuronekopr/VLM-20260809#readme",
+  "dependencies": {
+    "@google/genai": "^2.16.0"
+  }
+}
