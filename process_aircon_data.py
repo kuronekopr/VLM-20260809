@@ -45,28 +45,30 @@ def get_similarity_scores_for_list(val_list):
             scores.append(calculate_cosine_similarity(v1, v2))
     return scores
 
-# --- 2. 型番の正規化関数 (例: S22ATRS-W(-C) -> S22ATRS) ---
+# --- 2. 型番の正規化関数 (ダイキン: S22ATRS-W(-C) -> S22ATRS, 日立: RAS-X2226S -> RAS-X2226S) ---
 def normalize_model_number(model_str):
     if not model_str:
         return ''
-    cleaned = model_str.split('-')[0].strip()
-    cleaned = re.sub(r'\([A-Z]\)', '', cleaned)
-    return cleaned
+    m = model_str.strip()
+    if m.startswith('S') and '-' in m:
+        m = m.split('-')[0].strip()
+    m = re.sub(r'\([A-Z]\)', '', m)
+    return m
 
 def main():
     target_dir = r"c:\json_data"
     current_dir = os.getcwd()
     
-    # フォルダ c:\json_data の作成
     if not os.path.exists(target_dir):
         os.makedirs(target_dir, exist_ok=True)
         print(f"Created directory: {target_dir}")
     
-    # JSON ファイル一覧のコピー
+    # コピー対象 JSON ファイル
     json_files = [
         "catalog_models.json",
         "product_series_details_rx.json",
-        "technical_specifications.json"
+        "technical_specifications.json",
+        "catalog_models_hitachi.json"
     ]
     
     for filename in json_files:
@@ -75,31 +77,33 @@ def main():
         if os.path.exists(src):
             shutil.copy2(src, dst)
             print(f"Copied {filename} -> {dst}")
-        else:
-            print(f"Warning: Source file {src} not found.")
 
-    # コピーされた 3つの JSON ファイルの読み込み
+    # 4つの JSON ファイルの読み込み
     path_catalog = os.path.join(target_dir, "catalog_models.json")
     path_details = os.path.join(target_dir, "product_series_details_rx.json")
     path_tech = os.path.join(target_dir, "technical_specifications.json")
+    path_hitachi = os.path.join(target_dir, "catalog_models_hitachi.json")
     
     with open(path_catalog, 'r', encoding='utf-8') as f:
-        catalog_data = json.load(f)
+        catalog_daikin = json.load(f)
     with open(path_details, 'r', encoding='utf-8') as f:
-        details_data = json.load(f)
+        details_daikin = json.load(f)
     with open(path_tech, 'r', encoding='utf-8') as f:
-        tech_data = json.load(f)
+        tech_daikin = json.load(f)
+    with open(path_hitachi, 'r', encoding='utf-8') as f:
+        catalog_hitachi = json.load(f)
         
     merged_map = {}
     
-    # --- A. catalog_models.json の統合 ---
-    for item in catalog_data:
-        base_key = normalize_model_number(item.get("model_number", ""))
-        if not base_key:
-            continue
+    # --- A. ダイキン catalog_models.json の統合 ---
+    for item in catalog_daikin:
+        base_key = f"DAIKIN_{normalize_model_number(item.get('model_number', ''))}"
         if base_key not in merged_map:
             merged_map[base_key] = {
-                "base_model_number": base_key,
+                "manufacturer": "ダイキン",
+                "product_category": "壁掛形ルームエアコン",
+                "brand_name": item.get("series_nickname") or "ダイキン エアコン",
+                "base_model_number": normalize_model_number(item.get("model_number", "")),
                 "full_model_numbers": set([item["model_number"]]),
                 "series_name": item.get("series_name"),
                 "series_nickname": item.get("series_nickname"),
@@ -117,11 +121,9 @@ def main():
             if item.get("price"):
                 entry["price_sources"].append({"source": "catalog_models", **item.get("price")})
                 
-    # --- B. product_series_details_rx.json の統合 ---
-    for item in details_data:
-        base_key = normalize_model_number(item.get("model_number", ""))
-        if not base_key:
-            continue
+    # --- B. ダイキン product_series_details_rx.json の統合 ---
+    for item in details_daikin:
+        base_key = f"DAIKIN_{normalize_model_number(item.get('model_number', ''))}"
         if base_key in merged_map:
             entry = merged_map[base_key]
             entry["full_model_numbers"].add(item["model_number"])
@@ -138,53 +140,38 @@ def main():
             entry["detail_functions"] = item.get("functions")
             entry["color_variations"] = item.get("color_variations")
             entry["recommendation_tags"] = item.get("recommendation_tags")
-        else:
+
+    # --- C. ダイキン technical_specifications.json の統合 ---
+    for item in tech_daikin:
+        base_key = f"DAIKIN_{normalize_model_number(item.get('model_number', ''))}"
+        if base_key in merged_map:
+            entry = merged_map[base_key]
+            entry["full_model_numbers"].add(item["model_number"])
+            entry["technical_specifications"] = item
+
+    # --- D. 日立 catalog_models_hitachi.json の統合 ---
+    for item in catalog_hitachi:
+        base_key = f"HITACHI_{normalize_model_number(item.get('model_number', ''))}"
+        if base_key not in merged_map:
             merged_map[base_key] = {
-                "base_model_number": base_key,
+                "manufacturer": "日立",
+                "product_category": "壁掛形ルームエアコン",
+                "brand_name": item.get("brand_name", "白くまくん"),
+                "base_model_number": normalize_model_number(item.get("model_number", "")),
                 "full_model_numbers": set([item["model_number"]]),
                 "series_name": item.get("series_name"),
                 "series_nickname": item.get("series_nickname"),
                 "model_year": item.get("model_year"),
+                "applicable_room_size": item.get("applicable_room_size"),
                 "unique_selling_point_sources": [item.get("unique_selling_point")],
-                "price_sources": [{"source": "product_series_details", **item.get("price_total", {})}],
-                "indoor_unit": item.get("indoor_unit"),
-                "outdoor_unit": item.get("outdoor_unit"),
-                "power_supply_detail": item.get("power_supply"),
-                "piping_detail": item.get("piping"),
-                "dimensions_mm": item.get("dimensions_mm"),
-                "detail_specs": item.get("specs"),
-                "detail_functions": item.get("functions"),
-                "color_variations": item.get("color_variations"),
-                "recommendation_tags": item.get("recommendation_tags")
+                "price_sources": [{"source": "catalog_models_hitachi", **item.get("price", {})}],
+                "recommended_features": item.get("recommended_features")
             }
-
-    # --- C. technical_specifications.json の統合 ---
-    for item in tech_data:
-        base_key = normalize_model_number(item.get("model_number", ""))
-        if not base_key:
-            continue
-        if base_key in merged_map:
+        else:
             entry = merged_map[base_key]
             entry["full_model_numbers"].add(item["model_number"])
-            entry["technical_specifications"] = {
-                "catalog_page": item.get("catalog_page"),
-                "indoor_unit_model": item.get("indoor_unit_model"),
-                "outdoor_unit_model": item.get("outdoor_unit_model"),
-                "power_supply": item.get("power_supply"),
-                "heating": item.get("heating"),
-                "cooling": item.get("cooling"),
-                "starting_current_a": item.get("starting_current_a"),
-                "compressor_output_w": item.get("compressor_output_w"),
-                "power_plug": item.get("power_plug"),
-                "connection_cores": item.get("connection_cores"),
-                "weight_kg": item.get("weight_kg"),
-                "piping_diameter_mm": item.get("piping_diameter_mm"),
-                "annual_power_consumption_kwh": item.get("annual_power_consumption_kwh"),
-                "apf": item.get("apf"),
-                "refrigerant": item.get("refrigerant")
-            }
 
-    # --- D. 結合フラット JSON の作成 & コサイン類似度スコアリング ---
+    # --- E. 結合フラット JSON の作成 & コサイン類似度スコアリング ---
     merged_list = []
     for base_key, entry in merged_map.items():
         usp_values = list(set([x for x in entry.get("unique_selling_point_sources", []) if x]))
@@ -194,6 +181,9 @@ def main():
         price_scores = get_similarity_scores_for_list(price_values)
         
         merged_list.append({
+            "manufacturer": entry["manufacturer"],
+            "product_category": entry["product_category"],
+            "brand_name": entry["brand_name"],
             "base_model_number": entry["base_model_number"],
             "full_model_numbers": list(entry["full_model_numbers"]),
             "series_name": entry.get("series_name"),
@@ -226,11 +216,11 @@ def main():
     output_json_path = os.path.join(target_dir, "merged_aircon_models.json")
     with open(output_json_path, 'w', encoding='utf-8') as f:
         json.dump(merged_list, f, ensure_ascii=False, indent=2)
-    print(f"Successfully saved merged JSON -> {output_json_path}")
+    print(f"Successfully saved multi-manufacturer merged JSON -> {output_json_path} (Total: {len(merged_list)} models)")
 
-    # --- E. CSV ファイルの出力 (BOM付き UTF-8: utf-8-sig) ---
+    # --- F. CSV ファイルの出力 (全37列 / BOM付き UTF-8: utf-8-sig) ---
     headers = [
-        "ベース型番", "全表記型番", "シリーズ名", "愛称", "年式", "畳数目安", "冷房能力(kW)",
+        "メーカー名", "製品カテゴリー", "ブランド名", "ベース型番", "全表記型番", "シリーズ名", "愛称", "年式", "畳数目安", "冷房能力(kW)",
         "ユニークセリングポイント (USP)", "USPコサイン類似度スコア", "税込価格 (円)", "税抜価格 (円)", "価格コサイン類似度スコア",
         "室内機型番", "室内機質量 (kg)", "室内機寸法_幅 (mm)", "室内機寸法_高さ (mm)", "室内機寸法_奥行 (mm)",
         "室外機型番", "室外機質量 (kg)", "室外機寸法_幅 (mm)", "室外機寸法_高さ (mm)", "室外機寸法_奥行 (mm)",
@@ -295,6 +285,7 @@ def main():
         feat_str = " / ".join(list(set(feat_list)))
 
         rows.append([
+            item["manufacturer"], item["product_category"], item.get("brand_name", ""),
             item["base_model_number"], full_models, item.get("series_name", ""), item.get("series_nickname", ""),
             item.get("model_year", ""), room_size, cap_kw, usp_vals, usp_scrs, price_inc, price_exc, price_scrs,
             indoor_m, indoor_w, in_w, in_h, in_d, outdoor_m, outdoor_w, out_w, out_h, out_d,
@@ -306,7 +297,7 @@ def main():
         writer = csv.writer(f)
         writer.writerows(rows)
         
-    print(f"Successfully saved CSV -> {output_csv_path}")
+    print(f"Successfully saved multi-manufacturer CSV -> {output_csv_path} (Total: {len(rows)-1} rows)")
 
 if __name__ == "__main__":
     main()
