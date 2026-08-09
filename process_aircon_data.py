@@ -45,7 +45,7 @@ def get_similarity_scores_for_list(val_list):
             scores.append(calculate_cosine_similarity(v1, v2))
     return scores
 
-# --- 2. 型番の正規化関数 (ダイキン: S22ATRS-W(-C) -> S22ATRS, 日立: RAS-X2226S -> RAS-X2226S) ---
+# --- 2. 型番の正規化関数 (ダイキン: S22ATRS-W(-C) -> S22ATRS, 日立: RAS-XR2226S -> RAS-X2226S) ---
 def normalize_model_number(model_str):
     if not model_str:
         return ''
@@ -53,7 +53,31 @@ def normalize_model_number(model_str):
     if m.startswith('S') and '-' in m:
         m = m.split('-')[0].strip()
     m = re.sub(r'\([A-Z]\)', '', m)
+    # 日立の RAS-XR -> RAS-X 名寄せ補正
+    m = re.sub(r'^RAS-XR', 'RAS-X', m)
     return m
+
+def get_heating_power(item):
+    if item.get("detail_specs") and item["detail_specs"].get("heating"):
+        return item["detail_specs"]["heating"].get("power_w", "")
+    if item.get("technical_specifications") and item["technical_specifications"].get("heating"):
+        h = item["technical_specifications"]["heating"]
+        if "rated_power_w" in h:
+            return h["rated_power_w"]
+        if "electrical_properties" in h and "max_power_w" in h["electrical_properties"]:
+            return h["electrical_properties"]["max_power_w"]
+    return ""
+
+def get_cooling_power(item):
+    if item.get("detail_specs") and item["detail_specs"].get("cooling"):
+        return item["detail_specs"]["cooling"].get("power_w", "")
+    if item.get("technical_specifications") and item["technical_specifications"].get("cooling"):
+        c = item["technical_specifications"]["cooling"]
+        if "rated_power_w" in c:
+            return c["rated_power_w"]
+        if "electrical_properties" in c and "max_power_w" in c["electrical_properties"]:
+            return c["electrical_properties"]["max_power_w"]
+    return ""
 
 def main():
     target_dir = r"c:\json_data"
@@ -69,7 +93,8 @@ def main():
         "product_series_details_rx.json",
         "technical_specifications.json",
         "catalog_models_hitachi.json",
-        "product_series_details_hitachi_x.json"
+        "product_series_details_hitachi_x.json",
+        "technical_specifications_hitachi.json"
     ]
     
     for filename in json_files:
@@ -79,12 +104,13 @@ def main():
             shutil.copy2(src, dst)
             print(f"Copied {filename} -> {dst}")
 
-    # 5つの JSON ファイルの読み込み
+    # 6つの JSON ファイルの読み込み
     path_catalog = os.path.join(target_dir, "catalog_models.json")
     path_details = os.path.join(target_dir, "product_series_details_rx.json")
     path_tech = os.path.join(target_dir, "technical_specifications.json")
     path_hitachi_cat = os.path.join(target_dir, "catalog_models_hitachi.json")
     path_hitachi_det = os.path.join(target_dir, "product_series_details_hitachi_x.json")
+    path_hitachi_tech = os.path.join(target_dir, "technical_specifications_hitachi.json")
     
     with open(path_catalog, 'r', encoding='utf-8') as f:
         catalog_daikin = json.load(f)
@@ -96,6 +122,8 @@ def main():
         catalog_hitachi = json.load(f)
     with open(path_hitachi_det, 'r', encoding='utf-8') as f:
         details_hitachi_x = json.load(f)
+    with open(path_hitachi_tech, 'r', encoding='utf-8') as f:
+        tech_hitachi = json.load(f)
         
     merged_map = {}
     
@@ -192,7 +220,27 @@ def main():
             entry["color_variations"] = item.get("color_variations")
             entry["recommendation_tags"] = item.get("recommendation_tags")
 
-    # --- F. 結合フラット JSON の作成 & コサイン類似度スコアリング ---
+    # --- F. 日立 technical_specifications_hitachi.json の統合 ---
+    for item in tech_hitachi:
+        base_key = f"HITACHI_{normalize_model_number(item.get('model_number', ''))}"
+        if base_key in merged_map:
+            entry = merged_map[base_key]
+            entry["full_model_numbers"].add(item["model_number"])
+            entry["technical_specifications"] = item
+        else:
+            merged_map[base_key] = {
+                "manufacturer": "日立",
+                "product_category": "壁掛形ルームエアコン",
+                "brand_name": "白くまくん",
+                "base_model_number": normalize_model_number(item.get("model_number", "")),
+                "full_model_numbers": set([item["model_number"]]),
+                "series_name": item.get("series_name", "白くまくん"),
+                "series_nickname": "白くまくん",
+                "model_year": "2026年モデル",
+                "technical_specifications": item
+            }
+
+    # --- G. 結合フラット JSON の作成 & コサイン類似度スコアリング ---
     merged_list = []
     for base_key, entry in merged_map.items():
         usp_values = list(set([x for x in entry.get("unique_selling_point_sources", []) if x]))
@@ -239,7 +287,7 @@ def main():
         json.dump(merged_list, f, ensure_ascii=False, indent=2)
     print(f"Successfully saved multi-manufacturer merged JSON -> {output_json_path} (Total: {len(merged_list)} models)")
 
-    # --- G. CSV ファイルの出力 (全37列 / BOM付き UTF-8: utf-8-sig) ---
+    # --- H. CSV ファイルの出力 (全37列 / BOM付き UTF-8: utf-8-sig) ---
     headers = [
         "メーカー名", "製品カテゴリー", "ブランド名", "ベース型番", "全表記型番", "シリーズ名", "愛称", "年式", "畳数目安", "冷房能力(kW)",
         "ユニークセリングポイント (USP)", "USPコサイン類似度スコア", "税込価格 (円)", "税抜価格 (円)", "価格コサイン類似度スコア",
@@ -267,14 +315,14 @@ def main():
             price_scrs = ", ".join(map(str, item["price_details"].get("cosine_similarity_scores", [])))
 
         indoor_m = item["indoor_unit"]["model_number"] if item.get("indoor_unit") else (item["technical_specifications"]["indoor_unit_model"] if item.get("technical_specifications") else "")
-        indoor_w = item["indoor_unit"]["weight_kg"] if item.get("indoor_unit") else (item["technical_specifications"]["weight_kg"]["indoor"] if item.get("technical_specifications") and item["technical_specifications"].get("weight_kg") else "")
+        indoor_w = item["indoor_unit"]["weight_kg"] if item.get("indoor_unit") and item["indoor_unit"].get("weight_kg") else (item["technical_specifications"]["weight_kg"]["indoor"] if item.get("technical_specifications") and item["technical_specifications"].get("weight_kg") else "")
         
         in_w = item["dimensions_mm"]["indoor"]["width"] if item.get("dimensions_mm") and item["dimensions_mm"].get("indoor") else ""
         in_h = item["dimensions_mm"]["indoor"]["height"] if item.get("dimensions_mm") and item["dimensions_mm"].get("indoor") else ""
         in_d = item["dimensions_mm"]["indoor"]["depth"] if item.get("dimensions_mm") and item["dimensions_mm"].get("indoor") else ""
 
         outdoor_m = item["outdoor_unit"]["model_number"] if item.get("outdoor_unit") else (item["technical_specifications"]["outdoor_unit_model"] if item.get("technical_specifications") else "")
-        outdoor_w = item["outdoor_unit"]["weight_kg"] if item.get("outdoor_unit") else (item["technical_specifications"]["weight_kg"]["outdoor"] if item.get("technical_specifications") and item["technical_specifications"].get("weight_kg") else "")
+        outdoor_w = item["outdoor_unit"]["weight_kg"] if item.get("outdoor_unit") and item["outdoor_unit"].get("weight_kg") else (item["technical_specifications"]["weight_kg"]["outdoor"] if item.get("technical_specifications") and item["technical_specifications"].get("weight_kg") else "")
         
         out_w = item["dimensions_mm"]["outdoor"]["width"] if item.get("dimensions_mm") and item["dimensions_mm"].get("outdoor") else ""
         out_h = item["dimensions_mm"]["outdoor"]["height"] if item.get("dimensions_mm") and item["dimensions_mm"].get("outdoor") else ""
@@ -286,10 +334,10 @@ def main():
         pipe_g = item["piping_detail"]["gas_mm"] if item.get("piping_detail") else (item["technical_specifications"]["piping_diameter_mm"]["gas"] if item.get("technical_specifications") and item["technical_specifications"].get("piping_diameter_mm") else "")
 
         heat_kw = item["detail_specs"]["heating"]["capacity_kw"] if item.get("detail_specs") and item["detail_specs"].get("heating") else (item["technical_specifications"]["heating"]["rated_capacity_kw"] if item.get("technical_specifications") and item["technical_specifications"].get("heating") else "")
-        heat_w = item["detail_specs"]["heating"]["power_w"] if item.get("detail_specs") and item["detail_specs"].get("heating") else (item["technical_specifications"]["heating"]["electrical_properties"]["max_power_w"] if item.get("technical_specifications") and item["technical_specifications"].get("heating") and item["technical_specifications"]["heating"].get("electrical_properties") else "")
+        heat_w = get_heating_power(item)
 
         cool_kw = item["detail_specs"]["cooling"]["capacity_kw"] if item.get("detail_specs") and item["detail_specs"].get("cooling") else (item["technical_specifications"]["cooling"]["rated_capacity_kw"] if item.get("technical_specifications") and item["technical_specifications"].get("cooling") else "")
-        cool_w = item["detail_specs"]["cooling"]["power_w"] if item.get("detail_specs") and item["detail_specs"].get("cooling") else (item["technical_specifications"]["cooling"]["electrical_properties"]["max_power_w"] if item.get("technical_specifications") and item["technical_specifications"].get("cooling") and item["technical_specifications"]["cooling"].get("electrical_properties") else "")
+        cool_w = get_cooling_power(item)
 
         ann_kwh = item["detail_specs"]["energy_saving"]["annual_power_consumption_kwh"] if item.get("detail_specs") and item["detail_specs"].get("energy_saving") else (item["technical_specifications"]["annual_power_consumption_kwh"]["annual_total"] if item.get("technical_specifications") and item["technical_specifications"].get("annual_power_consumption_kwh") else "")
         apf_v = item["detail_specs"]["energy_saving"]["apf"] if item.get("detail_specs") and item["detail_specs"].get("energy_saving") else (item["technical_specifications"]["apf"] if item.get("technical_specifications") else "")
