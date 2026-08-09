@@ -4,41 +4,32 @@
     "product_category": "ノートパソコン",
     "brand_name": "VAIO",
     "series_name": "VAIO SX14-R",
-    "model_number": "",
-    "category_description": "スタンダード大画面モバイル",
+    "full_model_numbers": [
+      "VAIO SX14",
+      "VAIO SX14-R",
+      "VJS14R19011B",
+      "VJS14R19021B",
+      "VJS14R19031B",
+      "VJS14R19041T",
+      "VJS14R19051G",
+      "VJS14R19061S",
+      "VJS14R295101B",
+      "VJS14R295102G",
+      "VJS14R295103R",
+      "VJS14R295104G"
+    ],
+    "category_description": "ハイエンド大画面モバイル",
     "copilot_plus_pc": true,
     "made_in_japan": false,
     "unique_selling_point": {
       "values": [
-        "ハイエンドコンパクトモバイル (12.5型ワイド)",
-        "スタンダード大画面モバイル (14.0型ワイド)",
-        "ハイエンド軽量大画面モバイル (14.0型ワイド) Copilot+PC対応",
         "ハイエンド大画面モバイル (14.0型ワイド)",
-        "アドバンスドモバイル (13.3型ワイド)",
-        "スタンダード大画面ノート (16.0型ワイド)",
+        "ハイエンド軽量大画面モバイル (14.0型ワイド) Copilot+PC対応",
         "毎日持ち選べる軽さと充実のパフォーマンス、すべてにおいて妥協したくない人へ。"
       ],
       "cosine_similarity_scores": [
-        0.4,
-        0.458,
-        0.592,
-        0.431,
-        0.228,
-        0.0,
-        0.577,
-        0.791,
-        0.44,
-        0.698,
-        0.0,
         0.738,
-        0.349,
-        0.332,
         0.0,
-        0.451,
-        0.476,
-        0.0,
-        0.25,
-        0.038,
         0.0
       ]
     },
@@ -126,29 +117,25 @@
     "product_category": "ノートパソコン",
     "brand_name": "VAIO",
     "series_name": "VAIO S13",
-    "model_number": "",
-    "category_description": "",
+    "full_model_numbers": [
+      "VAIO S13",
+      "VJS13690111B",
+      "VJS13690211T",
+      "VJS13690311B",
+      "VJS13690411T"
+    ],
+    "category_description": "アドバンスドモバイル",
     "copilot_plus_pc": false,
     "made_in_japan": false,
     "unique_selling_point": {
       "values": [
-        "毎日持ち選べる軽さと充実のパフォーマンス、すべてにおいて妥協したくない人へ。"
+        "アドバンスドモバイル (13.3型ワイド)"
       ],
       "cosine_similarity_scores": [
         1.0
       ]
     },
-    "recommended_features": [
-      "VAIO User Sensing",
-      "AI ノイズキャンセリング",
-      "Copilot+PC",
-      "指紋認証",
-      "顔認証",
-      "Wi-Fi 7",
-      "ビデオチャット",
-      "品質試験",
-      "JAPAN 日本製"
-    ],
+    "recommended_features": [],
     "technical_specifications": {
       "manufacturer": "VAIO",
       "product_category": "ノートパソコン",
@@ -214,29 +201,26 @@
     "product_category": "ノートパソコン",
     "brand_name": "VAIO",
     "series_name": "VAIO F16",
-    "model_number": "",
-    "category_description": "",
+    "full_model_numbers": [
+      "VAIO F16",
+      "VJF16295104L",
+      "VJF16295105N",
+      "VJF16297101L",
+      "VJF16297102N",
+      "VJF16297103S"
+    ],
+    "category_description": "スタンダード大画面ノート",
     "copilot_plus_pc": false,
     "made_in_japan": false,
     "unique_selling_point": {
       "values": [
-        "毎日持ち選べる軽さと充実のパフォーマンス、すべてにおいて妥協したくない人へ。"
+        "スタンダード大画面ノート (16.0型ワイド)"
       ],
       "cosine_similarity_scores": [
         1.0
       ]
     },
-    "recommended_features": [
-      "VAIO User Sensing",
-      "AI ノイズキャンセリング",
-      "Copilot+PC",
-      "指紋認証",
-      "顔認証",
-      "Wi-Fi 7",
-      "ビデオチャット",
-      "品質試験",
-      "JAPAN 日本製"
-    ],
+    "recommended_features": [],
     "technical_specifications": {
       "manufacturer": "VAIO",
       "product_category": "ノートパソコン",
@@ -303,29 +287,27 @@
     "product_category": "ノートパソコン",
     "brand_name": "VAIO",
     "series_name": "VAIO F14",
-    "model_number": "",
-    "category_description": "",
+    "full_model_numbers": [
+      "VAIO F14",
+      "VJF14295110L",
+      "VJF14295111N",
+      "VJF14295112S",
+      "VJF14297107L",
+      "VJF14297108N",
+      "VJF14297109S"
+    ],
+    "category_description": "スタンダード大画面モバイル",
     "copilot_plus_pc": false,
     "made_in_japan": false,
     "unique_selling_point": {
       "values": [
-        "毎日持ち選べる軽さと充実のパフォーマンス、すべてにおいて妥協したくない人へ。"
+        "スタンダード大画面モバイル (14.0型ワイド)"
       ],
       "cosine_similarity_scores": [
         1.0
       ]
     },
-    "recommended_features": [
-      "VAIO User Sensing",
-      "AI ノイズキャンセリング",
-      "Copilot+PC",
-      "指紋認証",
-      "顔認証",
-      "Wi-Fi 7",
-      "ビデオチャット",
-      "品質試験",
-      "JAPAN 日本製"
-    ],
+    "recommended_features": [],
     "technical_specifications": {
       "manufacturer": "VAIO",
       "product_category": "ノートパソコン",
@@ -393,24 +375,36 @@
     "product_category": "ノートパソコン",
     "brand_name": "FMV",
     "series_name": "Note U (UA-K1)",
-    "model_number": "FMVUASK1BA",
+    "full_model_numbers": [
+      "FMVUASK1BA",
+      "FMVUX5K3BA",
+      "U59-L1",
+      "UA-K1",
+      "UQ-L1",
+      "UX-K3"
+    ],
     "category_description": "タッチ対応モバイルノート",
     "copilot_plus_pc": true,
     "made_in_japan": true,
     "unique_selling_point": {
       "values": [
-        "タッチ対応モバイルノート (14.0型 Intel Core Ultra 5搭載) Copilot+ PC対応",
-        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)",
         "長時間駆動モバイルノート (14.0型 Snapdragon X搭載) Copilot+ PC対応",
-        "ハイスペックモバイルノート (14.0型 Intel Core Ultra 7搭載) Copilot+ PC対応"
+        "世界最軽量モバイルノート 約634g",
+        "ハイスペックモバイルノート (14.0型 Intel Core Ultra 7搭載) Copilot+ PC対応",
+        "タッチ対応モバイルノート (14.0型 Intel Core Ultra 5搭載) Copilot+ PC対応",
+        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)"
       ],
       "cosine_similarity_scores": [
-        0.219,
+        0.229,
+        0.604,
         0.619,
-        0.852,
         0.258,
+        0.212,
+        0.21,
+        0.0,
+        0.852,
         0.313,
-        0.604
+        0.219
       ]
     },
     "recommended_features": [
@@ -449,6 +443,18 @@
         "wireless": "Wi-Fi 7",
         "battery_life": "動画再生時:約15.5時間 / アイドル時:約36.0時間",
         "weight": "約848g"
+      },
+      {
+        "os": "Windows 11 Home",
+        "office": "Microsoft 365 Personal (24か月版) / Office Home & Business 2024 オプション付",
+        "display": "14.0型ワイド WUXGA",
+        "cpu": "インテル® Core™ Ultra 7 プロセッサー 255U",
+        "npu": "インテル® AI Boost (最大12TOPS)",
+        "memory": "16GB LPDDR5X-8400",
+        "ssd": "約512GB",
+        "wireless": "Wi-Fi 7",
+        "battery_life": "動画再生時:約7.0時間 / アイドル時:約18.0時間",
+        "weight": "約634g"
       }
     ],
     "technical_specifications": {
@@ -500,17 +506,51 @@
     "product_category": "ノートパソコン",
     "brand_name": "FMV",
     "series_name": "Note U (U59-L1)",
-    "model_number": "FMVU59L1BA",
+    "full_model_numbers": [
+      "FMVU59L1BA",
+      "FMVUASK1BA",
+      "FMVUX5K3BA",
+      "UA-K1",
+      "UX-K3"
+    ],
     "category_description": "",
     "copilot_plus_pc": true,
     "made_in_japan": true,
     "unique_selling_point": {
-      "values": [],
+      "values": [
+        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)",
+        "世界最軽量モバイルノート 約634g"
+      ],
       "cosine_similarity_scores": [
-        1.0
+        0.0
       ]
     },
-    "recommended_features": [],
+    "recommended_features": [
+      {
+        "os": "Windows 11 Home",
+        "office": "Microsoft 365 Basic + Office Home & Business 2024",
+        "display": "14.0型ワイド WUXGA",
+        "cpu": "インテル® Core™ Ultra 7 プロセッサー 258V",
+        "npu": "インテル® AI Boost (最大47TOPS)",
+        "memory": "32GB LPDDR5X-8533",
+        "ssd": "約512GB",
+        "wireless": "Wi-Fi 7",
+        "battery_life": "動画再生時:約15.5時間 / アイドル時:約36.0時間",
+        "weight": "約848g"
+      },
+      {
+        "os": "Windows 11 Home",
+        "office": "Microsoft 365 Personal (24か月版) / Office Home & Business 2024 オプション付",
+        "display": "14.0型ワイド WUXGA",
+        "cpu": "インテル® Core™ Ultra 7 プロセッサー 255U",
+        "npu": "インテル® AI Boost (最大12TOPS)",
+        "memory": "16GB LPDDR5X-8400",
+        "ssd": "約512GB",
+        "wireless": "Wi-Fi 7",
+        "battery_life": "動画再生時:約7.0時間 / アイドル時:約18.0時間",
+        "weight": "約634g"
+      }
+    ],
     "technical_specifications": {
       "manufacturer": "富士通",
       "brand_name": "FMV",
@@ -560,19 +600,49 @@
     "product_category": "ノートパソコン",
     "brand_name": "FMV",
     "series_name": "Note (UX-K3)",
-    "model_number": "FMVUX5K3BA",
-    "category_description": "",
-    "copilot_plus_pc": false,
+    "full_model_numbers": [
+      "A79-L1",
+      "FMVUASK1BA",
+      "FMVUX5K3BA",
+      "UA-K1",
+      "UX-K3"
+    ],
+    "category_description": "大画面プレミアムノート",
+    "copilot_plus_pc": true,
     "made_in_japan": false,
     "unique_selling_point": {
       "values": [
+        "大画面プレミアムノート (16.0型 AMD Ryzen AI 7搭載) Copilot+ PC対応",
+        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)",
         "世界最軽量モバイルノート 約634g"
       ],
       "cosine_similarity_scores": [
-        1.0
+        0.241,
+        0.077,
+        0.0
       ]
     },
     "recommended_features": [
+      "ライブキャプション",
+      "Windows 検索の改善",
+      "リスタイルイメージ",
+      "写真の超解像度",
+      "Click to Do (プレビュー)",
+      "コクリエーター",
+      "生成フィル",
+      "リコール (プレビュー)",
+      {
+        "os": "Windows 11 Home",
+        "office": "Microsoft 365 Basic + Office Home & Business 2024",
+        "display": "14.0型ワイド WUXGA",
+        "cpu": "インテル® Core™ Ultra 7 プロセッサー 258V",
+        "npu": "インテル® AI Boost (最大47TOPS)",
+        "memory": "32GB LPDDR5X-8533",
+        "ssd": "約512GB",
+        "wireless": "Wi-Fi 7",
+        "battery_life": "動画再生時:約15.5時間 / アイドル時:約36.0時間",
+        "weight": "約848g"
+      },
       {
         "os": "Windows 11 Home",
         "office": "Microsoft 365 Personal (24か月版) / Office Home & Business 2024 オプション付",
@@ -635,43 +705,28 @@
     "product_category": "ノートパソコン",
     "brand_name": "FMV",
     "series_name": "Note U (U77-K3)",
-    "model_number": "",
-    "category_description": "大画面オールインワンデスクトップ",
-    "copilot_plus_pc": true,
+    "full_model_numbers": [
+      "FMVU77K3BA",
+      "FMVU77K3HA",
+      "FMVU77K3WA",
+      "FMVUASK1BA",
+      "FMVUX5K3BA",
+      "UA-K1",
+      "UX-K3"
+    ],
+    "category_description": "",
+    "copilot_plus_pc": false,
     "made_in_japan": true,
     "unique_selling_point": {
       "values": [
-        "大画面オールインワンデスクトップ (27.0型 AMD Ryzen AI 7搭載) Copilot+ PC対応",
-        "大画面プレミアムノート (16.0型 AMD Ryzen AI 7搭載) Copilot+ PC対応",
         "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)",
         "世界最軽量モバイルノート 約634g"
       ],
       "cosine_similarity_scores": [
-        0.675,
-        0.209,
-        0.0,
-        0.241,
-        0.077,
         0.0
       ]
     },
     "recommended_features": [
-      "ライブキャプション",
-      "Windows 検索の改善",
-      "リスタイルイメージ",
-      "写真の超解像度",
-      "Click to Do (プレビュー)",
-      "コクリエーター",
-      "生成フィル",
-      "リコール (プレビュー)",
-      "ライブキャプション",
-      "Windows 検索の改善",
-      "リスタイルイメージ",
-      "写真の超解像度",
-      "Click to Do (プレビュー)",
-      "コクリエーター",
-      "生成フィル",
-      "リコール (プレビュー)",
       {
         "os": "Windows 11 Home",
         "office": "Microsoft 365 Basic + Office Home & Business 2024",
@@ -748,45 +803,20 @@
     "product_category": "ノートパソコン",
     "brand_name": "FMV",
     "series_name": "Note M (M55-K3)",
-    "model_number": "",
+    "full_model_numbers": [
+      "FMVM55K3BA",
+      "FMVM55K3SA"
+    ],
     "category_description": "",
     "copilot_plus_pc": false,
     "made_in_japan": false,
     "unique_selling_point": {
-      "values": [
-        "世界最軽量モバイルノート 約634g",
-        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)"
-      ],
+      "values": [],
       "cosine_similarity_scores": [
-        0.0
+        1.0
       ]
     },
-    "recommended_features": [
-      {
-        "os": "Windows 11 Home",
-        "office": "Microsoft 365 Basic + Office Home & Business 2024",
-        "display": "14.0型ワイド WUXGA",
-        "cpu": "インテル® Core™ Ultra 7 プロセッサー 258V",
-        "npu": "インテル® AI Boost (最大47TOPS)",
-        "memory": "32GB LPDDR5X-8533",
-        "ssd": "約512GB",
-        "wireless": "Wi-Fi 7",
-        "battery_life": "動画再生時:約15.5時間 / アイドル時:約36.0時間",
-        "weight": "約848g"
-      },
-      {
-        "os": "Windows 11 Home",
-        "office": "Microsoft 365 Personal (24か月版) / Office Home & Business 2024 オプション付",
-        "display": "14.0型ワイド WUXGA",
-        "cpu": "インテル® Core™ Ultra 7 プロセッサー 255U",
-        "npu": "インテル® AI Boost (最大12TOPS)",
-        "memory": "16GB LPDDR5X-8400",
-        "ssd": "約512GB",
-        "wireless": "Wi-Fi 7",
-        "battery_life": "動画再生時:約7.0時間 / アイドル時:約18.0時間",
-        "weight": "約634g"
-      }
-    ],
+    "recommended_features": [],
     "technical_specifications": {
       "manufacturer": "富士通",
       "brand_name": "FMV",
@@ -835,45 +865,21 @@
     "product_category": "ノートパソコン",
     "brand_name": "FMV",
     "series_name": "Note C (CZ-K1)",
-    "model_number": "",
+    "full_model_numbers": [
+      "FMVCZK1EA",
+      "FMVCZK1MA",
+      "FMVCZK1SA"
+    ],
     "category_description": "",
     "copilot_plus_pc": false,
     "made_in_japan": true,
     "unique_selling_point": {
-      "values": [
-        "世界最軽量モバイルノート 約634g",
-        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)"
-      ],
+      "values": [],
       "cosine_similarity_scores": [
-        0.0
+        1.0
       ]
     },
-    "recommended_features": [
-      {
-        "os": "Windows 11 Home",
-        "office": "Microsoft 365 Basic + Office Home & Business 2024",
-        "display": "14.0型ワイド WUXGA",
-        "cpu": "インテル® Core™ Ultra 7 プロセッサー 258V",
-        "npu": "インテル® AI Boost (最大47TOPS)",
-        "memory": "32GB LPDDR5X-8533",
-        "ssd": "約512GB",
-        "wireless": "Wi-Fi 7",
-        "battery_life": "動画再生時:約15.5時間 / アイドル時:約36.0時間",
-        "weight": "約848g"
-      },
-      {
-        "os": "Windows 11 Home",
-        "office": "Microsoft 365 Personal (24か月版) / Office Home & Business 2024 オプション付",
-        "display": "14.0型ワイド WUXGA",
-        "cpu": "インテル® Core™ Ultra 7 プロセッサー 255U",
-        "npu": "インテル® AI Boost (最大12TOPS)",
-        "memory": "16GB LPDDR5X-8400",
-        "ssd": "約512GB",
-        "wireless": "Wi-Fi 7",
-        "battery_life": "動画再生時:約7.0時間 / アイドル時:約18.0時間",
-        "weight": "約634g"
-      }
-    ],
+    "recommended_features": [],
     "technical_specifications": {
       "manufacturer": "富士通",
       "brand_name": "FMV",
@@ -922,7 +928,9 @@
     "product_category": "ノートパソコン",
     "brand_name": "FMV",
     "series_name": "Note P (P75-L1)",
-    "model_number": "FMVP75L1HA",
+    "full_model_numbers": [
+      "FMVP75L1HA"
+    ],
     "category_description": "",
     "copilot_plus_pc": false,
     "made_in_japan": true,
@@ -979,7 +987,9 @@
     "product_category": "ノートパソコン",
     "brand_name": "FMV",
     "series_name": "Note A (A79-L1)",
-    "model_number": "FMVA79L1BA",
+    "full_model_numbers": [
+      "FMVA79L1BA"
+    ],
     "category_description": "",
     "copilot_plus_pc": true,
     "made_in_japan": true,
@@ -1038,45 +1048,26 @@
     "product_category": "ノートパソコン",
     "brand_name": "FMV",
     "series_name": "Note A (A77-K3 / A75-K3 / A53-K3)",
-    "model_number": "",
+    "full_model_numbers": [
+      "FMVA53K3BA",
+      "FMVA53K3SA",
+      "FMVA75K3BA",
+      "FMVA75K3GA",
+      "FMVA75K3SA",
+      "FMVA77K3BA",
+      "FMVA77K3GA",
+      "FMVA77K3SA"
+    ],
     "category_description": "",
     "copilot_plus_pc": false,
     "made_in_japan": false,
     "unique_selling_point": {
-      "values": [
-        "世界最軽量モバイルノート 約634g",
-        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)"
-      ],
+      "values": [],
       "cosine_similarity_scores": [
-        0.0
+        1.0
       ]
     },
-    "recommended_features": [
-      {
-        "os": "Windows 11 Home",
-        "office": "Microsoft 365 Basic + Office Home & Business 2024",
-        "display": "14.0型ワイド WUXGA",
-        "cpu": "インテル® Core™ Ultra 7 プロセッサー 258V",
-        "npu": "インテル® AI Boost (最大47TOPS)",
-        "memory": "32GB LPDDR5X-8533",
-        "ssd": "約512GB",
-        "wireless": "Wi-Fi 7",
-        "battery_life": "動画再生時:約15.5時間 / アイドル時:約36.0時間",
-        "weight": "約848g"
-      },
-      {
-        "os": "Windows 11 Home",
-        "office": "Microsoft 365 Personal (24か月版) / Office Home & Business 2024 オプション付",
-        "display": "14.0型ワイド WUXGA",
-        "cpu": "インテル® Core™ Ultra 7 プロセッサー 255U",
-        "npu": "インテル® AI Boost (最大12TOPS)",
-        "memory": "16GB LPDDR5X-8400",
-        "ssd": "約512GB",
-        "wireless": "Wi-Fi 7",
-        "battery_life": "動画再生時:約7.0時間 / アイドル時:約18.0時間",
-        "weight": "約634g"
-      }
-    ],
+    "recommended_features": [],
     "technical_specifications": {
       "manufacturer": "富士通",
       "brand_name": "FMV",
@@ -1136,17 +1127,31 @@
     "product_category": "一体型デスクトップ",
     "brand_name": "FMV",
     "series_name": "Desktop F (F77-L1)",
-    "model_number": "FMVF77L1BA",
-    "category_description": "",
+    "full_model_numbers": [
+      "F77-L1",
+      "FMVF77L1BA"
+    ],
+    "category_description": "大画面オールインワンデスクトップ",
     "copilot_plus_pc": true,
     "made_in_japan": false,
     "unique_selling_point": {
-      "values": [],
+      "values": [
+        "大画面オールインワンデスクトップ (27.0型 AMD Ryzen AI 7搭載) Copilot+ PC対応"
+      ],
       "cosine_similarity_scores": [
         1.0
       ]
     },
-    "recommended_features": [],
+    "recommended_features": [
+      "ライブキャプション",
+      "Windows 検索の改善",
+      "リスタイルイメージ",
+      "写真の超解像度",
+      "Click to Do (プレビュー)",
+      "コクリエーター",
+      "生成フィル",
+      "リコール (プレビュー)"
+    ],
     "technical_specifications": {
       "manufacturer": "富士通",
       "brand_name": "FMV",
@@ -1193,45 +1198,20 @@
     "product_category": "一体型デスクトップ",
     "brand_name": "FMV",
     "series_name": "Desktop F (F75-L1 / F55-L1)",
-    "model_number": "",
+    "full_model_numbers": [
+      "FMVF55L1WA",
+      "FMVF75L1BA"
+    ],
     "category_description": "",
     "copilot_plus_pc": false,
     "made_in_japan": false,
     "unique_selling_point": {
-      "values": [
-        "世界最軽量モバイルノート 約634g",
-        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)"
-      ],
+      "values": [],
       "cosine_similarity_scores": [
-        0.0
+        1.0
       ]
     },
-    "recommended_features": [
-      {
-        "os": "Windows 11 Home",
-        "office": "Microsoft 365 Basic + Office Home & Business 2024",
-        "display": "14.0型ワイド WUXGA",
-        "cpu": "インテル® Core™ Ultra 7 プロセッサー 258V",
-        "npu": "インテル® AI Boost (最大47TOPS)",
-        "memory": "32GB LPDDR5X-8533",
-        "ssd": "約512GB",
-        "wireless": "Wi-Fi 7",
-        "battery_life": "動画再生時:約15.5時間 / アイドル時:約36.0時間",
-        "weight": "約848g"
-      },
-      {
-        "os": "Windows 11 Home",
-        "office": "Microsoft 365 Personal (24か月版) / Office Home & Business 2024 オプション付",
-        "display": "14.0型ワイド WUXGA",
-        "cpu": "インテル® Core™ Ultra 7 プロセッサー 255U",
-        "npu": "インテル® AI Boost (最大12TOPS)",
-        "memory": "16GB LPDDR5X-8400",
-        "ssd": "約512GB",
-        "wireless": "Wi-Fi 7",
-        "battery_life": "動画再生時:約7.0時間 / アイドル時:約18.0時間",
-        "weight": "約634g"
-      }
-    ],
+    "recommended_features": [],
     "technical_specifications": {
       "manufacturer": "富士通",
       "brand_name": "FMV",
@@ -1280,5 +1260,27 @@
       },
       "weight_g": 6200
     }
+  },
+  {
+    "manufacturer": "VAIO",
+    "product_category": "ノートパソコン",
+    "brand_name": "VAIO",
+    "series_name": "SX12",
+    "full_model_numbers": [
+      "VAIO SX12"
+    ],
+    "category_description": "ハイエンドコンパクトモバイル",
+    "copilot_plus_pc": false,
+    "made_in_japan": false,
+    "unique_selling_point": {
+      "values": [
+        "ハイエンドコンパクトモバイル (12.5型ワイド)"
+      ],
+      "cosine_similarity_scores": [
+        1.0
+      ]
+    },
+    "recommended_features": [],
+    "technical_specifications": null
   }
 ]

@@ -64,6 +64,20 @@ def normalize_pc_series_key(series_str):
     s = s.replace('FMV ', '').replace('VAIO ', '').strip()
     return s.lower()
 
+def extract_model_numbers_from_item(item):
+    models = set()
+    if item.get("model_numbers") and isinstance(item["model_numbers"], list):
+        for m in item["model_numbers"]:
+            if m:
+                models.add(str(m).strip())
+    if item.get("model_number") and isinstance(item["model_number"], str):
+        if item["model_number"].strip():
+            models.add(item["model_number"].strip())
+    if item.get("product_code") and isinstance(item["product_code"], str):
+        if item["product_code"].strip():
+            models.add(item["product_code"].strip())
+    return sorted(list(models))
+
 def get_heating_power(item):
     if item.get("detail_specs") and item["detail_specs"].get("heating"):
         return item["detail_specs"]["heating"].get("power_w", "")
@@ -128,35 +142,38 @@ def process_pc_data_integration(target_dir):
     for item in tech_vaio + tech_fujitsu:
         mfr = item.get("manufacturer", "")
         series = item.get("series_name", "")
-        model = item.get("model_number", "")
-        key = f"{mfr}_{series}_{model}".strip()
+        models = extract_model_numbers_from_item(item)
+        key = f"{mfr}_{series}".strip()
 
-        merged_pc_map[key] = {
-            "manufacturer": mfr,
-            "product_category": item.get("product_category", "ノートパソコン"),
-            "brand_name": item.get("brand_name", ""),
-            "series_name": series,
-            "model_number": model,
-            "copilot_plus_pc": item.get("copilot_plus_pc", False),
-            "made_in_japan": item.get("made_in_japan", False),
-            "category_description": "",
-            "unique_selling_point_sources": [],
-            "recommended_features": [],
-            "technical_specifications": item
-        }
+        if key not in merged_pc_map:
+            merged_pc_map[key] = {
+                "manufacturer": mfr,
+                "product_category": item.get("product_category", "ノートパソコン"),
+                "brand_name": item.get("brand_name", ""),
+                "series_name": series,
+                "full_model_numbers": set(models),
+                "copilot_plus_pc": item.get("copilot_plus_pc", False),
+                "made_in_japan": item.get("made_in_japan", False),
+                "category_description": "",
+                "unique_selling_point_sources": [],
+                "recommended_features": [],
+                "technical_specifications": item
+            }
+        else:
+            merged_pc_map[key]["full_model_numbers"].update(models)
 
     # B. カタログ概要データの統合
     for item in cat_vaio + cat_fujitsu:
         mfr = item.get("manufacturer", "")
-        model = item.get("model_number", "")
         series = item.get("series_name", "")
+        models = extract_model_numbers_from_item(item)
 
         matched = False
         for key, entry in merged_pc_map.items():
             if entry["manufacturer"] == mfr:
-                if model and (model in entry["series_name"] or model in entry["model_number"] or entry["model_number"] in model):
+                if series and (normalize_pc_series_key(series) in normalize_pc_series_key(entry["series_name"]) or normalize_pc_series_key(entry["series_name"]) in normalize_pc_series_key(series)):
                     matched = True
-                elif series and (normalize_pc_series_key(series) in normalize_pc_series_key(entry["series_name"])):
+                elif models and any(m in entry["full_model_numbers"] for m in models):
                     matched = True
             
             if matched:
@@ -170,16 +187,18 @@ def process_pc_data_integration(target_dir):
                         entry["recommended_features"].extend(item["recommended_features"])
                     elif isinstance(item["recommended_features"], dict):
                         entry["recommended_features"].append(item["recommended_features"])
+                if models:
+                    entry["full_model_numbers"].update(models)
                 break
 
         if not matched:
-            key = f"{mfr}_{series}_{model}".strip()
+            key = f"{mfr}_{series}".strip()
             merged_pc_map[key] = {
                 "manufacturer": mfr,
                 "product_category": item.get("product_category", "ノートパソコン"),
                 "brand_name": item.get("brand_name", ""),
                 "series_name": series,
-                "model_number": model,
+                "full_model_numbers": set(models),
                 "copilot_plus_pc": item.get("copilot_plus_pc", False),
                 "made_in_japan": False,
                 "category_description": item.get("category_description", ""),
@@ -191,12 +210,12 @@ def process_pc_data_integration(target_dir):
     # C. 製品詳細データの統合
     for item in det_vaio + det_fujitsu:
         mfr = item.get("manufacturer", "")
-        model = item.get("model_number", "")
         series = item.get("series_name", "")
+        models = extract_model_numbers_from_item(item)
 
         for key, entry in merged_pc_map.items():
             if entry["manufacturer"] == mfr:
-                if model and (model in entry["series_name"] or model in entry["model_number"] or entry["model_number"] in model):
+                if series and (normalize_pc_series_key(series) in normalize_pc_series_key(entry["series_name"]) or normalize_pc_series_key(entry["series_name"]) in normalize_pc_series_key(series)):
                     if item.get("unique_selling_point"):
                         entry["unique_selling_point_sources"].append(item.get("unique_selling_point"))
                     if item.get("recommended_features"):
@@ -204,6 +223,8 @@ def process_pc_data_integration(target_dir):
                             entry["recommended_features"].extend(item["recommended_features"])
                         elif isinstance(item["recommended_features"], dict):
                             entry["recommended_features"].append(item["recommended_features"])
+                    if models:
+                        entry["full_model_numbers"].update(models)
 
     # D. 結合フラット PC JSON の生成 & コサイン類似度スコアリング
     merged_pc_list = []
@@ -211,12 +232,14 @@ def process_pc_data_integration(target_dir):
         usp_values = list(set([x for x in entry.get("unique_selling_point_sources", []) if x]))
         usp_scores = get_similarity_scores_for_list(usp_values)
 
+        full_models = sorted(list(entry["full_model_numbers"]))
+
         merged_pc_list.append({
             "manufacturer": entry["manufacturer"],
             "product_category": entry["product_category"],
             "brand_name": entry["brand_name"],
             "series_name": entry["series_name"],
-            "model_number": entry["model_number"],
+            "full_model_numbers": full_models,
             "category_description": entry.get("category_description", ""),
             "copilot_plus_pc": entry.get("copilot_plus_pc", False),
             "made_in_japan": entry.get("made_in_japan", False),
@@ -232,14 +255,14 @@ def process_pc_data_integration(target_dir):
     output_json_path = os.path.join(target_dir, "merged_pc_models.json")
     with open(output_json_path, 'w', encoding='utf-8') as f:
         json.dump(merged_pc_list, f, ensure_ascii=False, indent=2)
-    print(f"Successfully saved PC merged JSON -> {output_json_path} (Total: {len(merged_pc_list)} PC models)")
+    print(f"Successfully saved PC merged JSON -> {output_json_path} (Total: {len(merged_pc_list)} PC series/models)")
 
     curr_json_path = os.path.join(os.getcwd(), "merged_pc_models.json")
     shutil.copy2(output_json_path, curr_json_path)
 
-    # E. PC CSV ファイルの出力 (全26列 / BOM付き UTF-8: utf-8-sig)
+    # E. PC CSV ファイルの出力 (全28列 / シリーズ名 ＆ 個別の型番の分離 / BOM付き UTF-8: utf-8-sig)
     headers = [
-        "メーカー名", "製品カテゴリー", "ブランド名", "シリーズ名/型番", "分類キャッチコピー", "Copilot+ PC", "日本製",
+        "メーカー名", "製品カテゴリー", "ブランド名", "シリーズ名", "個別の型番", "全表記型番", "分類キャッチコピー", "Copilot+ PC", "日本製",
         "ユニークセリングポイント (USP)", "USPコサイン類似度スコア", "OS", "付属Office", "ディスプレイ", "CPUプロセッサー",
         "NPU性能(TOPS)", "GPU", "メモリ", "ストレージ(SSD)", "通信", "インターフェース", "動画再生時間(時間)",
         "アイドル時間(時間)", "幅(mm)", "奥行(mm)", "高さ(mm)", "本体質量(g)", "おもなおすすめ機能"
@@ -272,13 +295,21 @@ def process_pc_data_integration(target_dir):
         else:
             rec_str = str(rec_feat)
 
-        rows.append([
-            item["manufacturer"], item["product_category"], item["brand_name"], item["series_name"] or item["model_number"],
-            item["category_description"], "はい" if item["copilot_plus_pc"] else "いいえ", "はい" if item["made_in_japan"] else "いいえ",
-            usp_vals, usp_scrs, tech.get("os", ""), tech.get("bundled_office", ""), disp_str, tech.get("cpu", ""),
-            tech.get("npu", ""), tech.get("gpu", ""), tech.get("memory", ""), tech.get("storage", ""), tech.get("wireless", ""),
-            interfaces_str, batt_video, batt_idle, width, depth, height, tech.get("weight_g", ""), rec_str
-        ])
+        full_models_list = item.get("full_model_numbers", [])
+        full_models_str = "; ".join(full_models_list)
+
+        # 型番が複数存在する場合は型番ごとに1行ずつ独立展開！
+        target_models = full_models_list if full_models_list else [""]
+
+        for single_model in target_models:
+            rows.append([
+                item["manufacturer"], item["product_category"], item["brand_name"], item["series_name"],
+                single_model, full_models_str, item["category_description"],
+                "はい" if item["copilot_plus_pc"] else "いいえ", "はい" if item["made_in_japan"] else "いいえ",
+                usp_vals, usp_scrs, tech.get("os", ""), tech.get("bundled_office", ""), disp_str, tech.get("cpu", ""),
+                tech.get("npu", ""), tech.get("gpu", ""), tech.get("memory", ""), tech.get("storage", ""), tech.get("wireless", ""),
+                interfaces_str, batt_video, batt_idle, width, depth, height, tech.get("weight_g", ""), rec_str
+            ])
 
     output_csv_path = os.path.join(target_dir, "merged_pc_models.csv")
     with open(output_csv_path, 'w', newline='', encoding='utf-8-sig') as f:
@@ -288,7 +319,7 @@ def process_pc_data_integration(target_dir):
     curr_csv_path = os.path.join(os.getcwd(), "merged_pc_models.csv")
     shutil.copy2(output_csv_path, curr_csv_path)
 
-    print(f"Successfully saved PC merged CSV -> {output_csv_path} and {curr_csv_path} (Total: {len(rows)-1} rows)")
+    print(f"Successfully saved PC merged CSV -> {output_csv_path} and {curr_csv_path} (Total: {len(rows)-1} rows across individual model numbers)")
 
 
 def main():
