@@ -45,7 +45,7 @@ def get_similarity_scores_for_list(val_list):
             scores.append(calculate_cosine_similarity(v1, v2))
     return scores
 
-# --- 2. 型番の正規化関数 (ダイキン: S22ATRS-W(-C) -> S22ATRS, 日立: RAS-XR2226S -> RAS-X2226S) ---
+# --- 2. 型番の正規化関数 ---
 def normalize_model_number(model_str):
     if not model_str:
         return ''
@@ -55,6 +55,14 @@ def normalize_model_number(model_str):
     m = re.sub(r'\([A-Z]\)', '', m)
     m = re.sub(r'^RAS-XR', 'RAS-X', m)
     return m
+
+def normalize_pc_series_key(series_str):
+    if not series_str:
+        return ''
+    s = str(series_str).strip()
+    s = re.sub(r'\(.*?\)', '', s)
+    s = s.replace('FMV ', '').replace('VAIO ', '').strip()
+    return s.lower()
 
 def get_heating_power(item):
     if item.get("detail_specs") and item["detail_specs"].get("heating"):
@@ -77,6 +85,205 @@ def get_cooling_power(item):
         if "electrical_properties" in c and "max_power_w" in c["electrical_properties"]:
             return c["electrical_properties"]["max_power_w"]
     return ""
+
+# --- 3. PCデータ統合処理関数 (merged_pc_models.json / merged_pc_models.csv) ---
+def process_pc_data_integration(target_dir):
+    path_vaio_cat = os.path.join(target_dir, "catalog_models_pc_vaio.json")
+    path_fujitsu_cat = os.path.join(target_dir, "catalog_models_pc_fujitsu.json")
+    
+    path_vaio_det = os.path.join(target_dir, "product_series_details_pc_vaio_sx14r.json")
+    path_fujitsu_det = os.path.join(target_dir, "product_series_details_pc_fujitsu_ua-k1_ux-k3.json")
+    
+    path_vaio_tech = os.path.join(target_dir, "technical_spec_pc_vaio.json")
+    path_fujitsu_tech = os.path.join(target_dir, "technical_spec_pc_fujitsu.json")
+
+    cat_vaio, cat_fujitsu = [], []
+    det_vaio, det_fujitsu = [], []
+    tech_vaio, tech_fujitsu = [], []
+
+    if os.path.exists(path_vaio_cat):
+        with open(path_vaio_cat, 'r', encoding='utf-8') as f:
+            cat_vaio = json.load(f)
+    if os.path.exists(path_fujitsu_cat):
+        with open(path_fujitsu_cat, 'r', encoding='utf-8') as f:
+            cat_fujitsu = json.load(f)
+
+    if os.path.exists(path_vaio_det):
+        with open(path_vaio_det, 'r', encoding='utf-8') as f:
+            det_vaio = json.load(f)
+    if os.path.exists(path_fujitsu_det):
+        with open(path_fujitsu_det, 'r', encoding='utf-8') as f:
+            det_fujitsu = json.load(f)
+
+    if os.path.exists(path_vaio_tech):
+        with open(path_vaio_tech, 'r', encoding='utf-8') as f:
+            tech_vaio = json.load(f)
+    if os.path.exists(path_fujitsu_tech):
+        with open(path_fujitsu_tech, 'r', encoding='utf-8') as f:
+            tech_fujitsu = json.load(f)
+
+    merged_pc_map = {}
+
+    # A. 仕様表データの登録 (基盤モデル)
+    for item in tech_vaio + tech_fujitsu:
+        mfr = item.get("manufacturer", "")
+        series = item.get("series_name", "")
+        model = item.get("model_number", "")
+        key = f"{mfr}_{series}_{model}".strip()
+
+        merged_pc_map[key] = {
+            "manufacturer": mfr,
+            "product_category": item.get("product_category", "ノートパソコン"),
+            "brand_name": item.get("brand_name", ""),
+            "series_name": series,
+            "model_number": model,
+            "copilot_plus_pc": item.get("copilot_plus_pc", False),
+            "made_in_japan": item.get("made_in_japan", False),
+            "category_description": "",
+            "unique_selling_point_sources": [],
+            "recommended_features": [],
+            "technical_specifications": item
+        }
+
+    # B. カタログ概要データの統合
+    for item in cat_vaio + cat_fujitsu:
+        mfr = item.get("manufacturer", "")
+        model = item.get("model_number", "")
+        series = item.get("series_name", "")
+
+        matched = False
+        for key, entry in merged_pc_map.items():
+            if entry["manufacturer"] == mfr:
+                if model and (model in entry["series_name"] or model in entry["model_number"] or entry["model_number"] in model):
+                    matched = True
+                elif series and (normalize_pc_series_key(series) in normalize_pc_series_key(entry["series_name"])):
+                    matched = True
+            
+            if matched:
+                entry["category_description"] = item.get("category_description", "")
+                if item.get("copilot_plus_pc"):
+                    entry["copilot_plus_pc"] = True
+                if item.get("unique_selling_point"):
+                    entry["unique_selling_point_sources"].append(item.get("unique_selling_point"))
+                if item.get("recommended_features"):
+                    if isinstance(item["recommended_features"], list):
+                        entry["recommended_features"].extend(item["recommended_features"])
+                    elif isinstance(item["recommended_features"], dict):
+                        entry["recommended_features"].append(item["recommended_features"])
+                break
+
+        if not matched:
+            key = f"{mfr}_{series}_{model}".strip()
+            merged_pc_map[key] = {
+                "manufacturer": mfr,
+                "product_category": item.get("product_category", "ノートパソコン"),
+                "brand_name": item.get("brand_name", ""),
+                "series_name": series,
+                "model_number": model,
+                "copilot_plus_pc": item.get("copilot_plus_pc", False),
+                "made_in_japan": False,
+                "category_description": item.get("category_description", ""),
+                "unique_selling_point_sources": [item.get("unique_selling_point")] if item.get("unique_selling_point") else [],
+                "recommended_features": item.get("recommended_features") if item.get("recommended_features") else [],
+                "technical_specifications": None
+            }
+
+    # C. 製品詳細データの統合
+    for item in det_vaio + det_fujitsu:
+        mfr = item.get("manufacturer", "")
+        model = item.get("model_number", "")
+        series = item.get("series_name", "")
+
+        for key, entry in merged_pc_map.items():
+            if entry["manufacturer"] == mfr:
+                if model and (model in entry["series_name"] or model in entry["model_number"] or entry["model_number"] in model):
+                    if item.get("unique_selling_point"):
+                        entry["unique_selling_point_sources"].append(item.get("unique_selling_point"))
+                    if item.get("recommended_features"):
+                        if isinstance(item["recommended_features"], list):
+                            entry["recommended_features"].extend(item["recommended_features"])
+                        elif isinstance(item["recommended_features"], dict):
+                            entry["recommended_features"].append(item["recommended_features"])
+
+    # D. 結合フラット PC JSON の生成 & コサイン類似度スコアリング
+    merged_pc_list = []
+    for key, entry in merged_pc_map.items():
+        usp_values = list(set([x for x in entry.get("unique_selling_point_sources", []) if x]))
+        usp_scores = get_similarity_scores_for_list(usp_values)
+
+        merged_pc_list.append({
+            "manufacturer": entry["manufacturer"],
+            "product_category": entry["product_category"],
+            "brand_name": entry["brand_name"],
+            "series_name": entry["series_name"],
+            "model_number": entry["model_number"],
+            "category_description": entry.get("category_description", ""),
+            "copilot_plus_pc": entry.get("copilot_plus_pc", False),
+            "made_in_japan": entry.get("made_in_japan", False),
+
+            "unique_selling_point": {
+                "values": usp_values,
+                "cosine_similarity_scores": usp_scores
+            },
+            "recommended_features": entry.get("recommended_features", []),
+            "technical_specifications": entry.get("technical_specifications")
+        })
+
+    output_json_path = os.path.join(target_dir, "merged_pc_models.json")
+    with open(output_json_path, 'w', encoding='utf-8') as f:
+        json.dump(merged_pc_list, f, ensure_ascii=False, indent=2)
+    print(f"Successfully saved PC merged JSON -> {output_json_path} (Total: {len(merged_pc_list)} PC models)")
+
+    # E. PC CSV ファイルの出力 (全26列 / BOM付き UTF-8: utf-8-sig)
+    headers = [
+        "メーカー名", "製品カテゴリー", "ブランド名", "シリーズ名/型番", "分類キャッチコピー", "Copilot+ PC", "日本製",
+        "ユニークセリングポイント (USP)", "USPコサイン類似度スコア", "OS", "付属Office", "ディスプレイ", "CPUプロセッサー",
+        "NPU性能(TOPS)", "GPU", "メモリ", "ストレージ(SSD)", "通信", "インターフェース", "動画再生時間(時間)",
+        "アイドル時間(時間)", "幅(mm)", "奥行(mm)", "高さ(mm)", "本体質量(g)", "おもなおすすめ機能"
+    ]
+
+    rows = [headers]
+
+    for item in merged_pc_list:
+        tech = item.get("technical_specifications") or {}
+        disp = tech.get("display") or {}
+        dim = tech.get("dimensions_mm") or {}
+        batt = tech.get("battery_life_hours") or {}
+
+        disp_str = f"{disp.get('size', '')} {disp.get('resolution', '')} {disp.get('finish', '')}".strip()
+        interfaces_str = " / ".join(tech.get("interfaces", [])) if isinstance(tech.get("interfaces"), list) else str(tech.get("interfaces", ""))
+
+        width = dim.get("width", "")
+        depth = dim.get("depth", "")
+        height = dim.get("height_min", "") or dim.get("height", "")
+
+        batt_video = batt.get("video_playback", "") if isinstance(batt, dict) else ""
+        batt_idle = batt.get("idle", "") if isinstance(batt, dict) else ""
+
+        usp_vals = " | ".join(item["unique_selling_point"]["values"]) if item.get("unique_selling_point") else ""
+        usp_scrs = ", ".join(map(str, item["unique_selling_point"]["cosine_similarity_scores"])) if item.get("unique_selling_point") else ""
+
+        rec_feat = item.get("recommended_features", [])
+        if isinstance(rec_feat, list):
+            rec_str = " / ".join([json.dumps(x, ensure_ascii=False) if isinstance(x, dict) else str(x) for x in rec_feat])
+        else:
+            rec_str = str(rec_feat)
+
+        rows.append([
+            item["manufacturer"], item["product_category"], item["brand_name"], item["series_name"] or item["model_number"],
+            item["category_description"], "はい" if item["copilot_plus_pc"] else "いいえ", "はい" if item["made_in_japan"] else "いいえ",
+            usp_vals, usp_scrs, tech.get("os", ""), tech.get("bundled_office", ""), disp_str, tech.get("cpu", ""),
+            tech.get("npu", ""), tech.get("gpu", ""), tech.get("memory", ""), tech.get("storage", ""), tech.get("wireless", ""),
+            interfaces_str, batt_video, batt_idle, width, depth, height, tech.get("weight_g", ""), rec_str
+        ])
+
+    output_csv_path = os.path.join(target_dir, "merged_pc_models.csv")
+    with open(output_csv_path, 'w', newline='', encoding='utf-8-sig') as f:
+        writer = csv.writer(f)
+        writer.writerows(rows)
+
+    print(f"Successfully saved PC merged CSV -> {output_csv_path} (Total: {len(rows)-1} rows)")
+
 
 def main():
     target_dir = r"c:\json_data"
@@ -178,7 +385,7 @@ def main():
             entry["color_variations"] = item.get("color_variations")
             entry["recommendation_tags"] = item.get("recommendation_tags")
 
-    # --- C. ダイキン technical_spec_aircon_daikin_.json の統合 ---
+    # --- C. ダイキン technical_spec_aircon_daikin.json の統合 ---
     for item in tech_daikin:
         base_key = f"DAIKIN_{normalize_model_number(item.get('model_number', ''))}"
         if base_key in merged_map:
@@ -225,7 +432,7 @@ def main():
             entry["color_variations"] = item.get("color_variations")
             entry["recommendation_tags"] = item.get("recommendation_tags")
 
-    # --- F. 日立 technical_spec_aircon__hitachi.json の統合 ---
+    # --- F. 日立 technical_spec_aircon_hitachi.json の統合 ---
     for item in tech_hitachi:
         base_key = f"HITACHI_{normalize_model_number(item.get('model_number', ''))}"
         if base_key in merged_map:
@@ -245,7 +452,7 @@ def main():
                 "technical_specifications": item
             }
 
-    # --- G. 結合フラット JSON の作成 & コサイン類似度スコアリング ---
+    # --- G. 結合フラット エアコン JSON の作成 & コサイン類似度スコアリング ---
     merged_list = []
     for base_key, entry in merged_map.items():
         usp_values = list(set([x for x in entry.get("unique_selling_point_sources", []) if x]))
@@ -376,6 +583,9 @@ def main():
         writer.writerows(rows)
         
     print(f"Successfully saved multi-manufacturer CSV -> {output_csv_path} (Total: {len(rows)-1} rows)")
+
+    # --- I. PC製品統合処理の呼び出し ---
+    process_pc_data_integration(target_dir)
 
 if __name__ == "__main__":
     main()
