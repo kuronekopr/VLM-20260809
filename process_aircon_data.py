@@ -53,7 +53,6 @@ def normalize_model_number(model_str):
     if m.startswith('S') and '-' in m:
         m = m.split('-')[0].strip()
     m = re.sub(r'\([A-Z]\)', '', m)
-    # 日立の RAS-XR -> RAS-X 名寄せ補正
     m = re.sub(r'^RAS-XR', 'RAS-X', m)
     return m
 
@@ -87,14 +86,15 @@ def main():
         os.makedirs(target_dir, exist_ok=True)
         print(f"Created directory: {target_dir}")
     
-    # コピー対象 JSON ファイル
+    # コピー対象 JSON ファイル群 (エアコン ＋ PCカテゴリー)
     json_files = [
         "catalog_models.json",
         "product_series_details_rx.json",
         "technical_specifications.json",
         "catalog_models_hitachi.json",
         "product_series_details_hitachi_x.json",
-        "technical_specifications_hitachi.json"
+        "technical_specifications_hitachi.json",
+        "catalog_models_vaio.json"
     ]
     
     for filename in json_files:
@@ -104,7 +104,7 @@ def main():
             shutil.copy2(src, dst)
             print(f"Copied {filename} -> {dst}")
 
-    # 6つの JSON ファイルの読み込み
+    # エアコンデータの読み込み
     path_catalog = os.path.join(target_dir, "catalog_models.json")
     path_details = os.path.join(target_dir, "product_series_details_rx.json")
     path_tech = os.path.join(target_dir, "technical_specifications.json")
