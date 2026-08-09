@@ -1,0 +1,72 @@
+import fs from 'fs';
+import path from 'path';
+
+// VAIO SX14-R 製品詳細カタログデータ (P.03-04 見開きページ)
+const vaioSX14RDetails = [
+    {
+        manufacturer: "VAIO",
+        product_category: "ノートパソコン",
+        brand_name: "VAIO",
+        model_number: "VAIO SX14-R",
+        series_name: "SX14-R",
+        series_category: "ハイエンド軽量大画面モバイル",
+        unique_selling_point: "毎日持ち選べる軽さと充実のパフォーマンス、すべてにおいて妥協したくない人へ。",
+        recommended_features: [
+            "VAIO User Sensing",
+            "AI ノイズキャンセリング",
+            "Copilot+PC",
+            "指紋認証",
+            "顔認証",
+            "Wi-Fi 7",
+            "ビデオチャット",
+            "品質試験",
+            "JAPAN 日本製"
+        ],
+        display_spec: {
+            size: "14.0型ワイド",
+            aspect_ratio: "16:10"
+        },
+        processor: {
+            name: "インテル® Core™ Ultra 5 シリーズ 3 プロセッサー",
+            npu_performance: "最大47TOPS"
+        },
+        storage: "第五世代ハイスピードSSD (PCIe 5.0対応 NVMe SSD)",
+        weight_g: 967,
+        battery_life: {
+            video_playback_hours: 15.0,
+            idle_hours: 27.0
+        },
+        toughness: "アメリカ国防総省制定MIL規格準拠 (MIL-STD-810H)",
+        interfaces: [
+            "USB Type-C",
+            "USB Type-A",
+            "HDMI",
+            "有線LAN",
+            "ヘッドホン端子"
+        ],
+        color_variations: [
+            "ディープエメラルド",
+            "ファインブラック"
+        ],
+        product_description_features: {
+            "01_パワー_スリムボディ": [
+                "AI新時代の高性能CPUを搭載 (インテル Core Ultra 5 シリーズ3 NPU47TOPS)",
+                "天板と底面にカーボンを採用し、軽く、強く、美しく (約967g, MIL-STD 810H準拠)",
+                "第五世代ハイスピードSSD搭載 (PCIe 5.0対応)",
+                "モバイル利用に応える長時間駆動 (動画再生約15.0時間/アイドル約27.0時間)",
+                "14.0型ワイドディスプレイの見やすい大画面と、静かで快適に使えるキーボード (アスペクト比16:10)"
+            ],
+            "02_Copilot_Plus_PC": [
+                "Copilot+ PC対応でAI活用がもっと便利に (コクリエーター, リコールプレビュー)"
+            ],
+            "03_利便性_インターフェース": [
+                "VAIOならではのスマート機能がもっと便利に、使いやすく (AIノイズキャンセリング, VAIO User Sensing)",
+                "いろいろ繋がる、豊富なインターフェース (USB Type-C, USB Type-A, HDMI, 有線LAN, ヘッドホン端子)"
+            ]
+        }
+    }
+];
+
+const outputPath = path.join(process.cwd(), 'product_series_details_vaio_sx14r.json');
+fs.writeFileSync(outputPath, JSON.stringify(vaioSX14RDetails, null, 2), 'utf8');
+console.log(`Successfully generated product_series_details_vaio_sx14r.json with ${vaioSX14RDetails.length} VAIO detail model.`);

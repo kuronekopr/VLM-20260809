@@ -86,7 +86,7 @@ def main():
         os.makedirs(target_dir, exist_ok=True)
         print(f"Created directory: {target_dir}")
     
-    # コピー対象 JSON ファイル群 (エアコン ＋ PCカテゴリー)
+    # コピー対象 JSON ファイル群 (エアコン ＋ PCカテゴリー概要 ＋ PC詳細)
     json_files = [
         "catalog_models.json",
         "product_series_details_rx.json",
@@ -94,7 +94,8 @@ def main():
         "catalog_models_hitachi.json",
         "product_series_details_hitachi_x.json",
         "technical_specifications_hitachi.json",
-        "catalog_models_vaio.json"
+        "catalog_models_vaio.json",
+        "product_series_details_vaio_sx14r.json"
     ]
     
     for filename in json_files:
@@ -344,7 +345,7 @@ def main():
 
         ref_t = item["technical_specifications"]["refrigerant"]["type"] if item.get("technical_specifications") and item["technical_specifications"].get("refrigerant") else "R32"
         ref_kg = item["technical_specifications"]["refrigerant"]["charge_amount_kg"] if item.get("technical_specifications") and item["technical_specifications"].get("refrigerant") else ""
-        gwp_v = item["technical_specifications"]["refrigerant"]["gwp"] if item.get("technical_specifications") and item["technical_specifications"].get("refrigerant") else 675
+        gwp_v = item["technical_specifications"]["refrigerant"]["gwp"] if item.get("technical_specifications") and item["technical_specifications"].get("gwp") else 675
 
         feat_list = []
         if item.get("recommended_features"):
