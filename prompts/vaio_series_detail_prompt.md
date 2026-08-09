@@ -1,6 +1,6 @@
 # VAIO ノートパソコン製品詳細カタログ用 Gemini チャットプロンプト
 
-非エンジニアやビジネスユーザーが **Gemini Web UI (gemini.google.com)** や **Google AI Studio** のチャット画面に VAIO ノートパソコンの見開き製品詳細カタログ画像（例: P.03-04 SX14-R詳細ページ）をアップロードし、以下のプロンプトをコピペして実行することで、**USP・便利機能 (recommended_features)・本文機能説明付きの構造化JSON (product_series_details_vaio_sx14r.json)** を出力できます。
+非エンジニアやビジネスユーザーが **Gemini Web UI (gemini.google.com)** や **Google AI Studio** のチャット画面に VAIO ノートパソコンの見開き製品詳細カタログ画像（例: P.03-04 SX14-R詳細ページ）をアップロードし、以下のプロンプトをコピペして実行することで、**USP・便利機能 (recommended_features)・本文機能説明付きの構造化JSON (product_series_details_pc_vaio_sx14r.json)** を出力できます。
 
 ---
 
@@ -13,7 +13,7 @@
 3. **プロンプトをコピペして送信する**
    - 下記の「コピペ用プロンプト」を全文コピーしてプロンプト入力欄に貼り付け、送信します。
 4. **JSONデータをコピーして保存する**
-   - 出力された JSON コードブロックの右上にある **「コピー」ボタン** をクリックし、`product_series_details_vaio_sx14r.json` として保存します。
+   - 出力された JSON コードブロックの右上にある **「コピー」ボタン** をクリックし、`product_series_details_pc_vaio_sx14r.json` として保存します。
 
 ---
 

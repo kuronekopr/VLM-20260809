@@ -83,6 +83,6 @@ const catalogVaio = vaioRawModels.map(item => {
     };
 });
 
-const outputPath = path.join(process.cwd(), 'catalog_models_vaio.json');
+const outputPath = path.join(process.cwd(), 'catalog_models_pc_vaio.json');
 fs.writeFileSync(outputPath, JSON.stringify(catalogVaio, null, 2), 'utf8');
-console.log(`Successfully generated catalog_models_vaio.json with ${catalogVaio.length} VAIO laptop models.`);
+console.log(`Successfully generated catalog_models_pc_vaio.json with ${catalogVaio.length} VAIO laptop models.`);

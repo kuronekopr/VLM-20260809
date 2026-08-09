@@ -1,6 +1,6 @@
 # 富士通 (FMV) パソコン製品詳細カタログ用 Gemini チャットプロンプト
 
-非エンジニアやビジネスユーザーが **Gemini Web UI (gemini.google.com)** や **Google AI Studio** のチャット画面に 富士通 FMV パソコンの上下2段製品詳細カタログ画像（P.07など）をアップロードし、以下のプロンプトをコピペして実行することで、**左側テキスト(USP) ＆ 右側スペック表 (recommended_features) 付き構造化JSON (product_series_details_fujitsu.json)** を出力できます。
+非エンジニアやビジネスユーザーが **Gemini Web UI (gemini.google.com)** や **Google AI Studio** のチャット画面に 富士通 FMV パソコンの上下2段製品詳細カタログ画像（P.07など）をアップロードし、以下のプロンプトをコピペして実行することで、**左側テキスト(USP) ＆ 右側スペック表 (recommended_features) 付き構造化JSON (product_series_details_pc_fujitsu_ua-k1_ux-k3.json)** を出力できます。
 
 ---
 
@@ -13,7 +13,7 @@
 3. **プロンプトをコピペして送信する**
    - 下記の「コピペ用プロンプト」を全文コピーしてプロンプト入力欄に貼り付け、送信します。
 4. **JSONデータをコピーして保存する**
-   - 出力された JSON コードブロックの右上にある **「コピー」ボタン** をクリックし、`product_series_details_fujitsu.json` として保存します。
+   - 出力された JSON コードブロックの右上にある **「コピー」ボタン** をクリックし、`product_series_details_pc_fujitsu_ua-k1_ux-k3.json` として保存します。
 
 ---
 

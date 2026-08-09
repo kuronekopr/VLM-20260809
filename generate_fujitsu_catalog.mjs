@@ -120,6 +120,6 @@ const fujitsuCatalogModels = [
     }
 ];
 
-const outputPath = path.join(process.cwd(), 'catalog_models_fujitsu.json');
+const outputPath = path.join(process.cwd(), 'catalog_models_pc_fujitsu.json');
 fs.writeFileSync(outputPath, JSON.stringify(fujitsuCatalogModels, null, 2), 'utf8');
-console.log(`Successfully generated catalog_models_fujitsu.json with ${fujitsuCatalogModels.length} Fujitsu FMV catalog models.`);
+console.log(`Successfully generated catalog_models_pc_fujitsu.json with ${fujitsuCatalogModels.length} Fujitsu FMV catalog models.`);

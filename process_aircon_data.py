@@ -86,20 +86,20 @@ def main():
         os.makedirs(target_dir, exist_ok=True)
         print(f"Created directory: {target_dir}")
     
-    # コピー対象 JSON ファイル群 (エアコン ＋ VAIO ＋ 富士通 FMV 概要・詳細・仕様)
+    # コピー対象 JSON ファイル群 (新統一命名規則準拠)
     json_files = [
-        "catalog_models.json",
-        "product_series_details_rx.json",
-        "technical_specifications.json",
-        "catalog_models_hitachi.json",
-        "product_series_details_hitachi_x.json",
-        "technical_specifications_hitachi.json",
-        "catalog_models_vaio.json",
-        "product_series_details_vaio_sx14r.json",
-        "technical_specifications_vaio.json",
-        "technical_specifications_fujitsu.json",
-        "catalog_models_fujitsu.json",
-        "product_series_details_fujitsu.json"
+        "catalog_models_aircon_daikin.json",
+        "product_series_details_aircon_daikin_rx.json",
+        "technical_spec_aircon_daikin_.json",
+        "catalog_models_aircon_hitachi.json",
+        "product_series_details_aircon_hitachi_x.json",
+        "technical_spec_aircon__hitachi.json",
+        "catalog_models_pc_vaio.json",
+        "product_series_details_pc_vaio_sx14r.json",
+        "technical_spec_pc_vaio.json",
+        "technical_spec_pc_fujitsu.json",
+        "catalog_models_pc_fujitsu.json",
+        "product_series_details_pc_fujitsu_ua-k1_ux-k3.json"
     ]
     
     for filename in json_files:
@@ -109,13 +109,13 @@ def main():
             shutil.copy2(src, dst)
             print(f"Copied {filename} -> {dst}")
 
-    # エアコンデータの読み込み
-    path_catalog = os.path.join(target_dir, "catalog_models.json")
-    path_details = os.path.join(target_dir, "product_series_details_rx.json")
-    path_tech = os.path.join(target_dir, "technical_specifications.json")
-    path_hitachi_cat = os.path.join(target_dir, "catalog_models_hitachi.json")
-    path_hitachi_det = os.path.join(target_dir, "product_series_details_hitachi_x.json")
-    path_hitachi_tech = os.path.join(target_dir, "technical_specifications_hitachi.json")
+    # エアコンデータの読み込み (新命名規則)
+    path_catalog = os.path.join(target_dir, "catalog_models_aircon_daikin.json")
+    path_details = os.path.join(target_dir, "product_series_details_aircon_daikin_rx.json")
+    path_tech = os.path.join(target_dir, "technical_spec_aircon_daikin_.json")
+    path_hitachi_cat = os.path.join(target_dir, "catalog_models_aircon_hitachi.json")
+    path_hitachi_det = os.path.join(target_dir, "product_series_details_aircon_hitachi_x.json")
+    path_hitachi_tech = os.path.join(target_dir, "technical_spec_aircon__hitachi.json")
     
     with open(path_catalog, 'r', encoding='utf-8') as f:
         catalog_daikin = json.load(f)
@@ -132,7 +132,7 @@ def main():
         
     merged_map = {}
     
-    # --- A. ダイキン catalog_models.json の統合 ---
+    # --- A. ダイキン catalog_models_aircon_daikin.json の統合 ---
     for item in catalog_daikin:
         base_key = f"DAIKIN_{normalize_model_number(item.get('model_number', ''))}"
         if base_key not in merged_map:
@@ -147,7 +147,7 @@ def main():
                 "model_year": item.get("model_year"),
                 "applicable_room_size": item.get("applicable_room_size"),
                 "unique_selling_point_sources": [item.get("unique_selling_point")],
-                "price_sources": [{"source": "catalog_models", **item.get("price", {})}],
+                "price_sources": [{"source": "catalog_models_aircon_daikin", **item.get("price", {})}],
                 "recommended_features": item.get("recommended_features")
             }
         else:
@@ -156,9 +156,9 @@ def main():
             if item.get("unique_selling_point"):
                 entry["unique_selling_point_sources"].append(item.get("unique_selling_point"))
             if item.get("price"):
-                entry["price_sources"].append({"source": "catalog_models", **item.get("price")})
+                entry["price_sources"].append({"source": "catalog_models_aircon_daikin", **item.get("price")})
                 
-    # --- B. ダイキン product_series_details_rx.json の統合 ---
+    # --- B. ダイキン product_series_details_aircon_daikin_rx.json の統合 ---
     for item in details_daikin:
         base_key = f"DAIKIN_{normalize_model_number(item.get('model_number', ''))}"
         if base_key in merged_map:
@@ -167,7 +167,7 @@ def main():
             if item.get("unique_selling_point"):
                 entry["unique_selling_point_sources"].append(item.get("unique_selling_point"))
             if item.get("price_total"):
-                entry["price_sources"].append({"source": "product_series_details", **item.get("price_total")})
+                entry["price_sources"].append({"source": "product_series_details_aircon_daikin_rx", **item.get("price_total")})
             entry["indoor_unit"] = item.get("indoor_unit")
             entry["outdoor_unit"] = item.get("outdoor_unit")
             entry["power_supply_detail"] = item.get("power_supply")
@@ -178,7 +178,7 @@ def main():
             entry["color_variations"] = item.get("color_variations")
             entry["recommendation_tags"] = item.get("recommendation_tags")
 
-    # --- C. ダイキン technical_specifications.json の統合 ---
+    # --- C. ダイキン technical_spec_aircon_daikin_.json の統合 ---
     for item in tech_daikin:
         base_key = f"DAIKIN_{normalize_model_number(item.get('model_number', ''))}"
         if base_key in merged_map:
@@ -186,7 +186,7 @@ def main():
             entry["full_model_numbers"].add(item["model_number"])
             entry["technical_specifications"] = item
 
-    # --- D. 日立 catalog_models_hitachi.json の統合 ---
+    # --- D. 日立 catalog_models_aircon_hitachi.json の統合 ---
     for item in catalog_hitachi:
         base_key = f"HITACHI_{normalize_model_number(item.get('model_number', ''))}"
         if base_key not in merged_map:
@@ -201,11 +201,11 @@ def main():
                 "model_year": item.get("model_year"),
                 "applicable_room_size": item.get("applicable_room_size"),
                 "unique_selling_point_sources": [item.get("unique_selling_point")],
-                "price_sources": [{"source": "catalog_models_hitachi", **item.get("price", {})}],
+                "price_sources": [{"source": "catalog_models_aircon_hitachi", **item.get("price", {})}],
                 "recommended_features": item.get("recommended_features")
             }
 
-    # --- E. 日立 product_series_details_hitachi_x.json の統合 ---
+    # --- E. 日立 product_series_details_aircon_hitachi_x.json の統合 ---
     for item in details_hitachi_x:
         base_key = f"HITACHI_{normalize_model_number(item.get('model_number', ''))}"
         if base_key in merged_map:
@@ -214,7 +214,7 @@ def main():
             if item.get("unique_selling_point"):
                 entry["unique_selling_point_sources"].append(item.get("unique_selling_point"))
             if item.get("price_total"):
-                entry["price_sources"].append({"source": "product_series_details_hitachi_x", **item.get("price_total")})
+                entry["price_sources"].append({"source": "product_series_details_aircon_hitachi_x", **item.get("price_total")})
             entry["indoor_unit"] = item.get("indoor_unit")
             entry["outdoor_unit"] = item.get("outdoor_unit")
             entry["power_supply_detail"] = item.get("power_supply")
@@ -225,7 +225,7 @@ def main():
             entry["color_variations"] = item.get("color_variations")
             entry["recommendation_tags"] = item.get("recommendation_tags")
 
-    # --- F. 日立 technical_specifications_hitachi.json の統合 ---
+    # --- F. 日立 technical_spec_aircon__hitachi.json の統合 ---
     for item in tech_hitachi:
         base_key = f"HITACHI_{normalize_model_number(item.get('model_number', ''))}"
         if base_key in merged_map:

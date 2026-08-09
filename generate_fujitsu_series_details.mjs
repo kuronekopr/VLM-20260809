@@ -57,6 +57,6 @@ const fujitsuSeriesDetails = [
     }
 ];
 
-const outputPath = path.join(process.cwd(), 'product_series_details_fujitsu.json');
+const outputPath = path.join(process.cwd(), 'product_series_details_pc_fujitsu_ua-k1_ux-k3.json');
 fs.writeFileSync(outputPath, JSON.stringify(fujitsuSeriesDetails, null, 2), 'utf8');
-console.log(`Successfully generated product_series_details_fujitsu.json with ${fujitsuSeriesDetails.length} Fujitsu FMV detail models.`);
+console.log(`Successfully generated product_series_details_pc_fujitsu_ua-k1_ux-k3.json with ${fujitsuSeriesDetails.length} Fujitsu FMV detail models.`);

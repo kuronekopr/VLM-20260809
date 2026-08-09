@@ -67,6 +67,6 @@ const vaioSX14RDetails = [
     }
 ];
 
-const outputPath = path.join(process.cwd(), 'product_series_details_vaio_sx14r.json');
+const outputPath = path.join(process.cwd(), 'product_series_details_pc_vaio_sx14r.json');
 fs.writeFileSync(outputPath, JSON.stringify(vaioSX14RDetails, null, 2), 'utf8');
-console.log(`Successfully generated product_series_details_vaio_sx14r.json with ${vaioSX14RDetails.length} VAIO detail model.`);
+console.log(`Successfully generated product_series_details_pc_vaio_sx14r.json with ${vaioSX14RDetails.length} VAIO detail model.`);

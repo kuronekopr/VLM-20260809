@@ -362,6 +362,6 @@ const productSeriesDetails = rxModelsData.map(item => {
     };
 });
 
-const outputPath = path.join(process.cwd(), 'product_series_details_rx.json');
+const outputPath = path.join(process.cwd(), 'product_series_details_aircon_daikin_rx.json');
 fs.writeFileSync(outputPath, JSON.stringify(productSeriesDetails, null, 2), 'utf8');
-console.log(`Successfully generated product_series_details_rx.json with ${productSeriesDetails.length} models.`);
+console.log(`Successfully generated product_series_details_aircon_daikin_rx.json with ${productSeriesDetails.length} models.`);

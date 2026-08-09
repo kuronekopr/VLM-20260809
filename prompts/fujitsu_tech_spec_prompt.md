@@ -1,6 +1,6 @@
 # 富士通 (FMV) パソコン仕様一覧表用 Gemini チャットプロンプト
 
-非エンジニアやビジネスユーザーが **Gemini Web UI (gemini.google.com)** や **Google AI Studio** のチャット画面に 富士通 FMV パソコンの仕様一覧表画像（FMV Lineup P.01〜P.04など）をアップロードし、以下のプロンプトをコピペして実行することで、**CPU・NPU・メモリ・質量・Copilot+ PCフラグ付きの標準仕様JSON (technical_specifications_fujitsu.json)** を出力できます。
+非エンジニアやビジネスユーザーが **Gemini Web UI (gemini.google.com)** や **Google AI Studio** のチャット画面に 富士通 FMV パソコンの仕様一覧表画像（FMV Lineup P.01〜P.04など）をアップロードし、以下のプロンプトをコピペして実行することで、**CPU・NPU・メモリ・質量・Copilot+ PCフラグ付きの標準仕様JSON (technical_spec_pc_fujitsu.json)** を出力できます。
 
 ---
 
@@ -13,7 +13,7 @@
 3. **プロンプトをコピペして送信する**
    - 下記の「コピペ用プロンプト」を全文コピーしてプロンプト入力欄に貼り付け、送信します。
 4. **JSONデータをコピーして保存する**
-   - 出力された JSON コードブロックの右上にある **「コピー」ボタン** をクリックし、`technical_specifications_fujitsu.json` として保存します。
+   - 出力された JSON コードブロックの右上にある **「コピー」ボタン** をクリックし、`technical_spec_pc_fujitsu.json` として保存します。
 
 ---
 

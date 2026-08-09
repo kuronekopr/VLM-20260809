@@ -1,0 +1,173 @@
+添付されたエアコンのカタログ画像から、掲載されているすべての型番（モデル番号）について、以下の抽出ルールとJSONフォーマットに従って型番単位の構造化JSONを出力してください。
+
+【抽出ルール】
+1. 型番 (model_number):
+   - ページ上部の型番一覧に記載されているすべての型番（例: S22ATRS, S40ATRS(P)(V), S22ATES など）を1つも漏らさずに抽出してください。
+2. シリーズ名 (series_name / series_nickname):
+   - 各型番が属するシリーズ名 (RX SERIES, AX SERIES, SX SERIES, GX SERIES, CX SERIES, E SERIES 等) および愛称 (うるさらX, risora 等) を抽出してください。
+3. ユニークセリングポイント (unique_selling_point):
+   - 各シリーズのヘッダー部分にある「2026年モデル」（または「NEW 2026年モデル」等の年式表記）の直下にある説明テキスト・キャッチコピーを抽出し、そのシリーズ内の全型番に付与してください。
+   - 例: 「無給水加湿と気流で快適 節電自動運転搭載のフラッグシップモデル」
+4. おもなおすすめポイント (recommended_features):
+   - ページ下部の「おもなおすすめポイント」機能比較表を参照してください。
+   - 該当シリーズの列で背景色がついている、チェックされている、または文字が記載されている機能をすべて抽出してください。
+   - 左側の分類に従い、「基本運転_室外機機能」「しつど制御」「自動運転_節電運転」「気流制御」「清潔」「快適温度制御」「生活便利」「その他」の各カテゴリ配列に格納してください。
+5. 販売価格 (price):
+   - 税込価格・税抜価格が数値で記載されている場合は tax_included_yen と tax_excluded_yen を整数の数値（例: 517000, 470000）とし、is_open_price: false としてください。
+   - 「※オープン価格」と記載されている場合は is_open_price: true とし、価格数値は null としてください。
+
+【出力フォーマット】
+解説や挨拶文は不要です。以下のJSON構造のコードブロック（```json ... ```）のみを出力してください。
+
+```json
+[
+  {
+    "model_number": "型番文字列",
+    "series_name": "シリーズ名",
+    "series_nickname": "愛称またはnull",
+    "model_year": "2026年モデル",
+    "applicable_room_size": {
+      "tatami": "〇畳程度",
+      "capacity_kw": 2.2
+    },
+    "price": {
+      "is_open_price": false,
+      "tax_included_yen": 517000,
+      "tax_excluded_yen": 470000,
+      "raw_text": "価格 517,000円 (税抜き 470,000円)"
+    },
+    "unique_selling_point": "「2026年モデル」表記の直下にあるキャッチコピーテキスト",
+    "recommended_features": {
+      "基本運転_室外機機能": ["機能名1", "機能名2"],
+      "しつど制御": ["機能名"],
+      "自動運転_節電運転": ["機能名"],
+      "気流制御": ["機能名"],
+      "清潔": ["機能名"],
+      "快適温度制御": ["機能名"],
+      "生活便利": ["機能名"],
+      "その他": ["機能名"]
+    }
+  }
+]
+
+
+
+
+製品詳細カタログ用
+添付されたエアコンの製品詳細カタログ画像から、掲載されているすべての型番（モデル番号）について、以下の抽出ルールと出力JSONフォーマットに従って詳細仕様付き構造化JSONを出力してください。
+
+【詳細抽出ルール】
+1. 型番 (model_number):
+   - ページ内のすべての型番枠（例: S22ATRS-W(-C), S40ATRP-W(-C), S90ATRP-W(-C) など）を1つも漏らさずに抽出してください。
+2. 室内機・室外機個別仕様 (indoor_unit / outdoor_unit):
+   - 室内機・室外機それぞれの「個別の型番 (F22ATRS-W(-C) / R22ARS 等)」「質量 (kg)」「価格 (税込/税抜数値)」を抽出してください。
+3. 電源・配管スペック (power_supply / piping):
+   - 電源: 相 (単相/三相)、電圧 (100/200V)、電流 (20A等)、室外電源かどうか (is_outdoor_power_supply: true/false)。
+   - 配管: 液径 (mm)、ガス径 (mm)、長尺配管最大長 (m)、チャージレス長 (m)、最大高低差 (m)。
+4. 寸法サイズ (dimensions_mm):
+   - 室内機: 幅 (mm)、高さ (mm)、奥行 (mm)、タイプ表記 (半間コンパクト 等)。
+   - 室外機: 幅 (mm)、突起幅 (mm)、奥行 (mm)、突起奥行 (mm)、高さ (mm)。
+5. 冷暖房・省エネ能力スペック (specs):
+   - 暖房 / 冷房: 畳数目安、適用面積 (㎡)、能力 (kW) とその変動範囲 [最小, 最大]、消費電力 (W) とその変動範囲 [最小, 最大]。
+   - 省エネ: 期間消費電力量 (kWh)、目標年度 (例: 2027)、省エネ基準達成率 (%)、APF (通年エネルギー消費効率)、低温暖房能力 (kW)。
+6. 機能チェック一覧 (functions):
+   - ページ右側にある機能別一覧表から、該当シリーズで背景色・チェック・文字記載がある項目を「基本運転」「しつど制御」「自動運転」「気流制御」「清潔」「快適温度制御」「生活便利」「タイマー_機能」のカテゴリごとに配列として抽出してください。
+
+【出力フォーマット】
+解説や挨拶文は不要です。以下のJSON構造のコードブロック（```json ... ```）のみを出力してください。
+
+```json
+[
+  {
+    "model_number": "S22ATRS-W(-C)",
+    "series_name": "RX SERIES",
+    "series_nickname": "うるさらX",
+    "model_year": "2026年モデル",
+    "unique_selling_point": "「2026年モデル」表記直下のキャッチコピーテキスト",
+    "color_variations": ["ホワイト(-W) (N9.5)", "ベージュ(-C) (1Y 7.5/2)"],
+    "recommendation_tags": ["北海道電力推薦 あったかエアコン", "ZEHにもおすすめ"],
+    "price_total": {
+      "is_open_price": false,
+      "tax_included_yen": 517000,
+      "tax_excluded_yen": 470000
+    },
+    "indoor_unit": {
+      "model_number": "F22ATRS-W(-C)",
+      "weight_kg": 16,
+      "tax_included_yen": 209000,
+      "tax_excluded_yen": 190000
+    },
+    "outdoor_unit": {
+      "model_number": "R22ARS",
+      "weight_kg": 43,
+      "tax_included_yen": 308000,
+      "tax_excluded_yen": 280000
+    },
+    "power_supply": {
+      "phase": "単相",
+      "voltage_v": 100,
+      "current_a": 20,
+      "is_outdoor_power_supply": false
+    },
+    "piping": {
+      "liquid_mm": 6.4,
+      "gas_mm": 9.5,
+      "max_length_m": 15,
+      "chargeless_length_m": 15,
+      "max_height_difference_m": 12
+    },
+    "dimensions_mm": {
+      "indoor": {
+        "width": 798,
+        "height": 295,
+        "depth": 370,
+        "compact_type": "半間コンパクト"
+      },
+      "outdoor": {
+        "width": 795,
+        "width_margin": 78,
+        "depth": 300,
+        "depth_margin": 42,
+        "height": 728,
+        "note": null
+      }
+    },
+    "specs": {
+      "heating": {
+        "tatami_range": "6〜7畳",
+        "area_m2": "9〜11㎡",
+        "capacity_kw": 2.5,
+        "capacity_range_kw": [0.6, 6.2],
+        "power_w": 440,
+        "power_range_w": [75, 1820]
+      },
+      "cooling": {
+        "tatami_range": "6〜9畳",
+        "area_m2": "10〜15㎡",
+        "capacity_kw": 2.2,
+        "capacity_range_kw": [0.5, 3.3],
+        "power_w": 390,
+        "power_range_w": [75, 850]
+      },
+      "energy_saving": {
+        "annual_power_consumption_kwh": 603,
+        "target_year": 2027,
+        "achievement_rate_pct": 104,
+        "apf": 6.9,
+        "low_temp_heating_capacity_kw": 4.5
+      }
+    },
+    "functions": {
+      "基本運転": ["NEW プレミアムPIT制御", "プレミアム冷房"],
+      "しつど制御": ["うるる加湿 (無給水加湿)"],
+      "自動運転": ["AI快適自動運転 (人・床・壁センサー/換気制御)"],
+      "気流制御": ["垂直気流 (暖房・冷房)"],
+      "清潔": ["給気換気／排気換気"],
+      "快適温度制御": ["高温風モード (最大60℃吹出し)"],
+      "生活便利": ["しつどクリーン"],
+      "タイマー_機能": ["時刻設定入切タイマー (学習入タイマー)"]
+    }
+  }
+]
+
+

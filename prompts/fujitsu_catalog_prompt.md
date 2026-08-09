@@ -1,6 +1,6 @@
 # 富士通 (FMV) パソコンカタログ概要 Lineup 用 Gemini チャットプロンプト
 
-非エンジニアやビジネスユーザーが **Gemini Web UI (gemini.google.com)** や **Google AI Studio** のチャット画面に 富士通 FMV パソコンの Lineup 概要画像（Copilot+ PC Lineup P.05-06など）をアップロードし、以下のプロンプトをコピペして実行することで、**メーカー名・型番・分類・Copilot+ PC機能ハイライト付きの構造化JSON (catalog_models_fujitsu.json)** を出力できます。
+非エンジニアやビジネスユーザーが **Gemini Web UI (gemini.google.com)** や **Google AI Studio** のチャット画面に 富士通 FMV パソコンの Lineup 概要画像（Copilot+ PC Lineup P.05-06など）をアップロードし、以下のプロンプトをコピペして実行することで、**メーカー名・型番・分類・Copilot+ PC機能ハイライト付きの構造化JSON (catalog_models_pc_fujitsu.json)** を出力できます。
 
 ---
 
@@ -13,7 +13,7 @@
 3. **プロンプトをコピペして送信する**
    - 下記の「コピペ用プロンプト」を全文コピーしてプロンプト入力欄に貼り付け、送信します。
 4. **JSONデータをコピーして保存する**
-   - 出力された JSON コードブロックの右上にある **「コピー」ボタン** をクリックし、`catalog_models_fujitsu.json` として保存します。
+   - 出力された JSON コードブロックの右上にある **「コピー」ボタン** をクリックし、`catalog_models_pc_fujitsu.json` として保存します。
 
 ---
 

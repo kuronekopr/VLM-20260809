@@ -211,6 +211,6 @@ const vaioTechSpecs = [
     }
 ];
 
-const outputPath = path.join(process.cwd(), 'technical_specifications_vaio.json');
+const outputPath = path.join(process.cwd(), 'technical_spec_pc_vaio.json');
 fs.writeFileSync(outputPath, JSON.stringify(vaioTechSpecs, null, 2), 'utf8');
-console.log(`Successfully generated technical_specifications_vaio.json with ${vaioTechSpecs.length} VAIO spec series.`);
+console.log(`Successfully generated technical_spec_pc_vaio.json with ${vaioTechSpecs.length} VAIO spec series.`);

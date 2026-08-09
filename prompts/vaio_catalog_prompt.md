@@ -1,6 +1,6 @@
 # VAIO ノートパソコンカタログ Index 用 Gemini チャットプロンプト
 
-非エンジニアやビジネスユーザーが **Gemini Web UI (gemini.google.com)** や **Google AI Studio** のチャット画面に VAIO ノートパソコンのカタログ Index 画像（P.02）をアップロードし、以下のプロンプトをコピペして実行することで、**メーカー名・製品カテゴリー・液晶画面サイズ・カラーバリエーション・Copilot+PC属性付きの構造化JSON (catalog_models_vaio.json)** を出力できます。
+非エンジニアやビジネスユーザーが **Gemini Web UI (gemini.google.com)** や **Google AI Studio** のチャット画面に VAIO ノートパソコンのカタログ Index 画像（P.02）をアップロードし、以下のプロンプトをコピペして実行することで、**メーカー名・製品カテゴリー・液晶画面サイズ・カラーバリエーション・Copilot+PC属性付きの構造化JSON (catalog_models_pc_vaio.json)** を出力できます。
 
 ---
 
@@ -13,7 +13,7 @@
 3. **プロンプトをコピペして送信する**
    - 下記の「コピペ用プロンプト」を全文コピーしてプロンプト入力欄に貼り付け、送信します。
 4. **JSONデータをコピーして保存する**
-   - 出力された JSON コードブロックの右上にある **「コピー」ボタン** をクリックし、`catalog_models_vaio.json` として保存します。
+   - 出力された JSON コードブロックの右上にある **「コピー」ボタン** をクリックし、`catalog_models_pc_vaio.json` として保存します。
 
 ---
 

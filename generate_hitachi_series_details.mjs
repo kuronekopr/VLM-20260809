@@ -208,6 +208,6 @@ const productSeriesDetailsHitachiX = hitachiXModelsData.map(item => {
     };
 });
 
-const outputPath = path.join(process.cwd(), 'product_series_details_hitachi_x.json');
+const outputPath = path.join(process.cwd(), 'product_series_details_aircon_hitachi_x.json');
 fs.writeFileSync(outputPath, JSON.stringify(productSeriesDetailsHitachiX, null, 2), 'utf8');
-console.log(`Successfully generated product_series_details_hitachi_x.json with ${productSeriesDetailsHitachiX.length} models.`);
+console.log(`Successfully generated product_series_details_aircon_hitachi_x.json with ${productSeriesDetailsHitachiX.length} models.`);

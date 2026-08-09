@@ -344,6 +344,6 @@ const catalogModels = rawModels.map(item => {
     };
 });
 
-const outputPath = path.join(process.cwd(), 'catalog_models.json');
+const outputPath = path.join(process.cwd(), 'catalog_models_aircon_daikin.json');
 fs.writeFileSync(outputPath, JSON.stringify(catalogModels, null, 2), 'utf8');
-console.log(`Successfully generated catalog_models.json with ${catalogModels.length} models.`);
+console.log(`Successfully generated catalog_models_aircon_daikin.json with ${catalogModels.length} Daikin models.`);

@@ -1,6 +1,6 @@
 # 日立エアコン「白くまくん Xシリーズ詳細」カタログ用 Gemini チャットプロンプト
 
-非エンジニアやビジネスユーザーが **Gemini Web UI (gemini.google.com)** や **Google AI Studio** のチャット画面に日立エアコンの製品詳細カタログ画像（例: P.20 Xシリーズ詳細ページ）をアップロードし、以下のプロンプトをコピペして実行することで、**メーカー名・製品カテゴリー・寸法・電気特性付きの構造化JSON (product_series_details_hitachi_x.json)** を出力できます。
+非エンジニアやビジネスユーザーが **Gemini Web UI (gemini.google.com)** や **Google AI Studio** のチャット画面に日立エアコンの製品詳細カタログ画像（例: P.20 Xシリーズ詳細ページ）をアップロードし、以下のプロンプトをコピペして実行することで、**メーカー名・製品カテゴリー・寸法・電気特性付きの構造化JSON (product_series_details_aircon_hitachi_x.json)** を出力できます。
 
 ---
 
@@ -13,7 +13,7 @@
 3. **プロンプトをコピペして送信する**
    - 下記の「コピペ用プロンプト」を全文コピーしてプロンプト入力欄に貼り付け、送信します。
 4. **JSONデータをコピーして保存する**
-   - 出力された JSON コードブロックの右上にある **「コピー」ボタン** をクリックし、`product_series_details_hitachi_x.json` として保存します。
+   - 出力された JSON コードブロックの右上にある **「コピー」ボタン** をクリックし、`product_series_details_aircon_hitachi_x.json` として保存します。
 
 ---
 

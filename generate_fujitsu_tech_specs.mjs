@@ -382,6 +382,6 @@ const fujitsuTechSpecs = [
     }
 ];
 
-const outputPath = path.join(process.cwd(), 'technical_specifications_fujitsu.json');
+const outputPath = path.join(process.cwd(), 'technical_spec_pc_fujitsu.json');
 fs.writeFileSync(outputPath, JSON.stringify(fujitsuTechSpecs, null, 2), 'utf8');
-console.log(`Successfully generated technical_specifications_fujitsu.json with ${fujitsuTechSpecs.length} Fujitsu FMV spec series.`);
+console.log(`Successfully generated technical_spec_pc_fujitsu.json with ${fujitsuTechSpecs.length} Fujitsu FMV spec series.`);

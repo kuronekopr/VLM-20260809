@@ -1,5 +1,4 @@
 import os
-import sys
 import json
 import re
 
@@ -13,140 +12,151 @@ def normalize_model_number(model_str):
     m = re.sub(r'^RAS-XR', 'RAS-X', m)
     return m
 
-def evaluate_discrepancies():
-    current_dir = os.getcwd()
-    target_dir = r"c:\json_data"
+def extract_recommended_features_flat(rec_dict):
+    features = set()
+    if not rec_dict:
+        return features
+    for category, item_list in rec_dict.items():
+        if isinstance(item_list, list):
+            for item in item_list:
+                features.add(item)
+    return features
+
+def extract_detail_functions_flat(func_dict):
+    functions = set()
+    if not func_dict:
+        return functions
+    for group_name, sub_groups in func_dict.items():
+        if isinstance(sub_groups, dict):
+            for sub_name, func_list in sub_groups.items():
+                if isinstance(func_list, list):
+                    for f in func_list:
+                        functions.add(f)
+        elif isinstance(sub_groups, list):
+            for f in sub_groups:
+                functions.add(f)
+    return functions
+
+def main():
+    base_dir = r"c:\json_data"
     
-    # 比較ソースファイルのパス
-    daikin_cat_path = os.path.join(current_dir, "catalog_models.json")
-    daikin_det_path = os.path.join(current_dir, "product_series_details_rx.json")
-    hitachi_cat_path = os.path.join(current_dir, "catalog_models_hitachi.json")
-    hitachi_det_path = os.path.join(current_dir, "product_series_details_hitachi_x.json")
+    # 統一命名規則に基づくファイルパス指定
+    catalog_path = os.path.join(base_dir, "catalog_models_aircon_daikin.json")
+    details_path = os.path.join(base_dir, "product_series_details_aircon_daikin_rx.json")
     
-    # ファイル読み込み
-    with open(daikin_cat_path, 'r', encoding='utf-8') as f:
-        daikin_cat = json.load(f)
-    with open(daikin_det_path, 'r', encoding='utf-8') as f:
-        daikin_det = json.load(f)
-    with open(hitachi_cat_path, 'r', encoding='utf-8') as f:
-        hitachi_cat = json.load(f)
-    with open(hitachi_det_path, 'r', encoding='utf-8') as f:
-        hitachi_det = json.load(f)
-        
-    catalog_models_map = {}
-    details_models_map = {}
+    hitachi_cat_path = os.path.join(base_dir, "catalog_models_aircon_hitachi.json")
+    hitachi_det_path = os.path.join(base_dir, "product_series_details_aircon_hitachi_x.json")
     
-    # ダイキンデータマッピング
-    for item in daikin_cat:
-        key = f"DAIKIN_{normalize_model_number(item.get('model_number', ''))}"
-        catalog_models_map[key] = {
-            "manufacturer": "ダイキン",
-            "model_number": item.get("model_number"),
-            "base_model": normalize_model_number(item.get("model_number", "")),
-            "features": item.get("recommended_features", {})
-        }
+    # ダイキンデータの読み込み
+    with open(catalog_path, 'r', encoding='utf-8') as f:
+        catalog_daikin = json.load(f)
+    with open(details_path, 'r', encoding='utf-8') as f:
+        details_daikin = json.load(f)
         
-    for item in daikin_det:
-        key = f"DAIKIN_{normalize_model_number(item.get('model_number', ''))}"
-        details_models_map[key] = {
-            "manufacturer": "ダイキン",
-            "model_number": item.get("model_number"),
-            "base_model": normalize_model_number(item.get("model_number", "")),
-            "functions": item.get("functions", {})
-        }
-        
-    # 日立データマッピング
-    for item in hitachi_cat:
-        key = f"HITACHI_{normalize_model_number(item.get('model_number', ''))}"
-        catalog_models_map[key] = {
-            "manufacturer": "日立",
-            "model_number": item.get("model_number"),
-            "base_model": normalize_model_number(item.get("model_number", "")),
-            "features": item.get("recommended_features", {})
-        }
-        
-    for item in hitachi_det:
-        key = f"HITACHI_{normalize_model_number(item.get('model_number', ''))}"
-        details_models_map[key] = {
-            "manufacturer": "日立",
-            "model_number": item.get("model_number"),
-            "base_model": normalize_model_number(item.get("model_number", "")),
-            "functions": item.get("functions", {})
+    # 日立データの読み込み (存在する場合)
+    catalog_hitachi = []
+    details_hitachi = []
+    if os.path.exists(hitachi_cat_path):
+        with open(hitachi_cat_path, 'r', encoding='utf-8') as f:
+            catalog_hitachi = json.load(f)
+    if os.path.exists(hitachi_det_path):
+        with open(hitachi_det_path, 'r', encoding='utf-8') as f:
+            details_hitachi = json.load(f)
+
+    # 1. カタログ一覧機能のマップ化 (型番 -> おすすめ機能集合)
+    catalog_map = {}
+    for item in catalog_daikin + catalog_hitachi:
+        raw_m = item.get("model_number", "")
+        norm_m = normalize_model_number(raw_m)
+        rec_feat = extract_recommended_features_flat(item.get("recommended_features", {}))
+        m_key = f"{item.get('manufacturer', 'DAIKIN')}_{norm_m}"
+        catalog_map[m_key] = {
+            "raw_model": raw_m,
+            "manufacturer": item.get("manufacturer", "ダイキン"),
+            "series_name": item.get("series_name", ""),
+            "recommended_features": rec_feat
         }
 
-    # 両方のソースに存在する型番キー
-    target_keys = sorted(list(set(catalog_models_map.keys()) & set(details_models_map.keys())))
-    
+    # 2. 製品詳細機能のマップ化 (型番 -> 詳細機能集合)
+    details_map = {}
+    for item in details_daikin + details_hitachi:
+        raw_m = item.get("model_number", "")
+        norm_m = normalize_model_number(raw_m)
+        det_func = extract_detail_functions_flat(item.get("functions", {}))
+        m_key = f"{item.get('manufacturer', 'DAIKIN')}_{norm_m}"
+        details_map[m_key] = {
+            "raw_model": raw_m,
+            "manufacturer": item.get("manufacturer", "ダイキン"),
+            "series_name": item.get("series_name", ""),
+            "detail_functions": det_func
+        }
+
+    # 3. 機能別の比較評価
     evaluation_results = []
-    total_models_evaluated = len(target_keys)
-    discrepancy_models_count = 0
+    all_keys = sorted(list(set(catalog_map.keys()) | set(details_map.keys())))
     
-    for key in target_keys:
-        cat_info = catalog_models_map[key]
-        det_info = details_models_map[key]
+    total_models = len(all_keys)
+    discrepancy_count = 0
+    match_count = 0
+
+    for m_key in all_keys:
+        cat_info = catalog_map.get(m_key, {})
+        det_info = details_map.get(m_key, {})
         
-        cat_feats = cat_info["features"] or {}
-        det_funcs = det_info["functions"] or {}
+        raw_model = cat_info.get("raw_model") or det_info.get("raw_model") or m_key
+        mfr = cat_info.get("manufacturer") or det_info.get("manufacturer") or "ダイキン"
+        series = cat_info.get("series_name") or det_info.get("series_name") or ""
         
-        all_categories = sorted(list(set(cat_feats.keys()) | set(det_funcs.keys())))
-        categories_eval = []
-        model_has_discrepancy = False
+        cat_features = cat_info.get("recommended_features", set())
+        det_functions = det_info.get("detail_functions", set())
         
-        for category in all_categories:
-            cat_list = sorted(list(set(cat_feats.get(category, []))))
-            det_list = sorted(list(set(det_funcs.get(category, []))))
-            
-            cat_set = set(cat_list)
-            det_set = set(det_list)
-            
-            missing_in_detail = sorted(list(cat_set - det_set))
-            missing_in_catalog = sorted(list(det_set - cat_set))
-            
-            cat_has_discrepancy = (len(missing_in_detail) > 0) or (len(missing_in_catalog) > 0)
-            if cat_has_discrepancy:
-                model_has_discrepancy = True
-                
-            categories_eval.append({
-                "category_name": category,
-                "has_discrepancy": cat_has_discrepancy,
-                "catalog_values": cat_list,
-                "detail_values": det_list,
-                "missing_in_detail": missing_in_detail,
-                "missing_in_catalog": missing_in_catalog
-            })
-            
-        if model_has_discrepancy:
-            discrepancy_models_count += 1
-            
+        in_catalog_only = sorted(list(cat_features - det_functions))
+        in_details_only = sorted(list(det_functions - cat_features))
+        common_features = sorted(list(cat_features & det_functions))
+        
+        has_discrepancy = len(in_catalog_only) > 0 or len(in_details_only) > 0
+        if has_discrepancy:
+            discrepancy_count += 1
+        else:
+            match_count += 1
+
         evaluation_results.append({
-            "manufacturer": cat_info["manufacturer"],
-            "base_model_number": cat_info["base_model"],
-            "full_model_number_catalog": cat_info["model_number"],
-            "full_model_number_detail": det_info["model_number"],
-            "overall_has_discrepancy": model_has_discrepancy,
-            "discrepant_category_count": sum(1 for c in categories_eval if c["has_discrepancy"]),
-            "categories_eval": categories_eval
+            "manufacturer": mfr,
+            "model_number": raw_model,
+            "series_name": series,
+            "has_discrepancy": has_discrepancy,
+            "discrepancy_details": {
+                "in_catalog_only_count": len(in_catalog_only),
+                "in_catalog_only": in_catalog_only,
+                "in_details_only_count": len(in_details_only),
+                "in_details_only": in_details_only
+            },
+            "comparison_pair": {
+                "catalog_recommended_features": sorted(list(cat_features)),
+                "detail_functions": sorted(list(det_functions)),
+                "common_features": common_features
+            }
         })
 
-    # カレントディレクトリへの保存
-    output_filename = "feature_discrepancy_evaluation.json"
-    output_path = os.path.join(current_dir, output_filename)
-    with open(output_path, 'w', encoding='utf-8') as f:
-        json.dump(evaluation_results, f, ensure_ascii=False, indent=2)
-        
-    print(f"Saved evaluation result to {output_path}")
-    
-    # c:\json_data へのコピー保存
-    if os.path.exists(target_dir):
-        target_path = os.path.join(target_dir, output_filename)
-        with open(target_path, 'w', encoding='utf-8') as f:
-            json.dump(evaluation_results, f, ensure_ascii=False, indent=2)
-        print(f"Saved copy to {target_path}")
+    summary = {
+        "total_evaluated_models": total_models,
+        "matched_models_count": match_count,
+        "discrepancy_models_count": discrepancy_count,
+        "discrepancy_rate_percent": round((discrepancy_count / total_models) * 100, 2) if total_models > 0 else 0
+    }
 
-    print("\n--- 評価サマリー ---")
-    print(f"総評価対象モデル数: {total_models_evaluated}")
-    print(f"機能齟齬検出モデル数: {discrepancy_models_count}")
-    print(f"完全一致モデル数: {total_models_evaluated - discrepancy_models_count}")
+    output_payload = {
+        "evaluation_summary": summary,
+        "model_evaluations": evaluation_results
+    }
+
+    output_path = os.path.join(base_dir, "feature_discrepancy_evaluation.json")
+    with open(output_path, 'w', encoding='utf-8') as f:
+        json.dump(output_payload, f, ensure_ascii=False, indent=2)
+
+    print(f"Successfully ran feature discrepancy evaluation across {total_models} models.")
+    print(f"Summary: Matched={match_count}, Discrepancies={discrepancy_count} ({summary['discrepancy_rate_percent']}%)")
+    print(f"Output saved to {output_path}")
 
 if __name__ == "__main__":
-    evaluate_discrepancies()
+    main()

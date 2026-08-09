@@ -179,6 +179,6 @@ const catalogHitachi = hitachiRawModels.map(item => {
     };
 });
 
-const outputPath = path.join(process.cwd(), 'catalog_models_hitachi.json');
+const outputPath = path.join(process.cwd(), 'catalog_models_aircon_hitachi.json');
 fs.writeFileSync(outputPath, JSON.stringify(catalogHitachi, null, 2), 'utf8');
-console.log(`Successfully generated catalog_models_hitachi.json with ${catalogHitachi.length} Hitachi models.`);
+console.log(`Successfully generated catalog_models_aircon_hitachi.json with ${catalogHitachi.length} Hitachi models.`);
