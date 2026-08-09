@@ -234,6 +234,9 @@ def process_pc_data_integration(target_dir):
         json.dump(merged_pc_list, f, ensure_ascii=False, indent=2)
     print(f"Successfully saved PC merged JSON -> {output_json_path} (Total: {len(merged_pc_list)} PC models)")
 
+    curr_json_path = os.path.join(os.getcwd(), "merged_pc_models.json")
+    shutil.copy2(output_json_path, curr_json_path)
+
     # E. PC CSV ファイルの出力 (全26列 / BOM付き UTF-8: utf-8-sig)
     headers = [
         "メーカー名", "製品カテゴリー", "ブランド名", "シリーズ名/型番", "分類キャッチコピー", "Copilot+ PC", "日本製",
@@ -282,7 +285,10 @@ def process_pc_data_integration(target_dir):
         writer = csv.writer(f)
         writer.writerows(rows)
 
-    print(f"Successfully saved PC merged CSV -> {output_csv_path} (Total: {len(rows)-1} rows)")
+    curr_csv_path = os.path.join(os.getcwd(), "merged_pc_models.csv")
+    shutil.copy2(output_csv_path, curr_csv_path)
+
+    print(f"Successfully saved PC merged CSV -> {output_csv_path} and {curr_csv_path} (Total: {len(rows)-1} rows)")
 
 
 def main():
