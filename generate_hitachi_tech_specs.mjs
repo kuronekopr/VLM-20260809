@@ -112,6 +112,6 @@ const technicalSpecificationsHitachi = hitachiTechSpecsData.map(item => {
     };
 });
 
-const outputPath = path.join(process.cwd(), 'technical_spec_aircon__hitachi.json');
+const outputPath = path.join(process.cwd(), 'technical_spec_aircon_hitachi.json');
 fs.writeFileSync(outputPath, JSON.stringify(technicalSpecificationsHitachi, null, 2), 'utf8');
-console.log(`Successfully generated technical_spec_aircon__hitachi.json with ${technicalSpecificationsHitachi.length} Hitachi tech spec models.`);
+console.log(`Successfully generated technical_spec_aircon_hitachi.json with ${technicalSpecificationsHitachi.length} Hitachi tech spec models.`);

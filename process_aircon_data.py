@@ -90,10 +90,10 @@ def main():
     json_files = [
         "catalog_models_aircon_daikin.json",
         "product_series_details_aircon_daikin_rx.json",
-        "technical_spec_aircon_daikin_.json",
+        "technical_spec_aircon_daikin.json",
         "catalog_models_aircon_hitachi.json",
         "product_series_details_aircon_hitachi_x.json",
-        "technical_spec_aircon__hitachi.json",
+        "technical_spec_aircon_hitachi.json",
         "catalog_models_pc_vaio.json",
         "product_series_details_pc_vaio_sx14r.json",
         "technical_spec_pc_vaio.json",
@@ -112,10 +112,10 @@ def main():
     # エアコンデータの読み込み (新命名規則)
     path_catalog = os.path.join(target_dir, "catalog_models_aircon_daikin.json")
     path_details = os.path.join(target_dir, "product_series_details_aircon_daikin_rx.json")
-    path_tech = os.path.join(target_dir, "technical_spec_aircon_daikin_.json")
+    path_tech = os.path.join(target_dir, "technical_spec_aircon_daikin.json")
     path_hitachi_cat = os.path.join(target_dir, "catalog_models_aircon_hitachi.json")
     path_hitachi_det = os.path.join(target_dir, "product_series_details_aircon_hitachi_x.json")
-    path_hitachi_tech = os.path.join(target_dir, "technical_spec_aircon__hitachi.json")
+    path_hitachi_tech = os.path.join(target_dir, "technical_spec_aircon_hitachi.json")
     
     with open(path_catalog, 'r', encoding='utf-8') as f:
         catalog_daikin = json.load(f)

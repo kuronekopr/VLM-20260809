@@ -161,6 +161,6 @@ const technicalSpecifications = techSpecsRaw.map(item => {
     };
 });
 
-const outputPath = path.join(process.cwd(), 'technical_spec_aircon_daikin_.json');
+const outputPath = path.join(process.cwd(), 'technical_spec_aircon_daikin.json');
 fs.writeFileSync(outputPath, JSON.stringify(technicalSpecifications, null, 2), 'utf8');
-console.log(`Successfully generated technical_spec_aircon_daikin_.json with ${technicalSpecifications.length} Daikin tech spec models.`);
+console.log(`Successfully generated technical_spec_aircon_daikin.json with ${technicalSpecifications.length} Daikin tech spec models.`);
