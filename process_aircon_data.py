@@ -86,7 +86,7 @@ def main():
         os.makedirs(target_dir, exist_ok=True)
         print(f"Created directory: {target_dir}")
     
-    # コピー対象 JSON ファイル群 (エアコン ＋ VAIO ＋ 富士通 FMV)
+    # コピー対象 JSON ファイル群 (エアコン ＋ VAIO ＋ 富士通 FMV 概要・仕様)
     json_files = [
         "catalog_models.json",
         "product_series_details_rx.json",
@@ -97,7 +97,8 @@ def main():
         "catalog_models_vaio.json",
         "product_series_details_vaio_sx14r.json",
         "technical_specifications_vaio.json",
-        "technical_specifications_fujitsu.json"
+        "technical_specifications_fujitsu.json",
+        "catalog_models_fujitsu.json"
     ]
     
     for filename in json_files:
