@@ -1,0 +1,983 @@
+[
+  {
+    "catalog_page": 15,
+    "model_number": "S22ATRS",
+    "indoor_unit_model": "F22ATRS",
+    "outdoor_unit_model": "R22ARS",
+    "power_supply": "単100V",
+    "heating": {
+      "rated_capacity_kw": 2.5,
+      "capacity_range_kw": [
+        0.6,
+        6.2
+      ],
+      "low_temp_max_capacity_kw": 4.5,
+      "electrical_properties": {
+        "max_current_a": 4.6,
+        "max_current_range_a": [
+          18,
+          18
+        ],
+        "max_power_w": 440,
+        "max_power_range_w": [
+          75,
+          1820
+        ],
+        "power_factor_pct": 96
+      },
+      "sound_power_level_db": {
+        "indoor": 59,
+        "outdoor": 60
+      }
+    },
+    "cooling": {
+      "rated_capacity_kw": 2.2,
+      "capacity_range_kw": [
+        0.5,
+        3.3
+      ],
+      "electrical_properties": {
+        "max_current_a": 4.1,
+        "max_current_range_a": [
+          14,
+          14
+        ],
+        "max_power_w": 390,
+        "max_power_range_w": [
+          75,
+          850
+        ],
+        "power_factor_pct": 95
+      },
+      "sound_power_level_db": {
+        "indoor": 57,
+        "outdoor": 58
+      }
+    },
+    "starting_current_a": 5.2,
+    "compressor_output_w": 600,
+    "power_plug": {
+      "capacity_a": 20,
+      "shape_code": "IL"
+    },
+    "connection_cores": 3,
+    "weight_kg": {
+      "indoor": 16,
+      "outdoor": 43
+    },
+    "piping_diameter_mm": {
+      "liquid": 6.4,
+      "gas": 9.5
+    },
+    "annual_power_consumption_kwh": {
+      "heating_total": 433,
+      "cooling_total": 170,
+      "annual_total": 603
+    },
+    "apf": 6.9,
+    "refrigerant": {
+      "type": "R32",
+      "charge_amount_kg": 0.96,
+      "gwp": 675
+    }
+  },
+  {
+    "catalog_page": 15,
+    "model_number": "S25ATRS",
+    "indoor_unit_model": "F25ATRS",
+    "outdoor_unit_model": "R25ARS",
+    "power_supply": "単100V",
+    "heating": {
+      "rated_capacity_kw": 2.8,
+      "capacity_range_kw": [
+        0.6,
+        6.3
+      ],
+      "low_temp_max_capacity_kw": 4.7,
+      "electrical_properties": {
+        "max_current_a": 5.2,
+        "max_current_range_a": [
+          18,
+          18
+        ],
+        "max_power_w": 500,
+        "max_power_range_w": [
+          75,
+          1820
+        ],
+        "power_factor_pct": 96
+      },
+      "sound_power_level_db": {
+        "indoor": 61,
+        "outdoor": 60
+      }
+    },
+    "cooling": {
+      "rated_capacity_kw": 2.5,
+      "capacity_range_kw": [
+        0.5,
+        3.5
+      ],
+      "electrical_properties": {
+        "max_current_a": 4.9,
+        "max_current_range_a": [
+          14,
+          14
+        ],
+        "max_power_w": 470,
+        "max_power_range_w": [
+          75,
+          870
+        ],
+        "power_factor_pct": 95
+      },
+      "sound_power_level_db": {
+        "indoor": 59,
+        "outdoor": 58
+      }
+    },
+    "starting_current_a": 5.2,
+    "compressor_output_w": 750,
+    "power_plug": {
+      "capacity_a": 20,
+      "shape_code": "IL"
+    },
+    "connection_cores": 3,
+    "weight_kg": {
+      "indoor": 16,
+      "outdoor": 43
+    },
+    "piping_diameter_mm": {
+      "liquid": 6.4,
+      "gas": 9.5
+    },
+    "annual_power_consumption_kwh": {
+      "heating_total": 495,
+      "cooling_total": 200,
+      "annual_total": 695
+    },
+    "apf": 6.8,
+    "refrigerant": {
+      "type": "R32",
+      "charge_amount_kg": 0.96,
+      "gwp": 675
+    }
+  },
+  {
+    "catalog_page": 15,
+    "model_number": "S28ATRS",
+    "indoor_unit_model": "F28ATRS",
+    "outdoor_unit_model": "R28ARS",
+    "power_supply": "単100V",
+    "heating": {
+      "rated_capacity_kw": 3.6,
+      "capacity_range_kw": [
+        0.6,
+        7.2
+      ],
+      "low_temp_max_capacity_kw": 5.7,
+      "electrical_properties": {
+        "max_current_a": 6.8,
+        "max_current_range_a": [
+          20,
+          20
+        ],
+        "max_power_w": 660,
+        "max_power_range_w": [
+          75,
+          2000
+        ],
+        "power_factor_pct": 97
+      },
+      "sound_power_level_db": {
+        "indoor": 62,
+        "outdoor": 60
+      }
+    },
+    "cooling": {
+      "rated_capacity_kw": 2.8,
+      "capacity_range_kw": [
+        0.5,
+        4
+      ],
+      "electrical_properties": {
+        "max_current_a": 5.8,
+        "max_current_range_a": [
+          18.8,
+          18.8
+        ],
+        "max_power_w": 550,
+        "max_power_range_w": [
+          70,
+          1030
+        ],
+        "power_factor_pct": 95
+      },
+      "sound_power_level_db": {
+        "indoor": 60,
+        "outdoor": 58
+      }
+    },
+    "starting_current_a": 6.8,
+    "compressor_output_w": 750,
+    "power_plug": {
+      "capacity_a": 20,
+      "shape_code": "IL"
+    },
+    "connection_cores": 3,
+    "weight_kg": {
+      "indoor": 16,
+      "outdoor": 46
+    },
+    "piping_diameter_mm": {
+      "liquid": 6.4,
+      "gas": 9.5
+    },
+    "annual_power_consumption_kwh": {
+      "heating_total": 560,
+      "cooling_total": 230,
+      "annual_total": 790
+    },
+    "apf": 6.7,
+    "refrigerant": {
+      "type": "R32",
+      "charge_amount_kg": 1.02,
+      "gwp": 675
+    }
+  },
+  {
+    "catalog_page": 15,
+    "model_number": "S36ATRS",
+    "indoor_unit_model": "F36ATRS",
+    "outdoor_unit_model": "R36ARS",
+    "power_supply": "単100V",
+    "heating": {
+      "rated_capacity_kw": 4.2,
+      "capacity_range_kw": [
+        0.6,
+        7.3
+      ],
+      "low_temp_max_capacity_kw": 5.7,
+      "electrical_properties": {
+        "max_current_a": 8.4,
+        "max_current_range_a": [
+          20,
+          20
+        ],
+        "max_power_w": 810,
+        "max_power_range_w": [
+          65,
+          2000
+        ],
+        "power_factor_pct": 97
+      },
+      "sound_power_level_db": {
+        "indoor": 62,
+        "outdoor": 57
+      }
+    },
+    "cooling": {
+      "rated_capacity_kw": 3.6,
+      "capacity_range_kw": [
+        0.5,
+        4.1
+      ],
+      "electrical_properties": {
+        "max_current_a": 8.3,
+        "max_current_range_a": [
+          18.8,
+          18.8
+        ],
+        "max_power_w": 800,
+        "max_power_range_w": [
+          65,
+          1020
+        ],
+        "power_factor_pct": 96
+      },
+      "sound_power_level_db": {
+        "indoor": 61,
+        "outdoor": 58
+      }
+    },
+    "starting_current_a": 8.4,
+    "compressor_output_w": 950,
+    "power_plug": {
+      "capacity_a": 20,
+      "shape_code": "IL"
+    },
+    "connection_cores": 3,
+    "weight_kg": {
+      "indoor": 16,
+      "outdoor": 48
+    },
+    "piping_diameter_mm": {
+      "liquid": 6.4,
+      "gas": 9.5
+    },
+    "annual_power_consumption_kwh": {
+      "heating_total": 724,
+      "cooling_total": 308,
+      "annual_total": 1032
+    },
+    "apf": 6.6,
+    "refrigerant": {
+      "type": "R32",
+      "charge_amount_kg": 1.02,
+      "gwp": 675
+    }
+  },
+  {
+    "catalog_page": 15,
+    "model_number": "S40ATRS",
+    "indoor_unit_model": "F40ATRS",
+    "outdoor_unit_model": "R40ARS",
+    "power_supply": "単100V",
+    "heating": {
+      "rated_capacity_kw": 5,
+      "capacity_range_kw": [
+        0.4,
+        7.2
+      ],
+      "low_temp_max_capacity_kw": 5.7,
+      "electrical_properties": {
+        "max_current_a": 10.3,
+        "max_current_range_a": [
+          20,
+          20
+        ],
+        "max_power_w": 1000,
+        "max_power_range_w": [
+          70,
+          2000
+        ],
+        "power_factor_pct": 97
+      },
+      "sound_power_level_db": {
+        "indoor": 66,
+        "outdoor": 60
+      }
+    },
+    "cooling": {
+      "rated_capacity_kw": 4,
+      "capacity_range_kw": [
+        0.4,
+        5.3
+      ],
+      "electrical_properties": {
+        "max_current_a": 9.6,
+        "max_current_range_a": [
+          18.8,
+          18.8
+        ],
+        "max_power_w": 920,
+        "max_power_range_w": [
+          65,
+          1600
+        ],
+        "power_factor_pct": 96
+      },
+      "sound_power_level_db": {
+        "indoor": 66,
+        "outdoor": 58
+      }
+    },
+    "starting_current_a": 10.3,
+    "compressor_output_w": 1100,
+    "power_plug": {
+      "capacity_a": 20,
+      "shape_code": "IL"
+    },
+    "connection_cores": 3,
+    "weight_kg": {
+      "indoor": 16,
+      "outdoor": 48
+    },
+    "piping_diameter_mm": {
+      "liquid": 6.4,
+      "gas": 9.5
+    },
+    "annual_power_consumption_kwh": {
+      "heating_total": 813,
+      "cooling_total": 333,
+      "annual_total": 1146
+    },
+    "apf": 6.6,
+    "refrigerant": {
+      "type": "R32",
+      "charge_amount_kg": 1.02,
+      "gwp": 675
+    }
+  },
+  {
+    "catalog_page": 15,
+    "model_number": "S40ATRP",
+    "indoor_unit_model": "F40ATRP",
+    "outdoor_unit_model": "R40ARP",
+    "power_supply": "単200V",
+    "heating": {
+      "rated_capacity_kw": 5,
+      "capacity_range_kw": [
+        0.4,
+        12.1
+      ],
+      "low_temp_max_capacity_kw": 9,
+      "electrical_properties": {
+        "max_current_a": 4.5,
+        "max_current_range_a": [
+          19.6,
+          19.6
+        ],
+        "max_power_w": 890,
+        "max_power_range_w": [
+          65,
+          3580
+        ],
+        "power_factor_pct": 98
+      },
+      "sound_power_level_db": {
+        "indoor": 69,
+        "outdoor": 61
+      }
+    },
+    "cooling": {
+      "rated_capacity_kw": 4,
+      "capacity_range_kw": [
+        0.3,
+        5.3
+      ],
+      "electrical_properties": {
+        "max_current_a": 3.9,
+        "max_current_range_a": [
+          13.5,
+          13.5
+        ],
+        "max_power_w": 770,
+        "max_power_range_w": [
+          65,
+          1300
+        ],
+        "power_factor_pct": 98
+      },
+      "sound_power_level_db": {
+        "indoor": 67,
+        "outdoor": 63
+      }
+    },
+    "starting_current_a": 4.5,
+    "compressor_output_w": 1100,
+    "power_plug": {
+      "capacity_a": 20,
+      "shape_code": "エルバー"
+    },
+    "connection_cores": 3,
+    "weight_kg": {
+      "indoor": 16.5,
+      "outdoor": 56
+    },
+    "piping_diameter_mm": {
+      "liquid": 6.4,
+      "gas": 9.5
+    },
+    "annual_power_consumption_kwh": {
+      "heating_total": 739,
+      "cooling_total": 297,
+      "annual_total": 1036
+    },
+    "apf": 7.3,
+    "refrigerant": {
+      "type": "R32",
+      "charge_amount_kg": 1.37,
+      "gwp": 675
+    }
+  },
+  {
+    "catalog_page": 15,
+    "model_number": "S40ATRV",
+    "indoor_unit_model": "F40ATRV",
+    "outdoor_unit_model": "R40ARV",
+    "power_supply": "単200V(直結/室外電源)",
+    "heating": {
+      "rated_capacity_kw": 5,
+      "capacity_range_kw": [
+        0.4,
+        12.1
+      ],
+      "low_temp_max_capacity_kw": 9,
+      "electrical_properties": {
+        "max_current_a": 4.5,
+        "max_current_range_a": [
+          19.6,
+          19.6
+        ],
+        "max_power_w": 890,
+        "max_power_range_w": [
+          65,
+          3580
+        ],
+        "power_factor_pct": 98
+      },
+      "sound_power_level_db": {
+        "indoor": 69,
+        "outdoor": 61
+      }
+    },
+    "cooling": {
+      "rated_capacity_kw": 4,
+      "capacity_range_kw": [
+        0.3,
+        5.3
+      ],
+      "electrical_properties": {
+        "max_current_a": 3.9,
+        "max_current_range_a": [
+          13.5,
+          13.5
+        ],
+        "max_power_w": 770,
+        "max_power_range_w": [
+          65,
+          1300
+        ],
+        "power_factor_pct": 98
+      },
+      "sound_power_level_db": {
+        "indoor": 67,
+        "outdoor": 63
+      }
+    },
+    "starting_current_a": 4.5,
+    "compressor_output_w": 1100,
+    "power_plug": null,
+    "connection_cores": 3,
+    "weight_kg": {
+      "indoor": 16.5,
+      "outdoor": 56
+    },
+    "piping_diameter_mm": {
+      "liquid": 6.4,
+      "gas": 9.5
+    },
+    "annual_power_consumption_kwh": {
+      "heating_total": 739,
+      "cooling_total": 297,
+      "annual_total": 1036
+    },
+    "apf": 7.3,
+    "refrigerant": {
+      "type": "R32",
+      "charge_amount_kg": 1.37,
+      "gwp": 675
+    }
+  },
+  {
+    "catalog_page": 17,
+    "model_number": "S22ATAS",
+    "indoor_unit_model": "F22ATAS",
+    "outdoor_unit_model": "R22AAS",
+    "power_supply": "単100V",
+    "heating": {
+      "rated_capacity_kw": 2.5,
+      "capacity_range_kw": [
+        0.6,
+        6.2
+      ],
+      "low_temp_max_capacity_kw": 4.5,
+      "electrical_properties": {
+        "max_current_a": 4.6,
+        "max_current_range_a": [
+          18,
+          18
+        ],
+        "max_power_w": 440,
+        "max_power_range_w": [
+          75,
+          1820
+        ],
+        "power_factor_pct": 96
+      },
+      "sound_power_level_db": {
+        "indoor": 59,
+        "outdoor": 60
+      }
+    },
+    "cooling": {
+      "rated_capacity_kw": 2.2,
+      "capacity_range_kw": [
+        0.5,
+        3.3
+      ],
+      "electrical_properties": {
+        "max_current_a": 4.1,
+        "max_current_range_a": [
+          14,
+          14
+        ],
+        "max_power_w": 390,
+        "max_power_range_w": [
+          75,
+          850
+        ],
+        "power_factor_pct": 95
+      },
+      "sound_power_level_db": {
+        "indoor": 57,
+        "outdoor": 58
+      }
+    },
+    "starting_current_a": 4.6,
+    "compressor_output_w": 600,
+    "power_plug": {
+      "capacity_a": 20,
+      "shape_code": "IL"
+    },
+    "connection_cores": 3,
+    "weight_kg": {
+      "indoor": 16,
+      "outdoor": 35
+    },
+    "piping_diameter_mm": {
+      "liquid": 6.4,
+      "gas": 9.5
+    },
+    "annual_power_consumption_kwh": {
+      "heating_total": 433,
+      "cooling_total": 170,
+      "annual_total": 603
+    },
+    "apf": 6.9,
+    "refrigerant": {
+      "type": "R32",
+      "charge_amount_kg": 0.96,
+      "gwp": 675
+    }
+  },
+  {
+    "catalog_page": 17,
+    "model_number": "S25ATAS",
+    "indoor_unit_model": "F25ATAS",
+    "outdoor_unit_model": "R25AAS",
+    "power_supply": "単100V",
+    "heating": {
+      "rated_capacity_kw": 2.8,
+      "capacity_range_kw": [
+        0.6,
+        6.3
+      ],
+      "low_temp_max_capacity_kw": 4.7,
+      "electrical_properties": {
+        "max_current_a": 5.2,
+        "max_current_range_a": [
+          18,
+          18
+        ],
+        "max_power_w": 500,
+        "max_power_range_w": [
+          75,
+          1820
+        ],
+        "power_factor_pct": 96
+      },
+      "sound_power_level_db": {
+        "indoor": 60,
+        "outdoor": 60
+      }
+    },
+    "cooling": {
+      "rated_capacity_kw": 2.5,
+      "capacity_range_kw": [
+        0.5,
+        3.5
+      ],
+      "electrical_properties": {
+        "max_current_a": 4.9,
+        "max_current_range_a": [
+          14,
+          14
+        ],
+        "max_power_w": 470,
+        "max_power_range_w": [
+          75,
+          870
+        ],
+        "power_factor_pct": 95
+      },
+      "sound_power_level_db": {
+        "indoor": 59,
+        "outdoor": 58
+      }
+    },
+    "starting_current_a": 5.2,
+    "compressor_output_w": 750,
+    "power_plug": {
+      "capacity_a": 20,
+      "shape_code": "IL"
+    },
+    "connection_cores": 3,
+    "weight_kg": {
+      "indoor": 16,
+      "outdoor": 35
+    },
+    "piping_diameter_mm": {
+      "liquid": 6.4,
+      "gas": 9.5
+    },
+    "annual_power_consumption_kwh": {
+      "heating_total": 495,
+      "cooling_total": 200,
+      "annual_total": 695
+    },
+    "apf": 6.8,
+    "refrigerant": {
+      "type": "R32",
+      "charge_amount_kg": 0.96,
+      "gwp": 675
+    }
+  },
+  {
+    "catalog_page": 17,
+    "model_number": "S28ATAS",
+    "indoor_unit_model": "F28ATAS",
+    "outdoor_unit_model": "R28AAS",
+    "power_supply": "単100V",
+    "heating": {
+      "rated_capacity_kw": 3.6,
+      "capacity_range_kw": [
+        0.6,
+        7.2
+      ],
+      "low_temp_max_capacity_kw": 5.7,
+      "electrical_properties": {
+        "max_current_a": 6.8,
+        "max_current_range_a": [
+          20,
+          20
+        ],
+        "max_power_w": 660,
+        "max_power_range_w": [
+          75,
+          2000
+        ],
+        "power_factor_pct": 97
+      },
+      "sound_power_level_db": {
+        "indoor": 62,
+        "outdoor": 57
+      }
+    },
+    "cooling": {
+      "rated_capacity_kw": 2.8,
+      "capacity_range_kw": [
+        0.5,
+        4
+      ],
+      "electrical_properties": {
+        "max_current_a": 5.8,
+        "max_current_range_a": [
+          18.8,
+          18.8
+        ],
+        "max_power_w": 550,
+        "max_power_range_w": [
+          70,
+          1030
+        ],
+        "power_factor_pct": 95
+      },
+      "sound_power_level_db": {
+        "indoor": 60,
+        "outdoor": 58
+      }
+    },
+    "starting_current_a": 6.8,
+    "compressor_output_w": 750,
+    "power_plug": {
+      "capacity_a": 20,
+      "shape_code": "IL"
+    },
+    "connection_cores": 3,
+    "weight_kg": {
+      "indoor": 16,
+      "outdoor": 38
+    },
+    "piping_diameter_mm": {
+      "liquid": 6.4,
+      "gas": 9.5
+    },
+    "annual_power_consumption_kwh": {
+      "heating_total": 560,
+      "cooling_total": 230,
+      "annual_total": 790
+    },
+    "apf": 6.7,
+    "refrigerant": {
+      "type": "R32",
+      "charge_amount_kg": 1.02,
+      "gwp": 675
+    }
+  },
+  {
+    "catalog_page": 21,
+    "model_number": "S22ATSS",
+    "indoor_unit_model": "F22ATSSW(K)",
+    "outdoor_unit_model": "R22ASS",
+    "power_supply": "単100V",
+    "heating": {
+      "rated_capacity_kw": 2.5,
+      "capacity_range_kw": [
+        0.7,
+        4
+      ],
+      "low_temp_max_capacity_kw": 2.9,
+      "electrical_properties": {
+        "max_current_a": 5,
+        "max_current_range_a": [
+          13.8,
+          13.8
+        ],
+        "max_power_w": 435,
+        "max_power_range_w": [
+          130,
+          1220
+        ],
+        "power_factor_pct": 87
+      },
+      "sound_power_level_db": {
+        "indoor": 61,
+        "outdoor": 60
+      }
+    },
+    "cooling": {
+      "rated_capacity_kw": 2.2,
+      "capacity_range_kw": [
+        0.6,
+        2.8
+      ],
+      "electrical_properties": {
+        "max_current_a": 6.3,
+        "max_current_range_a": [
+          11.35,
+          11.35
+        ],
+        "max_power_w": 555,
+        "max_power_range_w": [
+          135,
+          800
+        ],
+        "power_factor_pct": 88
+      },
+      "sound_power_level_db": {
+        "indoor": 61,
+        "outdoor": 61
+      }
+    },
+    "starting_current_a": 6.3,
+    "compressor_output_w": 600,
+    "power_plug": {
+      "capacity_a": 15,
+      "shape_code": "II"
+    },
+    "connection_cores": 3,
+    "weight_kg": {
+      "indoor": 9,
+      "outdoor": 21
+    },
+    "piping_diameter_mm": {
+      "liquid": 6.4,
+      "gas": 9.5
+    },
+    "annual_power_consumption_kwh": {
+      "heating_total": 483,
+      "cooling_total": 222,
+      "annual_total": 705
+    },
+    "apf": 5.9,
+    "refrigerant": {
+      "type": "R32",
+      "charge_amount_kg": 0.46,
+      "gwp": 675
+    }
+  },
+  {
+    "catalog_page": 21,
+    "model_number": "S25ATSS",
+    "indoor_unit_model": "F25ATSSW(K)",
+    "outdoor_unit_model": "R25ASS",
+    "power_supply": "単100V",
+    "heating": {
+      "rated_capacity_kw": 2.8,
+      "capacity_range_kw": [
+        0.7,
+        4.3
+      ],
+      "low_temp_max_capacity_kw": 3.3,
+      "electrical_properties": {
+        "max_current_a": 6.7,
+        "max_current_range_a": [
+          14.5,
+          14.5
+        ],
+        "max_power_w": 590,
+        "max_power_range_w": [
+          130,
+          1280
+        ],
+        "power_factor_pct": 88
+      },
+      "sound_power_level_db": {
+        "indoor": 61,
+        "outdoor": 61
+      }
+    },
+    "cooling": {
+      "rated_capacity_kw": 2.5,
+      "capacity_range_kw": [
+        0.6,
+        3.1
+      ],
+      "electrical_properties": {
+        "max_current_a": 7.2,
+        "max_current_range_a": [
+          11.35,
+          11.35
+        ],
+        "max_power_w": 650,
+        "max_power_range_w": [
+          130,
+          910
+        ],
+        "power_factor_pct": 90
+      },
+      "sound_power_level_db": {
+        "indoor": 61,
+        "outdoor": 61
+      }
+    },
+    "starting_current_a": 7.2,
+    "compressor_output_w": 750,
+    "power_plug": {
+      "capacity_a": 15,
+      "shape_code": "II"
+    },
+    "connection_cores": 3,
+    "weight_kg": {
+      "indoor": 9,
+      "outdoor": 25
+    },
+    "piping_diameter_mm": {
+      "liquid": 6.4,
+      "gas": 9.5
+    },
+    "annual_power_consumption_kwh": {
+      "heating_total": 565,
+      "cooling_total": 237,
+      "annual_total": 802
+    },
+    "apf": 5.9,
+    "refrigerant": {
+      "type": "R32",
+      "charge_amount_kg": 0.65,
+      "gwp": 675
+    }
+  }
+]
