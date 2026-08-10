@@ -323,18 +323,18 @@ def process_pc_data_integration(base_dir):
 def main():
     base_dir = os.getcwd()
 
-    path_catalog = os.path.join(base_dir, "catalog_models_aircon_daikin.json")
-    path_details = os.path.join(base_dir, "product_series_details_aircon_daikin_rx.json")
-    path_tech = os.path.join(base_dir, "technical_spec_aircon_daikin.json")
+    path_daikin_cat = os.path.join(base_dir, "catalog_models_aircon_daikin.json")
+    path_daikin_det = os.path.join(base_dir, "product_series_details_aircon_daikin_rx.json")
+    path_daikin_tech = os.path.join(base_dir, "technical_spec_aircon_daikin.json")
     path_hitachi_cat = os.path.join(base_dir, "catalog_models_aircon_hitachi.json")
     path_hitachi_det = os.path.join(base_dir, "product_series_details_aircon_hitachi_x.json")
     path_hitachi_tech = os.path.join(base_dir, "technical_spec_aircon_hitachi.json")
     
-    with open(path_catalog, 'r', encoding='utf-8') as f:
+    with open(path_daikin_cat, 'r', encoding='utf-8') as f:
         catalog_daikin = json.load(f)
-    with open(path_details, 'r', encoding='utf-8') as f:
+    with open(path_daikin_det, 'r', encoding='utf-8') as f:
         details_daikin = json.load(f)
-    with open(path_tech, 'r', encoding='utf-8') as f:
+    with open(path_daikin_tech, 'r', encoding='utf-8') as f:
         tech_daikin = json.load(f)
     with open(path_hitachi_cat, 'r', encoding='utf-8') as f:
         catalog_hitachi = json.load(f)
