@@ -94,8 +94,6 @@ def get_cooling_power(item):
         return item["detail_specs"]["cooling"].get("power_w", "")
     if item.get("technical_specifications") and item["technical_specifications"].get("cooling"):
         c = item["technical_specifications"]["cooling"]
-        if "rated_capacity_kw" in c:
-            pass
         if "electrical_properties" in c and "max_power_w" in c["electrical_properties"]:
             return c["electrical_properties"]["max_power_w"]
     return ""
@@ -323,10 +321,8 @@ def process_pc_data_integration(base_dir):
 
 
 def main():
-    # 直接プロジェクト作業ディレクトリから JSON ファイル群を読み込む
     base_dir = os.getcwd()
 
-    # エアコンデータの読み込み (直接プロジェクト直下を参照)
     path_catalog = os.path.join(base_dir, "catalog_models_aircon_daikin.json")
     path_details = os.path.join(base_dir, "product_series_details_aircon_daikin_rx.json")
     path_tech = os.path.join(base_dir, "technical_spec_aircon_daikin.json")
@@ -364,7 +360,6 @@ def main():
                 "model_year": item.get("model_year"),
                 "applicable_room_size": item.get("applicable_room_size"),
                 "unique_selling_point_sources": [item.get("unique_selling_point")],
-                "price_sources": [{"source": "catalog_models_aircon_daikin", **item.get("price", {})}],
                 "recommended_features": item.get("recommended_features")
             }
         else:
@@ -372,8 +367,6 @@ def main():
             entry["full_model_numbers"].add(item["model_number"])
             if item.get("unique_selling_point"):
                 entry["unique_selling_point_sources"].append(item.get("unique_selling_point"))
-            if item.get("price"):
-                entry["price_sources"].append({"source": "catalog_models_aircon_daikin", **item.get("price")})
                 
     # --- B. ダイキン product_series_details_aircon_daikin_rx.json の統合 ---
     for item in details_daikin:
@@ -383,8 +376,6 @@ def main():
             entry["full_model_numbers"].add(item["model_number"])
             if item.get("unique_selling_point"):
                 entry["unique_selling_point_sources"].append(item.get("unique_selling_point"))
-            if item.get("price_total"):
-                entry["price_sources"].append({"source": "product_series_details_aircon_daikin_rx", **item.get("price_total")})
             entry["indoor_unit"] = item.get("indoor_unit")
             entry["outdoor_unit"] = item.get("outdoor_unit")
             entry["power_supply_detail"] = item.get("power_supply")
@@ -418,7 +409,6 @@ def main():
                 "model_year": item.get("model_year"),
                 "applicable_room_size": item.get("applicable_room_size"),
                 "unique_selling_point_sources": [item.get("unique_selling_point")],
-                "price_sources": [{"source": "catalog_models_aircon_hitachi", **item.get("price", {})}],
                 "recommended_features": item.get("recommended_features")
             }
 
@@ -430,8 +420,6 @@ def main():
             entry["full_model_numbers"].add(item["model_number"])
             if item.get("unique_selling_point"):
                 entry["unique_selling_point_sources"].append(item.get("unique_selling_point"))
-            if item.get("price_total"):
-                entry["price_sources"].append({"source": "product_series_details_aircon_hitachi_x", **item.get("price_total")})
             entry["indoor_unit"] = item.get("indoor_unit")
             entry["outdoor_unit"] = item.get("outdoor_unit")
             entry["power_supply_detail"] = item.get("power_supply")
@@ -468,9 +456,6 @@ def main():
         usp_values = list(set([x for x in entry.get("unique_selling_point_sources", []) if x]))
         usp_scores = get_similarity_scores_for_list(usp_values)
         
-        price_values = entry.get("price_sources", [])
-        price_scores = get_similarity_scores_for_list(price_values)
-        
         merged_list.append({
             "manufacturer": entry["manufacturer"],
             "product_category": entry["product_category"],
@@ -485,10 +470,6 @@ def main():
             "unique_selling_point": {
                 "values": usp_values,
                 "cosine_similarity_scores": usp_scores
-            },
-            "price_details": {
-                "values": price_values,
-                "cosine_similarity_scores": price_scores
             },
             
             "indoor_unit": entry.get("indoor_unit"),
@@ -513,10 +494,10 @@ def main():
     if os.path.exists(target_dir):
         shutil.copy2(output_json_path, os.path.join(target_dir, "merged_aircon_models.json"))
 
-    # --- H. CSV ファイルの出力 (全37列 / BOM付き UTF-8: utf-8-sig) ---
+    # --- H. CSV ファイルの出力 (全34列 / BOM付き UTF-8: utf-8-sig) ---
     headers = [
         "メーカー名", "製品カテゴリー", "ブランド名", "ベース型番", "全表記型番", "シリーズ名", "愛称", "年式", "畳数目安", "冷房能力(kW)",
-        "ユニークセリングポイント (USP)", "USPコサイン類似度スコア", "税込価格 (円)", "税抜価格 (円)", "価格コサイン類似度スコア",
+        "ユニークセリングポイント (USP)", "USPコサイン類似度スコア",
         "室内機型番", "室内機質量 (kg)", "室内機寸法_幅 (mm)", "室内機寸法_高さ (mm)", "室内機寸法_奥行 (mm)",
         "室外機型番", "室外機質量 (kg)", "室外機寸法_幅 (mm)", "室外機寸法_高さ (mm)", "室外機寸法_奥行 (mm)",
         "電源規格", "配管径_液 (mm)", "配管径_ガス (mm)", "暖房能力 (kW)", "暖房消費電力 (W)", "冷房能力 (kW)", "冷房消費電力 (W)",
@@ -532,13 +513,6 @@ def main():
         
         usp_vals = " | ".join(item["unique_selling_point"]["values"]) if item.get("unique_selling_point") else ""
         usp_scrs = ", ".join(map(str, item["unique_selling_point"]["cosine_similarity_scores"])) if item.get("unique_selling_point") else ""
-        
-        price_inc, price_exc, price_scrs = "", "", ""
-        if item.get("price_details") and item["price_details"].get("values"):
-            fp = item["price_details"]["values"][0]
-            price_inc = "オープン価格" if fp.get("is_open_price") else fp.get("tax_included_yen", "")
-            price_exc = "オープン価格" if fp.get("is_open_price") else fp.get("tax_excluded_yen", "")
-            price_scrs = ", ".join(map(str, item["price_details"].get("cosine_similarity_scores", [])))
 
         indoor_m = item["indoor_unit"]["model_number"] if item.get("indoor_unit") else (item["technical_specifications"]["indoor_unit_model"] if item.get("technical_specifications") else "")
         indoor_w = item["indoor_unit"]["weight_kg"] if item.get("indoor_unit") and item["indoor_unit"].get("weight_kg") else (item["technical_specifications"]["weight_kg"]["indoor"] if item.get("technical_specifications") and item["technical_specifications"].get("weight_kg") else "")
@@ -586,7 +560,7 @@ def main():
         rows.append([
             item["manufacturer"], item["product_category"], item.get("brand_name", ""),
             item["base_model_number"], full_models, item.get("series_name", ""), item.get("series_nickname", ""),
-            item.get("model_year", ""), room_size, cap_kw, usp_vals, usp_scrs, price_inc, price_exc, price_scrs,
+            item.get("model_year", ""), room_size, cap_kw, usp_vals, usp_scrs,
             indoor_m, indoor_w, in_w, in_h, in_d, outdoor_m, outdoor_w, out_w, out_h, out_d,
             pwr, pipe_l, pipe_g, heat_kw, heat_w, cool_kw, cool_w, ann_kwh, apf_v, ref_t, ref_kg, gwp_v, feat_str
         ])
