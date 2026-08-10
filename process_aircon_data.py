@@ -94,22 +94,22 @@ def get_cooling_power(item):
         return item["detail_specs"]["cooling"].get("power_w", "")
     if item.get("technical_specifications") and item["technical_specifications"].get("cooling"):
         c = item["technical_specifications"]["cooling"]
-        if "rated_power_w" in c:
-            return c["rated_power_w"]
+        if "rated_capacity_kw" in c:
+            pass
         if "electrical_properties" in c and "max_power_w" in c["electrical_properties"]:
             return c["electrical_properties"]["max_power_w"]
     return ""
 
 # --- 3. PCデータ統合処理関数 (merged_pc_models.json / merged_pc_models.csv) ---
-def process_pc_data_integration(target_dir):
-    path_vaio_cat = os.path.join(target_dir, "catalog_models_pc_vaio.json")
-    path_fujitsu_cat = os.path.join(target_dir, "catalog_models_pc_fujitsu.json")
+def process_pc_data_integration(base_dir):
+    path_vaio_cat = os.path.join(base_dir, "catalog_models_pc_vaio.json")
+    path_fujitsu_cat = os.path.join(base_dir, "catalog_models_pc_fujitsu.json")
     
-    path_vaio_det = os.path.join(target_dir, "product_series_details_pc_vaio_sx14r.json")
-    path_fujitsu_det = os.path.join(target_dir, "product_series_details_pc_fujitsu_ua-k1_ux-k3.json")
+    path_vaio_det = os.path.join(base_dir, "product_series_details_pc_vaio_sx14r.json")
+    path_fujitsu_det = os.path.join(base_dir, "product_series_details_pc_fujitsu_ua-k1_ux-k3.json")
     
-    path_vaio_tech = os.path.join(target_dir, "technical_spec_pc_vaio.json")
-    path_fujitsu_tech = os.path.join(target_dir, "technical_spec_pc_fujitsu.json")
+    path_vaio_tech = os.path.join(base_dir, "technical_spec_pc_vaio.json")
+    path_fujitsu_tech = os.path.join(base_dir, "technical_spec_pc_fujitsu.json")
 
     cat_vaio, cat_fujitsu = [], []
     det_vaio, det_fujitsu = [], []
@@ -252,13 +252,14 @@ def process_pc_data_integration(target_dir):
             "technical_specifications": entry.get("technical_specifications")
         })
 
-    output_json_path = os.path.join(target_dir, "merged_pc_models.json")
+    output_json_path = os.path.join(base_dir, "merged_pc_models.json")
     with open(output_json_path, 'w', encoding='utf-8') as f:
         json.dump(merged_pc_list, f, ensure_ascii=False, indent=2)
     print(f"Successfully saved PC merged JSON -> {output_json_path} (Total: {len(merged_pc_list)} PC series/models)")
 
-    curr_json_path = os.path.join(os.getcwd(), "merged_pc_models.json")
-    shutil.copy2(output_json_path, curr_json_path)
+    target_dir = r"c:\json_data"
+    if os.path.exists(target_dir):
+        shutil.copy2(output_json_path, os.path.join(target_dir, "merged_pc_models.json"))
 
     # E. PC CSV ファイルの出力 (全28列 / シリーズ名 ＆ 個別の型番の分離 / BOM付き UTF-8: utf-8-sig)
     headers = [
@@ -298,7 +299,6 @@ def process_pc_data_integration(target_dir):
         full_models_list = item.get("full_model_numbers", [])
         full_models_str = "; ".join(full_models_list)
 
-        # 型番が複数存在する場合は型番ごとに1行ずつ独立展開！
         target_models = full_models_list if full_models_list else [""]
 
         for single_model in target_models:
@@ -311,55 +311,28 @@ def process_pc_data_integration(target_dir):
                 interfaces_str, batt_video, batt_idle, width, depth, height, tech.get("weight_g", ""), rec_str
             ])
 
-    output_csv_path = os.path.join(target_dir, "merged_pc_models.csv")
+    output_csv_path = os.path.join(base_dir, "merged_pc_models.csv")
     with open(output_csv_path, 'w', newline='', encoding='utf-8-sig') as f:
         writer = csv.writer(f)
         writer.writerows(rows)
 
-    curr_csv_path = os.path.join(os.getcwd(), "merged_pc_models.csv")
-    shutil.copy2(output_csv_path, curr_csv_path)
+    if os.path.exists(target_dir):
+        shutil.copy2(output_csv_path, os.path.join(target_dir, "merged_pc_models.csv"))
 
-    print(f"Successfully saved PC merged CSV -> {output_csv_path} and {curr_csv_path} (Total: {len(rows)-1} rows across individual model numbers)")
+    print(f"Successfully saved PC merged CSV -> {output_csv_path} (Total: {len(rows)-1} rows across individual model numbers)")
 
 
 def main():
-    target_dir = r"c:\json_data"
-    current_dir = os.getcwd()
-    
-    if not os.path.exists(target_dir):
-        os.makedirs(target_dir, exist_ok=True)
-        print(f"Created directory: {target_dir}")
-    
-    # コピー対象 JSON ファイル群 (新統一命名規則準拠)
-    json_files = [
-        "catalog_models_aircon_daikin.json",
-        "product_series_details_aircon_daikin_rx.json",
-        "technical_spec_aircon_daikin.json",
-        "catalog_models_aircon_hitachi.json",
-        "product_series_details_aircon_hitachi_x.json",
-        "technical_spec_aircon_hitachi.json",
-        "catalog_models_pc_vaio.json",
-        "product_series_details_pc_vaio_sx14r.json",
-        "technical_spec_pc_vaio.json",
-        "technical_spec_pc_fujitsu.json",
-        "catalog_models_pc_fujitsu.json",
-        "product_series_details_pc_fujitsu_ua-k1_ux-k3.json"
-    ]
-    
-    for filename in json_files:
-        src = os.path.join(current_dir, filename)
-        dst = os.path.join(target_dir, filename)
-        if os.path.exists(src):
-            shutil.copy2(src, dst)
-            print(f"Copied {filename} -> {dst}")
+    # 直接プロジェクト作業ディレクトリから JSON ファイル群を読み込む
+    base_dir = os.getcwd()
 
-    # エアコンデータの読み込み (新命名規則)
-    path_catalog = os.path.join(target_dir, "catalog_models_aircon_daikin.json")
-    path_details = os.path.join(target_dir, "product_series_details_aircon_daikin_rx.json")
-    path_tech = os.path.join(target_dir, "technical_spec_aircon_daikin.json")
-    path_hitachi_cat = os.path.join(target_dir, "catalog_models_aircon_hitachi.json")
-    path_hitachi_det = os.path.join(target_dir, "product_series_details_aircon_hitachi_x.json")
-    path_hitachi_tech = os.path.join(target_dir, "technical_spec_aircon_hitachi.json")
+    # エアコンデータの読み込み (直接プロジェクト直下を参照)
+    path_catalog = os.path.join(base_dir, "catalog_models_aircon_daikin.json")
+    path_details = os.path.join(base_dir, "product_series_details_aircon_daikin_rx.json")
+    path_tech = os.path.join(base_dir, "technical_spec_aircon_daikin.json")
+    path_hitachi_cat = os.path.join(base_dir, "catalog_models_aircon_hitachi.json")
+    path_hitachi_det = os.path.join(base_dir, "product_series_details_aircon_hitachi_x.json")
+    path_hitachi_tech = os.path.join(base_dir, "technical_spec_aircon_hitachi.json")
     
     with open(path_catalog, 'r', encoding='utf-8') as f:
         catalog_daikin = json.load(f)
@@ -531,10 +504,14 @@ def main():
             "detail_functions": entry.get("detail_functions")
         })
 
-    output_json_path = os.path.join(target_dir, "merged_aircon_models.json")
+    output_json_path = os.path.join(base_dir, "merged_aircon_models.json")
     with open(output_json_path, 'w', encoding='utf-8') as f:
         json.dump(merged_list, f, ensure_ascii=False, indent=2)
     print(f"Successfully saved multi-manufacturer merged JSON -> {output_json_path} (Total: {len(merged_list)} models)")
+
+    target_dir = r"c:\json_data"
+    if os.path.exists(target_dir):
+        shutil.copy2(output_json_path, os.path.join(target_dir, "merged_aircon_models.json"))
 
     # --- H. CSV ファイルの出力 (全37列 / BOM付き UTF-8: utf-8-sig) ---
     headers = [
@@ -614,15 +591,18 @@ def main():
             pwr, pipe_l, pipe_g, heat_kw, heat_w, cool_kw, cool_w, ann_kwh, apf_v, ref_t, ref_kg, gwp_v, feat_str
         ])
 
-    output_csv_path = os.path.join(target_dir, "merged_aircon_models.csv")
+    output_csv_path = os.path.join(base_dir, "merged_aircon_models.csv")
     with open(output_csv_path, 'w', newline='', encoding='utf-8-sig') as f:
         writer = csv.writer(f)
         writer.writerows(rows)
         
+    if os.path.exists(target_dir):
+        shutil.copy2(output_csv_path, os.path.join(target_dir, "merged_aircon_models.csv"))
+
     print(f"Successfully saved multi-manufacturer CSV -> {output_csv_path} (Total: {len(rows)-1} rows)")
 
     # --- I. PC製品統合処理の呼び出し ---
-    process_pc_data_integration(target_dir)
+    process_pc_data_integration(base_dir)
 
 if __name__ == "__main__":
     main()
