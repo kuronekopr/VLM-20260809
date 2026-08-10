@@ -345,15 +345,18 @@ def calculate_cosine_similarity(str1, str2):
 非エンジニアやビジネスユーザーが Gemini Web UI や Google AI Studio で直感的に画像から高品質な JSON データを抽出できるよう、専用プロンプトテンプレート群を用意しています。
 
 ### 8.1 プロンプト一覧と役割
+- `prompts/daikin_catalog_extraction_prompt.md`: ダイキンエアコンカタログ一覧 抽出用
+- `prompts/daikin_series_detail_prompt.md`: ダイキンエアコン RXシリーズ詳細 抽出用
+- `prompts/daikin_tech_spec_prompt.md`: ダイキンエアコン JIS仕様一覧表 抽出用
+- `prompts/hitachi_catalog_prompt.md`: 日立エアコン一覧 抽出用
+- `prompts/hitachi_series_detail_prompt.md`: 日立エアコン Xシリーズ詳細 抽出用
+- `prompts/hitachi_tech_spec_prompt.md`: 日立エアコン JIS仕様一覧表 抽出用
 - `prompts/vaio_catalog_prompt.md`: VAIO カタログ Index (P.02) 抽出用
 - `prompts/vaio_series_detail_prompt.md`: VAIO SX14-R 詳細 (P.03-04) 抽出用
 - `prompts/vaio_tech_spec_prompt.md`: VAIO 仕様一覧表 (P.25-30) 抽出用
 - `prompts/fujitsu_catalog_prompt.md`: 富士通 FMV Lineup (P.05-06) 抽出用
 - `prompts/fujitsu_series_detail_prompt.md`: 富士通 FMV 製品詳細 (P.07 上下2段レイアウト) 抽出用
 - `prompts/fujitsu_tech_spec_prompt.md`: 富士通 FMV 仕様一覧表 (P.01-04) 抽出用
-- `prompts/hitachi_catalog_prompt.md`: 日立エアコン一覧 抽出用
-- `prompts/hitachi_series_detail_prompt.md`: 日立エアコン Xシリーズ詳細 抽出用
-- `prompts/hitachi_tech_spec_prompt.md`: 日立エアコン JIS仕様一覧表 抽出用
 
 ### 8.2 ビジネスユーザー運用手順
 1. 指定のカタログページ画像を Gemini チャット画面にアップロード。
