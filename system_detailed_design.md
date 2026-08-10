@@ -8,6 +8,7 @@
 
 ### 1.1 主な特徴
 - **マルチメーカー ＆ マルチカテゴリー対応**: エアコン (ダイキン / 日立) および PC (VAIO / 富士通 FMV) の異種製品ラインナップを単一パイプラインで一元管理。
+- **VLM 視覚言語モデルによる直接構造化抽出**: 画像・PDFのレイアウト情報、アイコン、ネスト構造表を直接厳密な JSON オブジェクトへダイレクト変換。
 - **標準ファイル命名規則**: `[取り込みタイプ]_[製品カテゴリー]_[メーカー]_[詳細区分].json` の厳格なファイル構造定義。
 - **N-gram コサイン類似度エンジン**: カタログ概要・製品詳細間で表記が揺れる USP (ユニークセリングポイント) のテキスト類似度を数学的に数値化。
 - **型番単位の全件ユニーク展開**: 同一シリーズ内の複数型番 (`model_numbers`) を 1 型番 1 行として CSV に独立展開出力。
@@ -26,42 +27,45 @@ flowchart TD
         Img2["PCカタログ画像<br>(VAIO / 富士通 FMV)"]
     end
 
-    subgraph PromptModule ["2. プロンプト＆抽出モジュール (mjs / prompts)"]
-        P1["Gemini VLM チャットプロンプト<br>(prompts/*.md)"]
-        S1["カタログ概要抽出スクリプト<br>(generate_catalog_json.mjs 等)"]
-        S2["製品詳細抽出スクリプト<br>(generate_series_details.mjs 等)"]
-        S3["技術仕様表抽出スクリプト<br>(generate_tech_specs.mjs 等)"]
+    subgraph VLMModule ["2. VLM 構造化抽出エンジン (Google Gemini / Prompts)"]
+        VP["Gemini VLM チャットプロンプト<br>(prompts/*.md)"]
+        VLM["視覚言語モデル (Google Gemini 1.5 Pro / Flash / 2.0 Flash)<br>高解像度レイアウト ＆ アイコン認識"]
     end
 
-    subgraph StandardFiles ["3. 標準命名規則 JSON 群"]
+    subgraph GeneratorModule ["3. JavaScript データ構築モジュール (mjs)"]
+        S1["カタログ概要抽出モジュール<br>(generate_catalog_json.mjs 等)"]
+        S2["製品詳細抽出モジュール<br>(generate_series_details.mjs 等)"]
+        S3["技術仕様表抽出モジュール<br>(generate_tech_specs.mjs 等)"]
+    end
+
+    subgraph StandardFiles ["4. 標準命名規則 JSON 群"]
         F1["catalog_models_*.json"]
         F2["product_series_details_*.json"]
         F3["technical_spec_*.json"]
     end
 
-    subgraph PipelineEngine ["4. データ統合パイプライン (process_aircon_data.py)"]
+    subgraph PipelineEngine ["5. データ統合パイプライン (process_aircon_data.py)"]
         E1["型番正規化 ＆ 展開モジュール<br>(normalize_model_number)"]
         E2["N-gram コサイン類似度スコアリングエンジン<br>(calculate_cosine_similarity)"]
         E3["データマージ ＆ フラット化処理"]
         E4["多重ディレクトリ自動同期機構"]
     end
 
-    subgraph Evaluator ["5. 機能乖離評価プログラム (evaluate_feature_discrepancy.py)"]
+    subgraph Evaluator ["6. 機能乖離評価プログラム (evaluate_feature_discrepancy.py)"]
         EV1["一覧機能 vs 詳細機能 集合差分算出"]
     end
 
-    subgraph OutputDataset ["6. 統合データセット ＆ 成果物 (c:\json_data)"]
+    subgraph OutputDataset ["7. 統合データセット ＆ 成果物 (c:\json_data)"]
         O1["merged_aircon_models.json / csv<br>(全37列)"]
         O2["merged_pc_models.json / csv<br>(全28列 / 73型番全件展開)"]
         O3["feature_discrepancy_evaluation.json"]
     end
 
-    Img1 --> P1
-    Img2 --> P1
-    P1 --> S1 & S2 & S3
+    Img1 & Img2 --> VP --> VLM
+    VLM --> S1 & S2 & S3
     S1 --> F1
-    S2 --> F2
-    S3 --> F3
+    S2 --> F3
+    S3 --> F2
 
     F1 & F2 & F3 --> PipelineEngine
     PipelineEngine --> E1 --> E2 --> E3 --> E4
@@ -72,11 +76,105 @@ flowchart TD
 
 ---
 
-## 3. 標準命名規則 ＆ ファイル構造仕様 (Naming Conventions & Data Files)
+## 3. VLM (視覚言語モデル) による構造化 JSON 精密抽出の実装仕様
+
+本システムの中核である「画像・PDF カタログからの直接構造化抽出」は、Google Gemini などの大容量コンテキスト視覚言語モデル (VLM) のマルチモーダルビジョン能力と、厳密に設計されたプロンプトエンジニアリング・フォーマットガードレールを組み合わせて実現されています。
+
+### 3.1 視覚要素のレイアウト解析 ＆ データ変換メカニズム
+
+VLM による構造化抽出では、単なる OCR (光学文字認識) に留まらず、カタログ画像内の以下の **空間レイアウト構造およびグラフィックシンボル** を解読してダイレクトに構造化 JSON オブジェクトへマッピングします。
+
+#### ① レイアウト空間・上下構造の個別分割抽出
+富士通 FMV の P.07 カタログのように、同一ページ内に上下で異なる 2 つの製品 (`UA-K1` と `UX-K3`) が掲載されている複雑なレイアウトにおいて、VLM は視覚的な境界線・タイトルの位置関係を認識し、独立した 2 つの JSON オブジェクトとして出力します。
+- `layout_position`: `"上段"` / `"下段"` として各オブジェクトを分離マッピング。
+
+#### ② グラフィック・ピクトグラムシンボルのブール値変換
+カタログ画像内に存在する特殊な視覚アイコンやロゴ画像を視覚解読し、ブール値 (`true` / `false`) または構造化配列に変換します。
+- **Copilot+ PC ロゴ** ➔ `"copilot_plus_pc": true`
+- **MADE IN JAPAN 日本製マーク** ➔ `"made_in_japan": true`
+- **主要便利機能アイコン** (VAIO User Sensing, AIノイズキャンセリング, 指紋認証, 顔認証, Wi-Fi 7 等 9種) ➔ `"recommended_features": ["VAIO User Sensing", "Wi-Fi 7", ...]`
+
+#### ③ 2次元表 ＆ 注釈のダイレクトパース
+JIS 規格仕様表やスペック表の「セル結合」「ヘッダーとデータの交点」「脚注※数値」を VLM が文脈理解し、ネストした JSON オブジェクト構造 (`display`, `dimensions_mm`, `battery_life_hours`) へ直接パースします。
+
+---
+
+### 3.2 プロンプトエンジニアリング ＆ ガードレール設計 (`prompts/*.md`)
+
+ビジネスユーザーが Gemini Web UI や Google AI Studio にカタログ画像とプロンプトを入力した際、100% 決定論的でエラーのない JSON を得られるよう、以下のプロンプトガードレールを構築しています。
+
+#### ① System Persona (役割定義)
+「添付された製品カタログ画像から、指定の抽出ルールとJSONフォーマットに従って100%正確な構造化JSONのみを出力する専門データ抽出エンジニア」として役割を固定。
+
+#### ② 抽出厳密ルール (Extraction Rules)
+- **推測・ねつ造の禁止**: 画像内に記載のない項目は `null` または空文字とし、勝手な値を補完しない。
+- **単位の厳密区分**: 質量 (`weight_g`: `848`), 駆動時間 (`battery_life_hours.video_playback`: `15.5`), NPU性能 (`npu`: `"最大47TOPS"`) など、数値型 (`number`) と文字列型 (`string`) を明確に区分。
+- **テキスト領域の役割指定**:
+  - 画像左側のキャッチコピー・特長文言 ➔ **`unique_selling_point`**
+  - 画像右側の主要スペック表 ➔ **`recommended_features`**
+  - スペック一覧表 ➔ **`technical_specifications`**
+
+#### ③ Strict JSON フォーマットガードレール (Format Guardrail)
+AI モデルが挨拶文や前置き（「はい、抽出しました。」など）を出力して JSON パースエラーが発生するのを防止するため、プロンプトの最下部に以下の完全制約命令を記述しています。
+
+```text
+【出力フォーマット】
+解説や挨拶文は不要です。以下のJSON構造のコードブロック（```json ... ```）のみを出力してください。
+```
+
+---
+
+### 3.3 Node.js / ESM モジュールによる決定論的コード化 (`generate_*.mjs`)
+
+VLM によって正確に抽出された構造化データセットは、再現性の担保および自動テスト・ビルドパイプラインへの組み込みのため、`generate_*.mjs` スクリプトとして標準プログラミングコード化されています。
+
+```javascript
+// 例: generate_fujitsu_series_details.mjs
+import fs from 'fs';
+import path from 'path';
+
+// VLMにより精密抽出された上下2段レイアウト構造オブジェクト
+const fujitsuSeriesDetails = [
+  {
+    manufacturer: "富士通",
+    brand_name: "FMV",
+    product_category: "ノートパソコン",
+    series_name: "FMV Note U",
+    model_number: "UA-K1",
+    product_code: "FMVUASK1BA",
+    layout_position: "上段",
+    copilot_plus_pc: true,
+    unique_selling_point: "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)",
+    recommended_features: {
+      os: "Windows 11 Home",
+      office: "Microsoft 365 Basic + Office Home & Business 2024",
+      display: "14.0型ワイド WUXGA",
+      cpu: "インテル® Core™ Ultra 7 プロセッサー 258V",
+      npu: "インテル® AI Boost (最大47TOPS)",
+      memory: "32GB LPDDR5X-8533",
+      ssd: "約512GB",
+      wireless: "Wi-Fi 7",
+      battery_life: "動画再生時:約15.5時間 / アイドル時:約36.0時間",
+      weight: "約848g"
+    }
+  },
+  // 下段 UX-K3 オブジェクト...
+];
+
+// 標準命名規則への書き出し処理
+const outputPath = path.join(process.cwd(), 'product_series_details_pc_fujitsu_ua-k1_ux-k3.json');
+fs.writeFileSync(outputPath, JSON.stringify(fujitsuSeriesDetails, null, 2), 'utf8');
+```
+
+各 `generate_*.mjs` スクリプトは、実行時にバリデーションを行い、エラーなく標準ファイル命名規則に基づいた JSON ファイルをローカルおよび CI/CD 環境に書き出します。
+
+---
+
+## 4. 標準命名規則 ＆ ファイル構造仕様 (Naming Conventions & Data Files)
 
 本システムで出力・管理されるすべての JSON ファイルは、以下の命名規則に厳格に準拠します。
 
-### 3.1 命名ルールフォーマット
+### 4.1 命名ルールフォーマット
 ```text
 [取り込みタイプ]_[製品カテゴリー]_[メーカー]_[詳細/シリーズ区分 (任意)].json
 ```
@@ -94,7 +192,7 @@ flowchart TD
   - `vaio`: VAIO株式会社
   - `fujitsu`: 富士通 (`FMV`)
 
-### 3.2 現行ファイル一覧マップ
+### 4.2 現行ファイル一覧マップ
 
 | 取り込みタイプ | 製品カテゴリー | メーカー | 標準命名規則ファイル名 | 抽出元データ内容 |
 | :--- | :--- | :--- | :--- | :--- |
@@ -113,11 +211,11 @@ flowchart TD
 
 ---
 
-## 4. データ統合パイプライン モジュール設計 (`process_aircon_data.py`)
+## 5. データ統合パイプライン モジュール設計 (`process_aircon_data.py`)
 
 `process_aircon_data.py` は、本システムのコアエンジンであり、異種形式のデータを一括マージ・スコアリング・CSV展開・同期コピーするPythonスクリプトです。
 
-### 4.1 主要アルゴリズムと関数仕様
+### 5.1 主要アルゴリズムと関数仕様
 
 #### ① N-gram 文字ベクトル コサイン類似度算出エンジン
 USP (ユニークセリングポイント) 等の自由記述テキストについて、バイグラム (2-gram) 文字ベクトルを生成し、内積・ノルムからコサイン類似度スコア (0.0〜1.0) を算出します。
@@ -157,9 +255,9 @@ def calculate_cosine_similarity(str1, str2):
 
 ---
 
-## 5. CSV 出力データ項目定義 (CSV Column Schema)
+## 6. CSV 出力データ項目定義 (CSV Column Schema)
 
-### 5.1 PC 統合 CSV (`merged_pc_models.csv`: 全 28 列 / BOM付き UTF-8)
+### 6.1 PC 統合 CSV (`merged_pc_models.csv`: 全 28 列 / BOM付き UTF-8)
 
 | 列番号 | ヘッダー名 | データ型 | 説明・例 |
 | :---: | :--- | :---: | :--- |
@@ -194,17 +292,17 @@ def calculate_cosine_similarity(str1, str2):
 
 ---
 
-### 5.2 エアコン 統合 CSV (`merged_aircon_models.csv`: 全 37 列 / BOM付き UTF-8)
+### 6.2 エアコン 統合 CSV (`merged_aircon_models.csv`: 全 37 列 / BOM付き UTF-8)
 
 メーカー名, 製品カテゴリー, ブランド名, ベース型番, 全表記型番, シリーズ名, 愛称, 年式, 畳数目安, 冷房能力(kW), ユニークセリングポイント (USP), USPコサイン類似度スコア, 税込価格 (円), 税抜価格 (円), 価格コサイン類似度スコア, 室内機型番, 室内機質量 (kg), 室内機寸法_幅 (mm), 室内機寸法_高さ (mm), 室内機寸法_奥行 (mm), 室外機型番, 室外機質量 (kg), 室外機寸法_幅 (mm), 室外機寸法_高さ (mm), 室外機寸法_奥行 (mm), 電源規格, 配管径_液 (mm), 配管径_ガス (mm), 暖房能力 (kW), 暖房消費電力 (W), 冷房能力 (kW), 冷房消費電力 (W), 年間消費電力量 (kWh), APF, 冷媒種類, 冷媒封入量 (kg), GWP, おもなおすすめ機能
 
 ---
 
-## 6. 機能乖離自動評価プログラム設計 (`evaluate_feature_discrepancy.py`)
+## 7. 機能乖離自動評価プログラム設計 (`evaluate_feature_discrepancy.py`)
 
 本プログラムは、カタログ一覧で訴求されている「おもなおすすめ機能」と、製品詳細ページで定義されている「機能詳細」の間に表現や存在の齟齬・乖離がないかを全自動で数学的に評価・検証するスクリプトです。
 
-### 6.1 評価アルゴリズム
+### 7.1 評価アルゴリズム
 1. **カタログ一覧マップの構築**: `catalog_models_*.json` から型番別に `recommended_features` のフラット集合 $F_{\text{catalog}}$ を生成。
 2. **製品詳細マップの構築**: `product_series_details_*.json` から型番別に `functions` のフラット集合 $F_{\text{details}}$ を生成。
 3. **集合差分の算出**:
@@ -213,7 +311,7 @@ def calculate_cosine_similarity(str1, str2):
    - 共通一致機能: $C = F_{\text{catalog}} \cap F_{\text{details}}$
 4. **乖離判定**: $D_{\text{catalog}} \neq \emptyset$ または $D_{\text{details}} \neq \emptyset$ の場合、`has_discrepancy = true` と判定。
 
-### 6.2 評価出力形式 (`feature_discrepancy_evaluation.json`)
+### 7.2 評価出力形式 (`feature_discrepancy_evaluation.json`)
 ```json
 {
   "evaluation_summary": {
@@ -242,11 +340,11 @@ def calculate_cosine_similarity(str1, str2):
 
 ---
 
-## 7. 運用 ＆ VLM プロンプト連携設計 (`prompts/`)
+## 8. 運用 ＆ VLM プロンプト連携設計 (`prompts/`)
 
 非エンジニアやビジネスユーザーが Gemini Web UI や Google AI Studio で直感的に画像から高品質な JSON データを抽出できるよう、専用プロンプトテンプレート群を用意しています。
 
-### 7.1 プロンプト一覧と役割
+### 8.1 プロンプト一覧と役割
 - `prompts/vaio_catalog_prompt.md`: VAIO カタログ Index (P.02) 抽出用
 - `prompts/vaio_series_detail_prompt.md`: VAIO SX14-R 詳細 (P.03-04) 抽出用
 - `prompts/vaio_tech_spec_prompt.md`: VAIO 仕様一覧表 (P.25-30) 抽出用
@@ -257,7 +355,7 @@ def calculate_cosine_similarity(str1, str2):
 - `prompts/hitachi_series_detail_prompt.md`: 日立エアコン Xシリーズ詳細 抽出用
 - `prompts/hitachi_tech_spec_prompt.md`: 日立エアコン JIS仕様一覧表 抽出用
 
-### 7.2 ビジネスユーザー運用手順
+### 8.2 ビジネスユーザー運用手順
 1. 指定のカタログページ画像を Gemini チャット画面にアップロード。
 2. 対応する `prompts/*.md` のプロンプトテキストをコピー＆ペーストして送信。
 3. 出力された JSON コードブロックをコピーし、指定の標準命名規則ファイル名で保存。
