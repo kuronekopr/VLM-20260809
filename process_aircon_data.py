@@ -331,22 +331,22 @@ def main():
     path_hitachi_tech = os.path.join(base_dir, "technical_spec_aircon_hitachi.json")
     
     with open(path_daikin_cat, 'r', encoding='utf-8') as f:
-        catalog_daikin = json.load(f)
+        cat_daikin = json.load(f)
     with open(path_daikin_det, 'r', encoding='utf-8') as f:
-        details_daikin = json.load(f)
+        det_daikin = json.load(f)
     with open(path_daikin_tech, 'r', encoding='utf-8') as f:
         tech_daikin = json.load(f)
     with open(path_hitachi_cat, 'r', encoding='utf-8') as f:
-        catalog_hitachi = json.load(f)
+        cat_hitachi = json.load(f)
     with open(path_hitachi_det, 'r', encoding='utf-8') as f:
-        details_hitachi_x = json.load(f)
+        det_hitachi = json.load(f)
     with open(path_hitachi_tech, 'r', encoding='utf-8') as f:
         tech_hitachi = json.load(f)
         
     merged_map = {}
     
     # --- A. ダイキン catalog_models_aircon_daikin.json の統合 ---
-    for item in catalog_daikin:
+    for item in cat_daikin:
         base_key = f"DAIKIN_{normalize_model_number(item.get('model_number', ''))}"
         if base_key not in merged_map:
             merged_map[base_key] = {
@@ -369,7 +369,7 @@ def main():
                 entry["unique_selling_point_sources"].append(item.get("unique_selling_point"))
                 
     # --- B. ダイキン product_series_details_aircon_daikin_rx.json の統合 ---
-    for item in details_daikin:
+    for item in det_daikin:
         base_key = f"DAIKIN_{normalize_model_number(item.get('model_number', ''))}"
         if base_key in merged_map:
             entry = merged_map[base_key]
@@ -395,7 +395,7 @@ def main():
             entry["technical_specifications"] = item
 
     # --- D. 日立 catalog_models_aircon_hitachi.json の統合 ---
-    for item in catalog_hitachi:
+    for item in cat_hitachi:
         base_key = f"HITACHI_{normalize_model_number(item.get('model_number', ''))}"
         if base_key not in merged_map:
             merged_map[base_key] = {
@@ -413,7 +413,7 @@ def main():
             }
 
     # --- E. 日立 product_series_details_aircon_hitachi_x.json の統合 ---
-    for item in details_hitachi_x:
+    for item in det_hitachi:
         base_key = f"HITACHI_{normalize_model_number(item.get('model_number', ''))}"
         if base_key in merged_map:
             entry = merged_map[base_key]

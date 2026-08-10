@@ -240,8 +240,8 @@ def calculate_cosine_similarity(str1, str2):
     return round(dot_product / (norm1 * norm2), 3)
 ```
 
-#### ② 型番の正規化 ＆ 抽出モジュール
-ダイキン・日立のエアコン型番の補足文字・カラーコード切捨てや、PC製品の複数型番配列 (`model_numbers`) から単一・複数の型番セットを名寄せ抽出します。
+#### ② 変数名・パス命名の一貫化 ＆ 型番の正規化
+ダイキン・日立・VAIO・富士通の全メーカーにおいて、パス変数 (`path_daikin_cat`, `path_daikin_det`, `path_daikin_tech`, `path_hitachi_cat`, `path_hitachi_det`, `path_hitachi_tech` 等) および読み込み変数 (`cat_daikin`, `det_daikin`, `cat_hitachi`, `det_hitachi`, `cat_vaio`, `det_vaio` 等) を完全な統一ルールで一貫化。
 
 - `normalize_model_number(model_str)`: エアコン型番 (例: `S22ATRS-W(-C)` ➔ `S22ATRS`, `RAS-XR2226S` ➔ `RAS-X2226S`)
 - `normalize_pc_series_key(series_str)`: PCシリーズ名正規化 (例: `FMV Note U (UA-K1)` ➔ `note u`)
