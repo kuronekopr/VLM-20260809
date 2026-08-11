@@ -264,8 +264,12 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
     return merged_list
 ```
 
-#### ③ 変数名・パス命名の一貫化 ＆ 型番の正規化
-ダイキン・日立・VAIO・富士通の全メーカーにおいて、取り込みパス探索および読み込み変数 (`cat_daikin`, `det_daikin`, `tech_daikin`, `cat_hitachi`, `det_hitachi`, `tech_hitachi`, `cat_vaio`, `det_vaio`, `tech_vaio`, `cat_fujitsu`, `det_fujitsu`, `tech_fujitsu` 等) を完全な統一ルールで一貫化。
+#### ④ 新階層フォルダの画像自動検知・プロンプトスマートマージ ＆ 取り込み後 PNG 自動削除エンジン (`auto_process_new_catalogs.py`)
+`c:\json_data\new\{category}\{manufacturer}\{import_type}\` 階層フォルダ構造を全自動スキャンし、投入された `.png` カタログ画像から構造化 JSON を作成、ビジネスユーザー用プロンプト (`prompts/`) をスマートマージ更新したのち、**処理完了した `.png` ファイルを全自動削除 (`os.remove`)** して統合パイプラインを自動キックします。
+
+- **対象スキャンフォルダ**: `c:\json_data\new\{category}\{manufacturer}\{import_type}\`
+- **プロンプトマージロジック**: 既存プロンプトが存在する場合はペルソナ・抽出規則・JSON スキーマを損なわず新画像情報をスマート追記マージ。
+- **PNG クリーンアップ**: 取り込み完了後、ディスク領域を圧迫しないよう取り込み済みの `.png` ファイルを安全に自動消去。
 
 - `normalize_model_number(model_str)`: エアコン型番 (例: `S22ATRS-W(-C)` ➔ `S22ATRS`, `RAS-XR2226S` ➔ `RAS-X2226S`)
 - `normalize_pc_series_key(series_str)`: PCシリーズ名正規化 (例: `FMV Note U (UA-K1)` ➔ `note u`)
