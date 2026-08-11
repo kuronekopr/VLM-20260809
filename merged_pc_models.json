@@ -42,6 +42,15 @@
       "Wi-Fi 7",
       "ビデオチャット",
       "品質試験",
+      "JAPAN 日本製",
+      "VAIO User Sensing",
+      "AI ノイズキャンセリング",
+      "Copilot+PC",
+      "指紋認証",
+      "顔認証",
+      "Wi-Fi 7",
+      "ビデオチャット",
+      "品質試験",
       "JAPAN 日本製"
     ],
     "technical_specifications": {
@@ -388,23 +397,23 @@
     "made_in_japan": true,
     "unique_selling_point": {
       "values": [
+        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)",
         "長時間駆動モバイルノート (14.0型 Snapdragon X搭載) Copilot+ PC対応",
-        "世界最軽量モバイルノート 約634g",
-        "ハイスペックモバイルノート (14.0型 Intel Core Ultra 7搭載) Copilot+ PC対応",
         "タッチ対応モバイルノート (14.0型 Intel Core Ultra 5搭載) Copilot+ PC対応",
-        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)"
+        "世界最軽量モバイルノート 約634g",
+        "ハイスペックモバイルノート (14.0型 Intel Core Ultra 7搭載) Copilot+ PC対応"
       ],
       "cosine_similarity_scores": [
+        0.258,
+        0.219,
+        0.0,
+        0.313,
+        0.619,
         0.229,
         0.604,
-        0.619,
-        0.258,
-        0.212,
         0.21,
-        0.0,
         0.852,
-        0.313,
-        0.219
+        0.212
       ]
     },
     "recommended_features": [
@@ -432,6 +441,54 @@
       "コクリエーター",
       "生成フィル",
       "リコール (プレビュー)",
+      "ライブキャプション",
+      "Windows 検索の改善",
+      "リスタイルイメージ",
+      "写真の超解像度",
+      "Click to Do (プレビュー)",
+      "コクリエーター",
+      "生成フィル",
+      "リコール (プレビュー)",
+      "ライブキャプション",
+      "Windows 検索の改善",
+      "リスタイルイメージ",
+      "写真の超解像度",
+      "Click to Do (プレビュー)",
+      "コクリエーター",
+      "生成フィル",
+      "リコール (プレビュー)",
+      "ライブキャプション",
+      "Windows 検索の改善",
+      "リスタイルイメージ",
+      "写真の超解像度",
+      "Click to Do (プレビュー)",
+      "コクリエーター",
+      "生成フィル",
+      "リコール (プレビュー)",
+      {
+        "os": "Windows 11 Home",
+        "office": "Microsoft 365 Basic + Office Home & Business 2024",
+        "display": "14.0型ワイド WUXGA",
+        "cpu": "インテル® Core™ Ultra 7 プロセッサー 258V",
+        "npu": "インテル® AI Boost (最大47TOPS)",
+        "memory": "32GB LPDDR5X-8533",
+        "ssd": "約512GB",
+        "wireless": "Wi-Fi 7",
+        "battery_life": "動画再生時:約15.5時間 / アイドル時:約36.0時間",
+        "weight": "約848g"
+      },
+      {
+        "os": "Windows 11 Home",
+        "office": "Microsoft 365 Personal (24か月版) / Office Home & Business 2024 オプション付",
+        "display": "14.0型ワイド WUXGA",
+        "cpu": "インテル® Core™ Ultra 7 プロセッサー 255U",
+        "npu": "インテル® AI Boost (最大12TOPS)",
+        "memory": "16GB LPDDR5X-8400",
+        "ssd": "約512GB",
+        "wireless": "Wi-Fi 7",
+        "battery_life": "動画再生時:約7.0時間 / アイドル時:約18.0時間",
+        "weight": "約634g"
+      },
       {
         "os": "Windows 11 Home",
         "office": "Microsoft 365 Basic + Office Home & Business 2024",
@@ -518,14 +575,38 @@
     "made_in_japan": true,
     "unique_selling_point": {
       "values": [
-        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)",
-        "世界最軽量モバイルノート 約634g"
+        "世界最軽量モバイルノート 約634g",
+        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)"
       ],
       "cosine_similarity_scores": [
         0.0
       ]
     },
     "recommended_features": [
+      {
+        "os": "Windows 11 Home",
+        "office": "Microsoft 365 Basic + Office Home & Business 2024",
+        "display": "14.0型ワイド WUXGA",
+        "cpu": "インテル® Core™ Ultra 7 プロセッサー 258V",
+        "npu": "インテル® AI Boost (最大47TOPS)",
+        "memory": "32GB LPDDR5X-8533",
+        "ssd": "約512GB",
+        "wireless": "Wi-Fi 7",
+        "battery_life": "動画再生時:約15.5時間 / アイドル時:約36.0時間",
+        "weight": "約848g"
+      },
+      {
+        "os": "Windows 11 Home",
+        "office": "Microsoft 365 Personal (24か月版) / Office Home & Business 2024 オプション付",
+        "display": "14.0型ワイド WUXGA",
+        "cpu": "インテル® Core™ Ultra 7 プロセッサー 255U",
+        "npu": "インテル® AI Boost (最大12TOPS)",
+        "memory": "16GB LPDDR5X-8400",
+        "ssd": "約512GB",
+        "wireless": "Wi-Fi 7",
+        "battery_life": "動画再生時:約7.0時間 / アイドル時:約18.0時間",
+        "weight": "約634g"
+      },
       {
         "os": "Windows 11 Home",
         "office": "Microsoft 365 Basic + Office Home & Business 2024",
@@ -612,14 +693,14 @@
     "made_in_japan": false,
     "unique_selling_point": {
       "values": [
-        "大画面プレミアムノート (16.0型 AMD Ryzen AI 7搭載) Copilot+ PC対応",
+        "世界最軽量モバイルノート 約634g",
         "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)",
-        "世界最軽量モバイルノート 約634g"
+        "大画面プレミアムノート (16.0型 AMD Ryzen AI 7搭載) Copilot+ PC対応"
       ],
       "cosine_similarity_scores": [
-        0.241,
+        0.0,
         0.077,
-        0.0
+        0.241
       ]
     },
     "recommended_features": [
@@ -631,6 +712,38 @@
       "コクリエーター",
       "生成フィル",
       "リコール (プレビュー)",
+      "ライブキャプション",
+      "Windows 検索の改善",
+      "リスタイルイメージ",
+      "写真の超解像度",
+      "Click to Do (プレビュー)",
+      "コクリエーター",
+      "生成フィル",
+      "リコール (プレビュー)",
+      {
+        "os": "Windows 11 Home",
+        "office": "Microsoft 365 Basic + Office Home & Business 2024",
+        "display": "14.0型ワイド WUXGA",
+        "cpu": "インテル® Core™ Ultra 7 プロセッサー 258V",
+        "npu": "インテル® AI Boost (最大47TOPS)",
+        "memory": "32GB LPDDR5X-8533",
+        "ssd": "約512GB",
+        "wireless": "Wi-Fi 7",
+        "battery_life": "動画再生時:約15.5時間 / アイドル時:約36.0時間",
+        "weight": "約848g"
+      },
+      {
+        "os": "Windows 11 Home",
+        "office": "Microsoft 365 Personal (24か月版) / Office Home & Business 2024 オプション付",
+        "display": "14.0型ワイド WUXGA",
+        "cpu": "インテル® Core™ Ultra 7 プロセッサー 255U",
+        "npu": "インテル® AI Boost (最大12TOPS)",
+        "memory": "16GB LPDDR5X-8400",
+        "ssd": "約512GB",
+        "wireless": "Wi-Fi 7",
+        "battery_life": "動画再生時:約7.0時間 / アイドル時:約18.0時間",
+        "weight": "約634g"
+      },
       {
         "os": "Windows 11 Home",
         "office": "Microsoft 365 Basic + Office Home & Business 2024",
@@ -719,14 +832,38 @@
     "made_in_japan": true,
     "unique_selling_point": {
       "values": [
-        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)",
-        "世界最軽量モバイルノート 約634g"
+        "世界最軽量モバイルノート 約634g",
+        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)"
       ],
       "cosine_similarity_scores": [
         0.0
       ]
     },
     "recommended_features": [
+      {
+        "os": "Windows 11 Home",
+        "office": "Microsoft 365 Basic + Office Home & Business 2024",
+        "display": "14.0型ワイド WUXGA",
+        "cpu": "インテル® Core™ Ultra 7 プロセッサー 258V",
+        "npu": "インテル® AI Boost (最大47TOPS)",
+        "memory": "32GB LPDDR5X-8533",
+        "ssd": "約512GB",
+        "wireless": "Wi-Fi 7",
+        "battery_life": "動画再生時:約15.5時間 / アイドル時:約36.0時間",
+        "weight": "約848g"
+      },
+      {
+        "os": "Windows 11 Home",
+        "office": "Microsoft 365 Personal (24か月版) / Office Home & Business 2024 オプション付",
+        "display": "14.0型ワイド WUXGA",
+        "cpu": "インテル® Core™ Ultra 7 プロセッサー 255U",
+        "npu": "インテル® AI Boost (最大12TOPS)",
+        "memory": "16GB LPDDR5X-8400",
+        "ssd": "約512GB",
+        "wireless": "Wi-Fi 7",
+        "battery_life": "動画再生時:約7.0時間 / アイドル時:約18.0時間",
+        "weight": "約634g"
+      },
       {
         "os": "Windows 11 Home",
         "office": "Microsoft 365 Basic + Office Home & Business 2024",
@@ -1143,6 +1280,14 @@
       ]
     },
     "recommended_features": [
+      "ライブキャプション",
+      "Windows 検索の改善",
+      "リスタイルイメージ",
+      "写真の超解像度",
+      "Click to Do (プレビュー)",
+      "コクリエーター",
+      "生成フィル",
+      "リコール (プレビュー)",
       "ライブキャプション",
       "Windows 検索の改善",
       "リスタイルイメージ",
