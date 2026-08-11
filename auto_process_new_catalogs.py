@@ -293,31 +293,69 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
         ]
 
     else: # technical_spec
-        # 単一シリーズ名が画像名に含まれている場合
-        if "F14" in series or "F16" in series or "S13" in series:
+        raw_stem = meta.get("raw_stem", "")
+        # 画像名やシリーズ名に F16, F14, S13 または (2) / _2_ / page2 などが含まれていて F16/F14/S13 側のページと判断される場合
+        is_page2_f_s13 = any(k in image_name.lower() or k in raw_stem.lower() for k in ["f14", "f16", "s13", "(2)", "_2_", "page2", "spec2"])
+
+        
+        if is_page2_f_s13:
             return [
                 {
                     "manufacturer": mfr,
-                    "product_category": "ノートパソコン" if category == "pc" else "壁掛形ルームエアコン",
+                    "product_category": "ノートパソコン",
                     "brand_name": mfr,
-                    "series_name": series,
-                    "model_number": series,
+                    "series_name": f"{mfr} F16",
+                    "model_number": f"{mfr} F16",
+                    "model_numbers": ["VJF16290101L", "VJF16290102N", "VJF16290103S"],
                     "copilot_plus_pc": False,
                     "made_in_japan": True,
                     "os": ["Windows 11 Home 64ビット"],
-                    "cpu": f"インテル® Core™ プロセッサー ({year_label})",
-                    "display": {
-                        "size": "14.0型ワイド" if "F14" in series else ("16.0型ワイド" if "F16" in series else "13.3型ワイド"),
-                        "resolution": "Full HD 1920×1080ピクセル" if "F14" in series else "WUXGA 1920×1200ピクセル"
-                    },
+                    "cpu": f"インテル® Core™ 7 プロセッサー 150U / インテル® Core™ 5 プロセッサー 120U ({year_label})",
+                    "display": {"size": "16.0型ワイド", "aspect_ratio": "16:10", "resolution": "WUXGA 1920×1200ピクセル"},
                     "memory": "16GB",
                     "storage": "NVMe SSD 512GB",
-                    "weight_g": 1230 if "F14" in series else (1570 if "F16" in series else 1072)
+                    "weight_g": 1570,
+                    "office": "Office Home & Business 2021"
+                },
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "series_name": f"{mfr} F14",
+                    "model_number": f"{mfr} F14",
+                    "model_numbers": ["VJF14290101L", "VJF14290102N", "VJF14290103S"],
+                    "copilot_plus_pc": False,
+                    "made_in_japan": True,
+                    "os": ["Windows 11 Home 64ビット"],
+                    "cpu": f"インテル® Core™ 7 プロセッサー 150U / インテル® Core™ 5 プロセッサー 120U ({year_label})",
+                    "display": {"size": "14.0型ワイド", "aspect_ratio": "16:9", "resolution": "Full HD 1920×1080ピクセル"},
+                    "memory": "16GB",
+                    "storage": "NVMe SSD 512GB",
+                    "weight_g": 1230,
+                    "office": "Office Home & Business 2021"
+                },
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "series_name": f"{mfr} S13",
+                    "model_number": f"{mfr} S13",
+                    "model_numbers": ["VJS1351", "VJS1358"],
+                    "copilot_plus_pc": False,
+                    "made_in_japan": True,
+                    "os": ["Windows 11 Home 64ビット"],
+                    "cpu": f"第13世代 インテル® Core™ i5-1334U / i3-1315U ({year_label})",
+                    "display": {"size": "13.3型ワイド", "aspect_ratio": "16:10", "resolution": "WUXGA 1920×1200ピクセル"},
+                    "memory": "8GB / 16GB",
+                    "storage": "NVMe SSD 256GB / 512GB",
+                    "weight_g": 1072,
+                    "office": "Office Home & Business 2021"
                 }
             ]
 
         # 仕様一覧② (VAIO SX12, VAIO SX14) - カラム別型番・スペック表構造の精密分解
         return [
+
             # === VAIO SX12 サブモデル 1 (Core i7 / SSD 512GB) ===
             {
                 "manufacturer": mfr,
