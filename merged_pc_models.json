@@ -7,6 +7,9 @@
     "full_model_numbers": [
       "VAIO SX14",
       "VAIO SX14-R",
+      "VJS146",
+      "VJS1461",
+      "VJS1468",
       "VJS14R19011B",
       "VJS14R19021B",
       "VJS14R19031B",
@@ -20,20 +23,68 @@
     ],
     "category_description": "ハイエンド大画面モバイル",
     "copilot_plus_pc": true,
-    "made_in_japan": false,
+    "made_in_japan": true,
     "unique_selling_point": {
       "values": [
-        "ハイエンド大画面モバイル (14.0型ワイド)",
         "ハイエンド軽量大画面モバイル (14.0型ワイド) Copilot+PC対応",
+        "ハイエンド大画面モバイル (14.0型ワイド)",
+        "最大約14.5時間駆動の驚異的スタミナ",
+        "AI新時代の高性能CPUを搭載",
+        "天板と底面にカーボンを採用しより軽く、強く、美しく",
+        "VAIOならではのスマート機能がもっと便利に、使いやすく",
+        "高精細で見やすい大画面",
+        "いろいろ繋がる豊富なインターフェース",
         "毎日持ち選べる軽さと充実のパフォーマンス、すべてにおいて妥協したくない人へ。"
       ],
       "cosine_similarity_scores": [
         0.738,
+        0.08,
+        0.0,
+        0.0,
+        0.0,
+        0.107,
+        0.0,
+        0.0,
+        0.103,
+        0.0,
+        0.0,
+        0.0,
+        0.138,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.051,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.061,
+        0.0,
+        0.0,
+        0.0,
         0.0,
         0.0
       ]
     },
     "recommended_features": [
+      "VAIO TruePerformance",
+      "VAIO User Sensing",
+      "AIノイズキャンセリング",
+      "指紋認証",
+      "顔認証",
+      "Wi-Fi 7",
+      "ビデオチャット",
+      "品質試験",
+      "日本製",
       "VAIO User Sensing",
       "AI ノイズキャンセリング",
       "Copilot+PC",
@@ -43,6 +94,15 @@
       "ビデオチャット",
       "品質試験",
       "JAPAN 日本製",
+      "VAIO TruePerformance",
+      "VAIO User Sensing",
+      "AIノイズキャンセリング",
+      "指紋認証",
+      "顔認証",
+      "Wi-Fi 7",
+      "ビデオチャット",
+      "品質試験",
+      "日本製",
       "VAIO User Sensing",
       "AI ノイズキャンセリング",
       "Copilot+PC",
@@ -70,15 +130,20 @@
         "VJS14R295103R",
         "VJS14R295104G"
       ],
+      "copilot_plus_pc": false,
+      "made_in_japan": true,
       "os": [
         "Windows 11 Home 64ビット",
         "Windows 11 Pro 64ビット"
       ],
+      "cpu": "インテル® Core™ Ultra 7 155H / インテル® Core™ Ultra 5 125H / インテル® Core™ Ultra 5 325U",
       "cpu_options": [
         "インテル® Core™ Ultra 7 155H プロセッサー (16コア/22スレッド, TDP 28W)",
         "インテル® Core™ Ultra 5 125H プロセッサー (14コア/18スレッド, TDP 28W)",
         "インテル® Core™ Ultra 5 325U プロセッサー (12コア/14スレッド, NPU最大47TOPS, TDP 15W) Copilot+PC対応"
       ],
+      "npu": "インテル® AI Boost (最大47TOPS)",
+      "gpu": "インテル® Arc™ グラフィックス / インテル® グラフィックス",
       "display": {
         "size": "14.0型ワイド",
         "aspect_ratio": "16:10",
@@ -113,10 +178,7 @@
         "height_max": 18.9,
         "depth": 226.4
       },
-      "weight_kg": {
-        "min_kg": 0.967,
-        "max_kg": 1.067
-      },
+      "weight_g": 967,
       "bundled_office": "Microsoft 365 Personal (24か月版) / Office Home & Business 2024",
       "warranty": "1年"
     }
@@ -135,7 +197,7 @@
     ],
     "category_description": "アドバンスドモバイル",
     "copilot_plus_pc": false,
-    "made_in_japan": false,
+    "made_in_japan": true,
     "unique_selling_point": {
       "values": [
         "アドバンスドモバイル (13.3型ワイド)"
@@ -156,13 +218,18 @@
         "VJS13690311B",
         "VJS13690411T"
       ],
+      "copilot_plus_pc": false,
+      "made_in_japan": true,
       "os": [
         "Windows 11 Pro 64ビット"
       ],
+      "cpu": "インテル® Core™ 7 プロセッサー 150U / インテル® Core™ 5 プロセッサー 120U",
       "cpu_options": [
         "インテル® Core™ 7 プロセッサー 150U (10コア/12スレッド, TDP 15W)",
         "インテル® Core™ 5 プロセッサー 120U (10コア/12スレッド, TDP 15W)"
       ],
+      "npu": "非搭載",
+      "gpu": "インテル® グラフィックス",
       "display": {
         "size": "13.3型ワイド",
         "aspect_ratio": "16:10",
@@ -178,29 +245,27 @@
         "bluetooth": "Bluetooth® 5.3準拠"
       },
       "interfaces": [
-        "USB Type-C×2 (USB Power Delivery, USB 3.1, DisplayPort 1.4)",
+        "USB Type-C×2 (Thunderbolt 4, USB Power Delivery, USB4, USB 3.2)",
         "USB 3.0×2",
-        "HDMI (出力)×1"
+        "HDMI (出力)×1",
+        "LAN (RJ45)×1"
       ],
-      "keyboard_touchpad": "キーピッチ約19mm, キーストローク約1.5mm, テンキー無, 高精度タッチパッド (ジェスチャー機能, 2ボタン付き)",
+      "keyboard_touchpad": "キーピッチ約19mm, キーストローク約1.5mm, 高精度タッチパッド",
       "biometrics": [
         "指紋認証",
         "顔認証"
       ],
       "battery_life_hours": {
-        "video_playback": "約8.0時間",
-        "idle": "約21.0時間"
+        "video_playback": "約13.0時間",
+        "idle": "約21.5時間"
       },
       "dimensions_mm": {
         "width": 299.3,
-        "height_min": 17.7,
+        "height_min": 14.4,
         "height_max": 19.6,
-        "depth": 221.1
+        "depth": 218.2
       },
-      "weight_kg": {
-        "min_kg": 1.019,
-        "max_kg": 1.019
-      },
+      "weight_g": 1072,
       "bundled_office": "Office Home & Business 2024",
       "warranty": "1年"
     }
@@ -212,15 +277,23 @@
     "series_name": "VAIO F16",
     "full_model_numbers": [
       "VAIO F16",
+      "VJF16290111B",
+      "VJF16290211W",
+      "VJF16290311N",
+      "VJF16290411B",
+      "VJF16290511W",
+      "VJF16290611N",
+      "VJF16295101B",
       "VJF16295104L",
       "VJF16295105N",
+      "VJF16297101B",
       "VJF16297101L",
       "VJF16297102N",
       "VJF16297103S"
     ],
     "category_description": "スタンダード大画面ノート",
     "copilot_plus_pc": false,
-    "made_in_japan": false,
+    "made_in_japan": true,
     "unique_selling_point": {
       "values": [
         "スタンダード大画面ノート (16.0型ワイド)"
@@ -236,19 +309,28 @@
       "brand_name": "VAIO",
       "series_name": "VAIO F16",
       "model_numbers": [
-        "VJF16297101L",
-        "VJF16297102N",
-        "VJF16297103S",
-        "VJF16295104L",
-        "VJF16295105N"
+        "VJF16290111B",
+        "VJF16290211W",
+        "VJF16290311N",
+        "VJF16290411B",
+        "VJF16290511W",
+        "VJF16290611N",
+        "VJF16295101B",
+        "VJF16297101B"
       ],
+      "copilot_plus_pc": false,
+      "made_in_japan": true,
       "os": [
-        "Windows 11 Home 64ビット"
+        "Windows 11 Home 64ビット",
+        "Windows 11 Pro 64ビット"
       ],
+      "cpu": "インテル® Core™ 7 プロセッサー 150U / インテル® Core™ 5 プロセッサー 120U",
       "cpu_options": [
-        "インテル® Core™ 7 プロセッサー 150U (10コア/12スレッド, TDP 15W)",
-        "インテル® Core™ 5 プロセッサー 120U (10コア/12スレッド, TDP 15W)"
+        "インテル® Core™ 7 プロセッサー 150U (10コア/12スレッド)",
+        "インテル® Core™ 5 プロセッサー 120U (10コア/12スレッド)"
       ],
+      "npu": "非搭載",
+      "gpu": "インテル® グラフィックス",
       "display": {
         "size": "16.0型ワイド",
         "aspect_ratio": "16:10",
@@ -256,26 +338,26 @@
         "finish": "アンチグレア",
         "touch": false
       },
-      "memory": "16GB (増設不可)",
-      "storage": "スタンダードSSD (NVMe 暗号化機能付き) 512GB",
+      "memory": "16GB / 32GB",
+      "storage": "スタンダードSSD (NVMe) 512GB / 1TB",
       "camera": "92万画素",
       "wireless": {
-        "wifi": "IEEE 802.11a/b/g/n/ac/ax準拠, Wi-Fi 6E適合, WPA3対応",
+        "wifi": "IEEE 802.11a/b/g/n/ac/ax準拠, Wi-Fi 6E適合",
         "bluetooth": "Bluetooth® 5.3準拠"
       },
       "interfaces": [
-        "USB Type-C×2 (USB Power Delivery, USB 3.1, DisplayPort 1.4)",
-        "USB 3.0×2",
-        "HDMI (出力)×1"
+        "USB Type-C×1",
+        "USB 3.0×3",
+        "HDMI×1",
+        "LAN×1"
       ],
-      "keyboard_touchpad": "キーピッチ約19mm, キーストローク約1.5mm, テンキー有, 高精度タッチパッド (ジェスチャー機能付き), マウス有",
+      "keyboard_touchpad": "テンキー付きフルサイズキーボード",
       "biometrics": [
-        "指紋認証",
-        "顔認証"
+        "指紋認証"
       ],
       "battery_life_hours": {
-        "video_playback": "約6.0時間",
-        "idle": "約11.5時間"
+        "video_playback": "約11.5時間",
+        "idle": "約16.0時間"
       },
       "dimensions_mm": {
         "width": 358.3,
@@ -283,10 +365,7 @@
         "height_max": 19.9,
         "depth": 255.6
       },
-      "weight_kg": {
-        "min_kg": 1.57,
-        "max_kg": 1.57
-      },
+      "weight_g": 1650,
       "bundled_office": "Office Home & Business 2024",
       "warranty": "1年"
     }
@@ -298,16 +377,24 @@
     "series_name": "VAIO F14",
     "full_model_numbers": [
       "VAIO F14",
+      "VJF14290111B",
+      "VJF14290211W",
+      "VJF14290311N",
+      "VJF14290411B",
+      "VJF14290511W",
+      "VJF14290611N",
+      "VJF14295101B",
       "VJF14295110L",
       "VJF14295111N",
       "VJF14295112S",
+      "VJF14297101B",
       "VJF14297107L",
       "VJF14297108N",
       "VJF14297109S"
     ],
     "category_description": "スタンダード大画面モバイル",
     "copilot_plus_pc": false,
-    "made_in_japan": false,
+    "made_in_japan": true,
     "unique_selling_point": {
       "values": [
         "スタンダード大画面モバイル (14.0型ワイド)"
@@ -323,20 +410,28 @@
       "brand_name": "VAIO",
       "series_name": "VAIO F14",
       "model_numbers": [
-        "VJF14297107L",
-        "VJF14297108N",
-        "VJF14297109S",
-        "VJF14295110L",
-        "VJF14295111N",
-        "VJF14295112S"
+        "VJF14290111B",
+        "VJF14290211W",
+        "VJF14290311N",
+        "VJF14290411B",
+        "VJF14290511W",
+        "VJF14290611N",
+        "VJF14295101B",
+        "VJF14297101B"
       ],
+      "copilot_plus_pc": false,
+      "made_in_japan": true,
       "os": [
-        "Windows 11 Home 64ビット"
+        "Windows 11 Home 64ビット",
+        "Windows 11 Pro 64ビット"
       ],
+      "cpu": "インテル® Core™ 7 プロセッサー 150U / インテル® Core™ 5 プロセッサー 120U",
       "cpu_options": [
-        "インテル® Core™ 7 プロセッサー 150U (10コア/12スレッド, TDP 15W)",
-        "インテル® Core™ 5 プロセッサー 120U (10コア/12スレッド, TDP 15W)"
+        "インテル® Core™ 7 プロセッサー 150U (10コア/12スレッド)",
+        "インテル® Core™ 5 プロセッサー 120U (10コア/12スレッド)"
       ],
+      "npu": "非搭載",
+      "gpu": "インテル® グラフィックス",
       "display": {
         "size": "14.0型ワイド",
         "aspect_ratio": "16:9",
@@ -344,38 +439,35 @@
         "finish": "アンチグレア",
         "touch": false
       },
-      "memory": "16GB (増設不可)",
-      "storage": "スタンダードSSD (NVMe 暗号化機能付き) 512GB",
+      "memory": "16GB / 32GB",
+      "storage": "スタンダードSSD (NVMe) 512GB",
       "camera": "92万画素",
       "wireless": {
-        "wifi": "IEEE 802.11a/b/g/n/ac/ax準拠, Wi-Fi 6E適合, WPA3対応",
+        "wifi": "IEEE 802.11a/b/g/n/ac/ax準拠, Wi-Fi 6E適合",
         "bluetooth": "Bluetooth® 5.3準拠"
       },
       "interfaces": [
-        "USB Type-C×2 (USB Power Delivery, USB 3.1, DisplayPort 1.4)",
-        "USB 3.0×2",
-        "HDMI (出力)×1"
+        "USB Type-C×1",
+        "USB 3.0×3",
+        "HDMI×1",
+        "LAN×1"
       ],
-      "keyboard_touchpad": "キーピッチ約19mm, キーストローク約1.5mm, テンキー無, 高精度タッチパッド (ジェスチャー機能付き), マウス無",
+      "keyboard_touchpad": "キーピッチ約19mm, 高精度タッチパッド",
       "biometrics": [
-        "指紋認証",
-        "顔認証"
+        "指紋認証"
       ],
       "battery_life_hours": {
-        "video_playback": "約7.7時間",
-        "idle": "約12.5時間"
+        "video_playback": "約12.0時間",
+        "idle": "約17.5時間"
       },
       "dimensions_mm": {
-        "width": 322.9,
-        "height_min": 19.5,
-        "height_max": 19.7,
+        "width": 322.5,
+        "height_min": 16.5,
+        "height_max": 19.8,
         "depth": 221.5
       },
-      "weight_kg": {
-        "min_kg": 1.23,
-        "max_kg": 1.23
-      },
-      "bundled_office": "Microsoft 365 Personal (24か月版) / Office Home & Business 2024",
+      "weight_g": 1340,
+      "bundled_office": "Office Home & Business 2024",
       "warranty": "1年"
     }
   },
@@ -397,23 +489,23 @@
     "made_in_japan": true,
     "unique_selling_point": {
       "values": [
-        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)",
         "長時間駆動モバイルノート (14.0型 Snapdragon X搭載) Copilot+ PC対応",
+        "ハイスペックモバイルノート (14.0型 Intel Core Ultra 7搭載) Copilot+ PC対応",
         "タッチ対応モバイルノート (14.0型 Intel Core Ultra 5搭載) Copilot+ PC対応",
-        "世界最軽量モバイルノート 約634g",
-        "ハイスペックモバイルノート (14.0型 Intel Core Ultra 7搭載) Copilot+ PC対応"
+        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)",
+        "世界最軽量モバイルノート 約634g"
       ],
       "cosine_similarity_scores": [
-        0.258,
-        0.219,
-        0.0,
-        0.313,
-        0.619,
-        0.229,
         0.604,
-        0.21,
+        0.619,
+        0.258,
+        0.229,
         0.852,
-        0.212
+        0.313,
+        0.212,
+        0.219,
+        0.21,
+        0.0
       ]
     },
     "recommended_features": [
@@ -575,8 +667,8 @@
     "made_in_japan": true,
     "unique_selling_point": {
       "values": [
-        "世界最軽量モバイルノート 約634g",
-        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)"
+        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)",
+        "世界最軽量モバイルノート 約634g"
       ],
       "cosine_similarity_scores": [
         0.0
@@ -693,14 +785,14 @@
     "made_in_japan": false,
     "unique_selling_point": {
       "values": [
-        "世界最軽量モバイルノート 約634g",
+        "大画面プレミアムノート (16.0型 AMD Ryzen AI 7搭載) Copilot+ PC対応",
         "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)",
-        "大画面プレミアムノート (16.0型 AMD Ryzen AI 7搭載) Copilot+ PC対応"
+        "世界最軽量モバイルノート 約634g"
       ],
       "cosine_similarity_scores": [
-        0.0,
+        0.241,
         0.077,
-        0.241
+        0.0
       ]
     },
     "recommended_features": [
@@ -832,8 +924,8 @@
     "made_in_japan": true,
     "unique_selling_point": {
       "values": [
-        "世界最軽量モバイルノート 約634g",
-        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)"
+        "ハイスペックCopilot+ PC (最大47TOPS / 動画再生約15.5時間・アイドル約36.0時間 / 約848g)",
+        "世界最軽量モバイルノート 約634g"
       ],
       "cosine_similarity_scores": [
         0.0

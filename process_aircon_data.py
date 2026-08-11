@@ -139,6 +139,34 @@ def get_cooling_power(item):
             return c["electrical_properties"]["max_power_w"]
     return ""
 
+def get_pc_cpu(tech):
+    if not tech:
+        return ""
+    if tech.get("cpu"):
+        return tech.get("cpu")
+    if tech.get("cpu_options"):
+        opts = tech.get("cpu_options")
+        return " / ".join(opts) if isinstance(opts, list) else str(opts)
+    return ""
+
+def get_pc_npu(tech):
+    if not tech:
+        return ""
+    if tech.get("npu"):
+        return tech.get("npu")
+    if tech.get("npu_performance"):
+        return tech.get("npu_performance")
+    return ""
+
+def get_pc_gpu(tech):
+    if not tech:
+        return ""
+    if tech.get("gpu"):
+        return tech.get("gpu")
+    if tech.get("graphics"):
+        return tech.get("graphics")
+    return ""
+
 # --- 4. PCデータ統合処理関数 (merged_pc_models.json / merged_pc_models.csv) ---
 def process_pc_data_integration(base_dir):
     # 動的マルチファイル自動検索 ＆ マージ呼び出し
@@ -244,7 +272,14 @@ def process_pc_data_integration(base_dir):
     # D. 結合フラット PC JSON の生成 & コサイン類似度スコアリング
     merged_pc_list = []
     for key, entry in merged_pc_map.items():
-        usp_values = list(set([x for x in entry.get("unique_selling_point_sources", []) if x]))
+        raw_usp = entry.get("unique_selling_point_sources", [])
+        flat_usp = []
+        for item in raw_usp:
+            if isinstance(item, list):
+                flat_usp.extend([str(x) for x in item if x])
+            elif isinstance(item, str) and item:
+                flat_usp.append(item)
+        usp_values = list(dict.fromkeys(flat_usp))
         usp_scores = get_similarity_scores_for_list(usp_values)
 
         full_models = sorted(list(entry["full_model_numbers"]))
@@ -302,6 +337,8 @@ def process_pc_data_integration(base_dir):
         batt_video = batt.get("video_playback", "") if isinstance(batt, dict) else ""
         batt_idle = batt.get("idle", "") if isinstance(batt, dict) else ""
 
+        os_str = " / ".join(tech.get("os", [])) if isinstance(tech.get("os"), list) else str(tech.get("os", ""))
+
         usp_vals = " | ".join(item["unique_selling_point"]["values"]) if item.get("unique_selling_point") else ""
         usp_scrs = ", ".join(map(str, item["unique_selling_point"]["cosine_similarity_scores"])) if item.get("unique_selling_point") else ""
 
@@ -321,8 +358,10 @@ def process_pc_data_integration(base_dir):
                 item["manufacturer"], item["product_category"], item["brand_name"], item["series_name"],
                 single_model, full_models_str, item["category_description"],
                 "はい" if item["copilot_plus_pc"] else "いいえ", "はい" if item["made_in_japan"] else "いいえ",
-                usp_vals, usp_scrs, tech.get("os", ""), tech.get("bundled_office", ""), disp_str, tech.get("cpu", ""),
-                tech.get("npu", ""), tech.get("gpu", ""), tech.get("memory", ""), tech.get("storage", ""), tech.get("wireless", ""),
+                usp_vals, usp_scrs, os_str, tech.get("bundled_office", ""), disp_str,
+                get_pc_cpu(tech), get_pc_npu(tech), get_pc_gpu(tech),
+                tech.get("memory", ""), tech.get("storage", ""),
+                tech.get("wireless", "") if isinstance(tech.get("wireless"), str) else (tech.get("wireless", {}).get("wifi", "") if isinstance(tech.get("wireless"), dict) else ""),
                 interfaces_str, batt_video, batt_idle, width, depth, height, tech.get("weight_g", ""), rec_str
             ])
 
@@ -331,8 +370,12 @@ def process_pc_data_integration(base_dir):
         writer = csv.writer(f)
         writer.writerows(rows)
 
+    target_dir = r"c:\json_data"
     if os.path.exists(target_dir):
-        shutil.copy2(output_csv_path, os.path.join(target_dir, "merged_pc_models.csv"))
+        try:
+            shutil.copy2(output_csv_path, os.path.join(target_dir, os.path.basename(output_csv_path)))
+        except Exception as e:
+            print(f"Note: Could not copy {output_csv_path} to {target_dir}: {e}")
 
     print(f"Successfully saved PC merged CSV -> {output_csv_path} (Total: {len(rows)-1} rows across individual model numbers)")
 
@@ -459,7 +502,14 @@ def main():
     # --- G. 結合フラット エアコン JSON の作成 & コサイン類似度スコアリング ---
     merged_list = []
     for base_key, entry in merged_map.items():
-        usp_values = list(set([x for x in entry.get("unique_selling_point_sources", []) if x]))
+        raw_usp = entry.get("unique_selling_point_sources", [])
+        flat_usp = []
+        for item in raw_usp:
+            if isinstance(item, list):
+                flat_usp.extend([str(x) for x in item if x])
+            elif isinstance(item, str) and item:
+                flat_usp.append(item)
+        usp_values = list(dict.fromkeys(flat_usp))
         usp_scores = get_similarity_scores_for_list(usp_values)
         
         merged_list.append({
@@ -498,7 +548,10 @@ def main():
 
     target_dir = r"c:\json_data"
     if os.path.exists(target_dir):
-        shutil.copy2(output_json_path, os.path.join(target_dir, "merged_aircon_models.json"))
+        try:
+            shutil.copy2(output_json_path, os.path.join(target_dir, "merged_aircon_models.json"))
+        except Exception as e:
+            print(f"Note: Could not copy {output_json_path} to {target_dir}: {e}")
 
     # --- H. CSV ファイルの出力 (全34列 / BOM付き UTF-8: utf-8-sig) ---
     headers = [
@@ -577,7 +630,10 @@ def main():
         writer.writerows(rows)
         
     if os.path.exists(target_dir):
-        shutil.copy2(output_csv_path, os.path.join(target_dir, "merged_aircon_models.csv"))
+        try:
+            shutil.copy2(output_csv_path, os.path.join(target_dir, "merged_aircon_models.csv"))
+        except Exception as e:
+            print(f"Note: Could not copy {output_csv_path} to {target_dir}: {e}")
 
     print(f"Successfully saved multi-manufacturer CSV -> {output_csv_path} (Total: {len(rows)-1} rows)")
 

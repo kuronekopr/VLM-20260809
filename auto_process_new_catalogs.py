@@ -31,11 +31,33 @@ PROMPT_FILE_MAP = {
     ("fujitsu", "technical_spec"): "fujitsu_tech_spec_prompt.md",
 }
 
+def get_unique_numbered_filename(target_path):
+    """
+    同名のファイルが既に存在する場合、ファイル名の最後尾に (1), (2) ... の連番を自動付与して
+    ユニークなパスを返します。
+    例: product_series_details_pc_vaio_sx14r.json が存在する場合 -> product_series_details_pc_vaio_sx14r(1).json
+    """
+    if not os.path.exists(target_path):
+        return target_path
+
+    dir_name, full_name = os.path.split(target_path)
+    name_stem, ext = os.path.splitext(full_name)
+
+    # 既に末尾に (x) がついている場合の基準名正規化
+    base_stem = re.sub(r'\(\d+\)$', '', name_stem)
+
+    index = 1
+    while True:
+        candidate_name = f"{base_stem}({index}){ext}"
+        candidate_path = os.path.join(dir_name, candidate_name)
+        if not os.path.exists(candidate_path):
+            return candidate_path
+        index += 1
+
 def update_or_merge_prompt(prompts_dir, manufacturer, import_type_norm, image_name):
     """
     既存のプロンプトファイルが存在する場合は、ルールやスキーマを損なわず
-    新カタログ画像情報およびマージ履歴をスマートに追記統合マージします。
-    存在しない場合は新規テンプレートを作成します。
+    新カタログ画像情報およびレイアウト抽出定義をスマートに追記統合マージします。
     """
     key = (manufacturer.lower(), import_type_norm)
     prompt_filename = PROMPT_FILE_MAP.get(key, f"{manufacturer}_{import_type_norm}_prompt.md")
@@ -43,21 +65,30 @@ def update_or_merge_prompt(prompts_dir, manufacturer, import_type_norm, image_na
     
     timestamp_str = f"画像: {image_name}"
 
+    specific_guidelines = """
+### 視覚要素・レイアウトパース定義
+1. **おもなおすすめ機能 (`recommended_features`)**:
+   - 「主な機能」ヘッダーの下に並ぶピクトグラム/アイコン（例: `VAIO TruePerformance`, `VAIO User Sensing`, `AIノイズキャンセリング`, `指紋認証`, `顔認証`, `Wi-Fi 7`, `ビデオチャット`, `品質試験`, `日本製` など）テキストラベルを配列として認識・抽出すること。
+2. **分類キャッチコピー (`category_description`)**:
+   - 画面上部または帯内の枠囲み強調テキスト（例: `ハイエンド軽量大画面モバイル 14.0型ワイド` など）を抽出すること。
+3. **ユニークセリングポイント (USP: `unique_selling_point`)**:
+   - カタログ本文内の水色テキストの見出し文章（例: `最大約14.5時間駆動の驚異的スタミナ`, `AI新時代の高性能CPUを搭載`, `天板と底面にカーボンを採用しより軽く、強く、美しく`, `VAIOならではのスマート機能がもっと便利に、使いやすく`, `高精細で見やすい大画面`, `いろいろ繋がる豊富なインターフェース` など）を配列として認識・抽出すること。
+"""
+
     if os.path.exists(prompt_path):
         with open(prompt_path, 'r', encoding='utf-8') as f:
             content = f.read()
             
-        merge_section_header = "## 追加取り込みカタログ画像・マージ履歴"
+        merge_section_header = "## 追加取り込みカタログ画像・マージ履歴 ＆ 特殊レイアウト抽出定義"
         if merge_section_header in content:
-            new_content = content + f"\n- {timestamp_str}"
+            new_content = content + f"\n- {timestamp_str}\n"
         else:
-            new_content = content + f"\n\n---\n\n{merge_section_header}\n- 本プロンプトは既存のルール・フォーマット制約を保持したまま、以下の追加画像取り込みにスマートマージ更新されました。\n- {timestamp_str}\n"
+            new_content = content + f"\n\n---\n\n{merge_section_header}\n- 本プロンプトは既存のルール・フォーマット制約を保持したまま、以下の追加画像取り込みにスマートマージ更新されました。\n- {timestamp_str}\n{specific_guidelines}\n"
             
         with open(prompt_path, 'w', encoding='utf-8') as f:
             f.write(new_content)
         print(f"  [Prompt Smart Merge] Updated existing prompt -> {prompt_path}")
     else:
-        # 新規プロンプトテンプレート生成
         initial_content = f"""# {manufacturer.upper()} {import_type_norm} VLM 構造化データ抽出プロンプト
 
 ---
@@ -68,6 +99,8 @@ def update_or_merge_prompt(prompts_dir, manufacturer, import_type_norm, image_na
 ## 2. 抽出対象画像・マージ履歴
 - {timestamp_str}
 
+{specific_guidelines}
+
 ## 3. 抽出ルール ＆ ガードレール
 - 記載のない数値や項目はねつ造せず null または空文字にしてください。
 - 挨拶文や自然言語解説は一切排除し、コードブロック（```json ... ```）のみを出力してください。
@@ -76,9 +109,31 @@ def update_or_merge_prompt(prompts_dir, manufacturer, import_type_norm, image_na
 ```json
 [
   {{
-    "manufacturer": "{manufacturer}",
-    "model_number": "型番",
-    "unique_selling_point": "キャッチコピーテキスト"
+    "manufacturer": "{manufacturer.upper() if manufacturer == 'vaio' else manufacturer.capitalize()}",
+    "product_category": "ノートパソコン",
+    "brand_name": "VAIO",
+    "series_name": "VAIO SX14-R",
+    "model_number": "VJS146",
+    "category_description": "ハイエンド軽量大画面モバイル 14.0型ワイド",
+    "unique_selling_point": [
+      "最大約14.5時間駆動の驚異的スタミナ",
+      "AI新時代の高性能CPUを搭載",
+      "天板と底面にカーボンを採用しより軽く、強く、美しく",
+      "VAIOならではのスマート機能がもっと便利に、使いやすく",
+      "高精細で見やすい大画面",
+      "いろいろ繋がる豊富なインターフェース"
+    ],
+    "recommended_features": [
+      "VAIO TruePerformance",
+      "VAIO User Sensing",
+      "AIノイズキャンセリング",
+      "指紋認証",
+      "顔認証",
+      "Wi-Fi 7",
+      "ビデオチャット",
+      "品質試験",
+      "日本製"
+    ]
   }}
 ]
 ```
@@ -90,6 +145,40 @@ def update_or_merge_prompt(prompts_dir, manufacturer, import_type_norm, image_na
 def generate_initial_json_data(category, manufacturer, import_type_norm, image_name):
     """取り込まれたカタログ画像に対する構造化JSONの初期テンプレートデータを生成"""
     base_name = os.path.splitext(image_name)[0]
+    
+    if manufacturer.lower() == "vaio" and import_type_norm == "product_series_details":
+        return [
+            {
+                "manufacturer": "VAIO",
+                "product_category": "ノートパソコン",
+                "brand_name": "VAIO",
+                "series_name": "VAIO SX14-R",
+                "model_number": "VJS146",
+                "model_numbers": ["VJS1461", "VJS1468"],
+                "category_description": "ハイエンド軽量大画面モバイル 14.0型ワイド",
+                "unique_selling_point": [
+                    "最大約14.5時間駆動の驚異的スタミナ",
+                    "AI新時代の高性能CPUを搭載",
+                    "天板と底面にカーボンを採用しより軽く、強く、美しく",
+                    "VAIOならではのスマート機能がもっと便利に、使いやすく",
+                    "高精細で見やすい大画面",
+                    "いろいろ繋がる豊富なインターフェース"
+                ],
+                "recommended_features": [
+                    "VAIO TruePerformance",
+                    "VAIO User Sensing",
+                    "AIノイズキャンセリング",
+                    "指紋認証",
+                    "顔認証",
+                    "Wi-Fi 7",
+                    "ビデオチャット",
+                    "品質試験",
+                    "日本製"
+                ],
+                "copilot_plus_pc": False,
+                "made_in_japan": True
+            }
+        ]
     
     if import_type_norm == "catalog_models":
         return [
@@ -159,7 +248,6 @@ def process_new_catalogs():
     processed_count = 0
 
     for fpath in found_pngs:
-        # パス構造の解析: c:\json_data\new\{category}\{manufacturer}\{import_type}\{filename}.png
         rel_path = os.path.relpath(fpath, new_root)
         parts = rel_path.split(os.sep)
         
@@ -171,15 +259,20 @@ def process_new_catalogs():
         manufacturer = parts[1].lower()   # daikin / hitachi / vaio / fujitsu
         import_type_raw = parts[2].lower()# catalog_model / product_series_details / technical_spec
         image_filename = parts[3]
-        image_stem = os.path.splitext(image_filename)[0]
 
         import_type_norm = IMPORT_TYPE_MAP.get(import_type_raw, import_type_raw)
+        
+        # pngファイル名（拡張子なし）をシリーズ名/詳細識別子として取り込み
+        image_stem = os.path.splitext(image_filename)[0]
+        safe_image_stem = re.sub(r'[^\w\-]', '_', image_stem)
 
         print(f"\nProcessing: [{category} | {manufacturer} | {import_type_norm}] -> {image_filename}")
 
-        # 1. 構造化 JSON ファイルの自動生成 ＆ 保存
-        json_filename = f"{import_type_norm}_{category}_{manufacturer}_{image_stem}.json"
-        json_output_path = os.path.join(project_dir, json_filename)
+        # 1. 構造化 JSON ファイルの動的連番生成 (フォーマット: [import_type]_[category]_[manufacturer]_[pngファイル名].json)
+        base_json_filename = f"{import_type_norm}_{category}_{manufacturer}_{safe_image_stem}.json"
+        
+        target_initial_path = os.path.join(project_dir, base_json_filename)
+        json_output_path = get_unique_numbered_filename(target_initial_path)
         
         json_data = generate_initial_json_data(category, manufacturer, import_type_norm, image_filename)
 
@@ -188,7 +281,11 @@ def process_new_catalogs():
         print(f"  [JSON Output] Generated -> {json_output_path}")
 
         if os.path.exists(json_data_dir):
-            shutil.copy2(json_output_path, os.path.join(json_data_dir, json_filename))
+            copy_dst_path = get_unique_numbered_filename(os.path.join(json_data_dir, os.path.basename(json_output_path)))
+            try:
+                shutil.copy2(json_output_path, copy_dst_path)
+            except Exception as e:
+                print(f"  [Warning] Copy error: {e}")
 
         # 2. ビジネスユーザー用プロンプトのスマートマージ更新
         update_or_merge_prompt(prompts_dir, manufacturer, import_type_norm, image_filename)

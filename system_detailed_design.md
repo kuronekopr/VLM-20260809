@@ -268,6 +268,12 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
 `c:\json_data\new\{category}\{manufacturer}\{import_type}\` 階層フォルダ構造を全自動スキャンし、投入された `.png` カタログ画像から構造化 JSON を作成、ビジネスユーザー用プロンプト (`prompts/`) をスマートマージ更新したのち、**処理完了した `.png` ファイルを全自動削除 (`os.remove`)** して統合パイプラインを自動キックします。
 
 - **対象スキャンフォルダ**: `c:\json_data\new\{category}\{manufacturer}\{import_type}\`
+- **JSONファイル命名規則**: `[import_type]_[category]_[manufacturer]_[pngファイル名].json`
+- **全取り込みタイプ対象・同名重複時の連番命名規則**:
+  `catalog_models`, `product_series_details`, `technical_spec` の全タイプにおいて、既に同名 JSON ファイルが存在する場合、`get_unique_numbered_filename()` によりファイル末尾に 1 番からの連番 `(1)`, `(2)` ... を自動付与して出力・保存。
+  - 一覧表例: `catalog_models_aircon_daikin_p1(1).json`
+  - 商品詳細例: `product_series_details_pc_vaio_sx14r(1).json`
+  - 仕様表例: `technical_spec_pc_vaio_v1(1).json`
 - **プロンプトマージロジック**: 既存プロンプトが存在する場合はペルソナ・抽出規則・JSON スキーマを損なわず新画像情報をスマート追記マージ。
 - **PNG クリーンアップ**: 取り込み完了後、ディスク領域を圧迫しないよう取り込み済みの `.png` ファイルを安全に自動消去。
 
@@ -278,6 +284,7 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
 #### ③ PC統合パイプライン (`process_pc_data_integration`)
 1. **基盤登録**: 仕様表 JSON (`technical_spec_pc_*.json`) を読み込み、シリーズ・型番キーでエントリーを生成。
 2. **概要・詳細統合**: カタログ概要および製品詳細 JSON をマッチングし、`category_description`, `copilot_plus_pc`, `unique_selling_point_sources`, `recommended_features` を属性統合。
+3. **ハードウェアスペック柔軟抽出**: 異種データ構造 (`cpu`, `cpu_options`, `npu`, `npu_performance`, `gpu`, `graphics`) から `get_pc_cpu()`, `get_pc_npu()`, `get_pc_gpu()` ヘルパー関数を通じて、VAIO および 富士通の CPUプロセッサー, NPU性能(TOPS), GPU の各列を正確に抽出・CSV 展開。
 3. **スコアリング**: 収集された USP の全ペアについて N-gram コサイン類似度スコア配列を計算。
 4. **型番単位1行独立展開 CSV 出力**: `full_model_numbers` 配列内の各型番 (`single_model`) についてルーピングし、1 型番につき 1 行の独立行として `merged_pc_models.csv` へ出力。
 

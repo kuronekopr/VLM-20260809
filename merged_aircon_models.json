@@ -320,8 +320,8 @@
     "brand_name": "うるさらX",
     "base_model_number": "S25ATRS",
     "full_model_numbers": [
-      "S25ATRS-W(-C)",
-      "S25ATRS"
+      "S25ATRS",
+      "S25ATRS-W(-C)"
     ],
     "series_name": "RX SERIES",
     "series_nickname": "うるさらX",
@@ -950,8 +950,8 @@
     "brand_name": "うるさらX",
     "base_model_number": "S36ATRS",
     "full_model_numbers": [
-      "S36ATRS-W(-C)",
-      "S36ATRS"
+      "S36ATRS",
+      "S36ATRS-W(-C)"
     ],
     "series_name": "RX SERIES",
     "series_nickname": "うるさらX",
@@ -1265,8 +1265,8 @@
     "brand_name": "うるさらX",
     "base_model_number": "S40ATRS",
     "full_model_numbers": [
-      "S40ATRS",
       "S40ATRS-W(-C)",
+      "S40ATRS",
       "S40ATRS(P)(V)"
     ],
     "series_name": "RX SERIES",
@@ -1581,8 +1581,8 @@
     "brand_name": "うるさらX",
     "base_model_number": "S56ATRP",
     "full_model_numbers": [
-      "S56ATRP(V)",
-      "S56ATRP-W(-C)"
+      "S56ATRP-W(-C)",
+      "S56ATRP(V)"
     ],
     "series_name": "RX SERIES",
     "series_nickname": "うるさらX",
@@ -1815,8 +1815,8 @@
     "brand_name": "うるさらX",
     "base_model_number": "S63ATRP",
     "full_model_numbers": [
-      "S63ATRP(V)",
-      "S63ATRP-W(-C)"
+      "S63ATRP-W(-C)",
+      "S63ATRP(V)"
     ],
     "series_name": "RX SERIES",
     "series_nickname": "うるさらX",
@@ -2283,8 +2283,8 @@
     "brand_name": "うるさらX",
     "base_model_number": "S80ATRP",
     "full_model_numbers": [
-      "S80ATRP-W(-C)",
-      "S80ATRP(V)"
+      "S80ATRP(V)",
+      "S80ATRP-W(-C)"
     ],
     "series_name": "RX SERIES",
     "series_nickname": "うるさらX",
@@ -2517,8 +2517,8 @@
     "brand_name": "うるさらX",
     "base_model_number": "S90ATRP",
     "full_model_numbers": [
-      "S90ATRP(V)",
-      "S90ATRP-W(-C)"
+      "S90ATRP-W(-C)",
+      "S90ATRP(V)"
     ],
     "series_name": "RX SERIES",
     "series_nickname": "うるさらX",
@@ -6082,8 +6082,8 @@
     "brand_name": "白くまくん",
     "base_model_number": "RAS-X2226S",
     "full_model_numbers": [
-      "RAS-XR2226S",
-      "RAS-X2226S"
+      "RAS-X2226S",
+      "RAS-XR2226S"
     ],
     "series_name": "Xシリーズ",
     "series_nickname": "白くまくん",
@@ -6630,8 +6630,8 @@
     "brand_name": "白くまくん",
     "base_model_number": "RAS-X2826S",
     "full_model_numbers": [
-      "RAS-XR2826S",
-      "RAS-X2826S"
+      "RAS-X2826S",
+      "RAS-XR2826S"
     ],
     "series_name": "Xシリーズ",
     "series_nickname": "白くまくん",
