@@ -137,6 +137,36 @@ FIELD_ALIAS_MAP = {
     "display": ["display"]
 }
 
+def is_invalid_field_pair(detail_field_name, target_field_name):
+    """
+    構造的・概念的に異なる項目同士のミスマッチ比較を判定し、無効な場合 True を返す。
+    """
+    df = str(detail_field_name).lower()
+    tf = str(target_field_name).lower()
+
+    # 1. 室内機/室外機の単品価格 vs トータルセット価格
+    if ('indoor_unit' in df or 'outdoor_unit' in df) and ('tax_' in df or 'yen' in df):
+        if 'price' in tf or 'tax_' in tf:
+            if not ('indoor_unit' in tf or 'outdoor_unit' in tf):
+                return True
+
+    # 2. 室内機/室外機の単品型番 vs システム総合型番
+    if ('indoor_unit' in df or 'outdoor_unit' in df) and 'model_number' in df:
+        if tf in ['model_number', 'base_model_number']:
+            return True
+
+    # 3. 暖房能力 vs 冷房能力 / 畳数目安能力
+    if 'heating' in df:
+        if 'cooling' in tf or 'applicable_room_size' in tf:
+            return True
+
+    # 4. 冷房能力 vs 暖房能力
+    if 'cooling' in df:
+        if 'heating' in tf:
+            return True
+
+    return False
+
 def find_target_field_and_value(target_item, detail_field_name):
     """
     商品一覧または仕様表のアイテム target_item から、detail_field_name に相当・類似するフィールドと値を探索
@@ -148,21 +178,23 @@ def find_target_field_and_value(target_item, detail_field_name):
     
     # 1. 完全一致
     if detail_field_name in flat_target:
-        return detail_field_name, flat_target[detail_field_name]
+        tf = detail_field_name
+        if not is_invalid_field_pair(detail_field_name, tf):
+            return tf, flat_target[tf]
     
     # 2. エイリアスマッチ
     aliases = FIELD_ALIAS_MAP.get(detail_field_name, [])
     for alias in aliases:
-        if alias in flat_target:
+        if alias in flat_target and not is_invalid_field_pair(detail_field_name, alias):
             return alias, flat_target[alias]
         for tk, tv in flat_target.items():
-            if normalize_key(alias) == normalize_key(tk):
+            if normalize_key(alias) == normalize_key(tk) and not is_invalid_field_pair(detail_field_name, tk):
                 return tk, tv
 
     # 3. フィールド名の最後要素でのマッチ (例: capacity_kw)
     last_key = detail_field_name.split('.')[-1]
     for tk, tv in flat_target.items():
-        if normalize_key(last_key) == normalize_key(tk.split('.')[-1]):
+        if normalize_key(last_key) == normalize_key(tk.split('.')[-1]) and not is_invalid_field_pair(detail_field_name, tk):
             return tk, tv
 
     return None, None
@@ -170,7 +202,7 @@ def find_target_field_and_value(target_item, detail_field_name):
 def evaluate_single_field(detail_field_name, detail_val, target_item, target_name):
     target_field, target_val = find_target_field_and_value(target_item, detail_field_name)
     
-    if target_val is None:
+    if target_val is None or is_invalid_field_pair(detail_field_name, target_field):
         return None
 
     # 数値比較判定

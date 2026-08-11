@@ -343,7 +343,11 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
 3. **数値判定可否 (`is_numeric_comparable`) 判定**:
    - 単一数値 (float/int) が抽出できる場合 ➔ **`true`**
    - 文章、配列等の場合 ➔ **`false`**
-4. **スコアリング**:
+4. **不適合概念ペアの評価対象外（スキップ）フィルター (`is_invalid_field_pair`)**:
+   - 単品価格（`indoor_unit.tax_*_yen`, `outdoor_unit.tax_*_yen`） ↔ トータルセット価格 (`price.tax_*_yen`) ➔ **評価対象外**
+   - 単品型番（`indoor_unit.model_number`, `outdoor_unit.model_number`） ↔ トータルセット型番 (`model_number`) ➔ **評価対象外**
+   - 暖房能力 (`heating`) ↔ 冷房能力 / 畳数基準能力 (`cooling`, `applicable_room_size`) ➔ **評価対象外**
+5. **スコアリング**:
    - **数値比較可能 (`true`)**: **完全一致 ➔ `1`**, **不一致 ➔ `0`**
    - **数値比較不可能 (`false`)**: N-gram ベクトル空間アルゴリズムによる **テキストコサイン類似度** (0.0 〜 1.0)
 
@@ -352,31 +356,31 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
 {
   "evaluation_summary": {
     "total_evaluated_detail_items": 28,
-    "total_field_comparisons": 690,
-    "numeric_comparable_count": 352,
-    "numeric_exact_match_count (score=1)": 86,
-    "numeric_mismatch_count (score=0)": 266,
+    "total_field_comparisons": 501,
+    "numeric_comparable_count": 163,
+    "numeric_exact_match_count (score=1)": 66,
+    "numeric_mismatch_count (score=0)": 97,
     "text_comparable_count": 338,
-    "text_similarity_score_sum": 294.483,
-    "text_similarity_score_average": 0.871,
+    "text_similarity_score_sum": 299.548,
+    "text_similarity_score_average": 0.886,
     "breakdown_by_target": {
       "catalog_models": {
-        "total_field_comparisons": 541,
-        "numeric_comparable_count": 247,
-        "numeric_exact_match_count (score=1)": 48,
-        "numeric_mismatch_count (score=0)": 199,
+        "total_field_comparisons": 406,
+        "numeric_comparable_count": 112,
+        "numeric_exact_match_count (score=1)": 44,
+        "numeric_mismatch_count (score=0)": 68,
         "text_comparable_count": 294,
         "text_similarity_score_sum": 275.548,
         "text_similarity_score_average": 0.937
       },
       "technical_spec": {
-        "total_field_comparisons": 149,
-        "numeric_comparable_count": 105,
-        "numeric_exact_match_count (score=1)": 38,
-        "numeric_mismatch_count (score=0)": 67,
+        "total_field_comparisons": 95,
+        "numeric_comparable_count": 51,
+        "numeric_exact_match_count (score=1)": 22,
+        "numeric_mismatch_count (score=0)": 29,
         "text_comparable_count": 44,
-        "text_similarity_score_sum": 18.935,
-        "text_similarity_score_average": 0.43
+        "text_similarity_score_sum": 24.0,
+        "text_similarity_score_average": 0.545
       }
     }
   },
