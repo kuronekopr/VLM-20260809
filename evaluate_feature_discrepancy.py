@@ -211,6 +211,7 @@ def main():
     text_comparable_count = 0
     numeric_exact_match_count = 0
     numeric_mismatch_count = 0
+    text_similarity_score_sum = 0.0
 
     for cat in categories:
         for mfr in manufacturers[cat]:
@@ -278,6 +279,7 @@ def main():
                                     numeric_mismatch_count += 1
                             else:
                                 text_comparable_count += 1
+                                text_similarity_score_sum += res["score"]
 
                 evaluations.append({
                     "manufacturer": mfr_name,
@@ -288,13 +290,18 @@ def main():
                     "detail_field_evaluations": item_evals
                 })
 
+    text_similarity_score_sum = round(text_similarity_score_sum, 3)
+    text_similarity_score_avg = round(text_similarity_score_sum / text_comparable_count, 3) if text_comparable_count > 0 else 0.0
+
     summary = {
         "total_evaluated_detail_items": len(evaluations),
         "total_field_comparisons": total_comparisons,
         "numeric_comparable_count": numeric_comparable_count,
         "numeric_exact_match_count (score=1)": numeric_exact_match_count,
         "numeric_mismatch_count (score=0)": numeric_mismatch_count,
-        "text_comparable_count": text_comparable_count
+        "text_comparable_count": text_comparable_count,
+        "text_similarity_score_sum": text_similarity_score_sum,
+        "text_similarity_score_average": text_similarity_score_avg
     }
 
     report = {
@@ -313,6 +320,7 @@ def main():
     print(f"Total Field Comparisons: {summary['total_field_comparisons']}")
     print(f"  - Numeric Comparable: {summary['numeric_comparable_count']} (Match score=1: {numeric_exact_match_count}, Mismatch score=0: {numeric_mismatch_count})")
     print(f"  - Text Cosine Similarity Comparable: {summary['text_comparable_count']}")
+    print(f"    -> Text Similarity Score Total Sum: {text_similarity_score_sum} (Average: {text_similarity_score_avg})")
     print(f"Report successfully saved -> {out_path}")
 
 if __name__ == "__main__":

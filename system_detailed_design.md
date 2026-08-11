@@ -354,9 +354,11 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
     "total_evaluated_detail_items": 28,
     "total_field_comparisons": 690,
     "numeric_comparable_count": 352,
-    "numeric_exact_match_count (score=0)": 86,
-    "numeric_mismatch_count (score=1)": 266,
-    "text_comparable_count": 338
+    "numeric_exact_match_count (score=1)": 86,
+    "numeric_mismatch_count (score=0)": 266,
+    "text_comparable_count": 338,
+    "text_similarity_score_sum": 18.935,
+    "text_similarity_score_average": 0.056
   },
   "product_series_details_evaluations": [
     {
