@@ -165,3 +165,27 @@
 - 画像: technical_spec_pc_vaio_202406(2).png
 
 - 画像: technical_spec_pc_vaio_202406.png
+
+- 画像: technical_spec_pc_vaio_202406(2).png
+
+- 画像: technical_spec_pc_vaio_202406.png
+
+- 画像: technical_spec_pc_vaio_202406(2).png
+
+- 画像: technical_spec_pc_vaio_202406.png
+
+- 画像: technical_spec_pc_vaio_202406(2).png
+
+- 画像: technical_spec_pc_vaio_202406.png
+
+- 画像: technical_spec_pc_vaio_202406(2).png
+
+- 画像: technical_spec_pc_vaio_202406.png
+
+- 画像: technical_spec_pc_vaio_202406(2).png
+
+- 画像: technical_spec_pc_vaio_202406.png
+
+- 画像: technical_spec_pc_vaio_202406(2).png
+
+- 画像: technical_spec_pc_vaio_202406.png
