@@ -244,7 +244,14 @@ def process_pc_data_integration(base_dir):
     # D. 結合フラット PC JSON の生成 & コサイン類似度スコアリング
     merged_pc_list = []
     for key, entry in merged_pc_map.items():
-        usp_values = list(set([x for x in entry.get("unique_selling_point_sources", []) if x]))
+        raw_usp = entry.get("unique_selling_point_sources", [])
+        flat_usp = []
+        for item in raw_usp:
+            if isinstance(item, list):
+                flat_usp.extend([str(x) for x in item if x])
+            elif isinstance(item, str) and item:
+                flat_usp.append(item)
+        usp_values = list(dict.fromkeys(flat_usp))
         usp_scores = get_similarity_scores_for_list(usp_values)
 
         full_models = sorted(list(entry["full_model_numbers"]))
@@ -331,8 +338,12 @@ def process_pc_data_integration(base_dir):
         writer = csv.writer(f)
         writer.writerows(rows)
 
+    target_dir = r"c:\json_data"
     if os.path.exists(target_dir):
-        shutil.copy2(output_csv_path, os.path.join(target_dir, "merged_pc_models.csv"))
+        try:
+            shutil.copy2(output_csv_path, os.path.join(target_dir, os.path.basename(output_csv_path)))
+        except Exception as e:
+            print(f"Note: Could not copy {output_csv_path} to {target_dir}: {e}")
 
     print(f"Successfully saved PC merged CSV -> {output_csv_path} (Total: {len(rows)-1} rows across individual model numbers)")
 
@@ -459,7 +470,14 @@ def main():
     # --- G. 結合フラット エアコン JSON の作成 & コサイン類似度スコアリング ---
     merged_list = []
     for base_key, entry in merged_map.items():
-        usp_values = list(set([x for x in entry.get("unique_selling_point_sources", []) if x]))
+        raw_usp = entry.get("unique_selling_point_sources", [])
+        flat_usp = []
+        for item in raw_usp:
+            if isinstance(item, list):
+                flat_usp.extend([str(x) for x in item if x])
+            elif isinstance(item, str) and item:
+                flat_usp.append(item)
+        usp_values = list(dict.fromkeys(flat_usp))
         usp_scores = get_similarity_scores_for_list(usp_values)
         
         merged_list.append({
@@ -498,7 +516,10 @@ def main():
 
     target_dir = r"c:\json_data"
     if os.path.exists(target_dir):
-        shutil.copy2(output_json_path, os.path.join(target_dir, "merged_aircon_models.json"))
+        try:
+            shutil.copy2(output_json_path, os.path.join(target_dir, "merged_aircon_models.json"))
+        except Exception as e:
+            print(f"Note: Could not copy {output_json_path} to {target_dir}: {e}")
 
     # --- H. CSV ファイルの出力 (全34列 / BOM付き UTF-8: utf-8-sig) ---
     headers = [
@@ -577,7 +598,10 @@ def main():
         writer.writerows(rows)
         
     if os.path.exists(target_dir):
-        shutil.copy2(output_csv_path, os.path.join(target_dir, "merged_aircon_models.csv"))
+        try:
+            shutil.copy2(output_csv_path, os.path.join(target_dir, "merged_aircon_models.csv"))
+        except Exception as e:
+            print(f"Note: Could not copy {output_csv_path} to {target_dir}: {e}")
 
     print(f"Successfully saved multi-manufacturer CSV -> {output_csv_path} (Total: {len(rows)-1} rows)")
 
