@@ -168,6 +168,10 @@ def is_invalid_field_pair(detail_field_name, target_field_name):
         if 'specs' in df or 'cooling' in df or 'heating' in df:
             return True
 
+    # 6. 低温暖房能力 (low_temp, 2c) vs 通常定格能力 (異なる条件性能のため不適合)
+    if ('low_temp' in df or '2c' in df) != ('low_temp' in tf or '2c' in tf):
+        return True
+
     return False
 
 def find_target_field_and_value(target_item, detail_field_name):
