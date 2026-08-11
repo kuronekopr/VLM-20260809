@@ -284,6 +284,7 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
 #### ③ PC統合パイプライン (`process_pc_data_integration`)
 1. **基盤登録**: 仕様表 JSON (`technical_spec_pc_*.json`) を読み込み、シリーズ・型番キーでエントリーを生成。
 2. **概要・詳細統合**: カタログ概要および製品詳細 JSON をマッチングし、`category_description`, `copilot_plus_pc`, `unique_selling_point_sources`, `recommended_features` を属性統合。
+3. **ハードウェアスペック柔軟抽出**: 異種データ構造 (`cpu`, `cpu_options`, `npu`, `npu_performance`, `gpu`, `graphics`) から `get_pc_cpu()`, `get_pc_npu()`, `get_pc_gpu()` ヘルパー関数を通じて、VAIO および 富士通の CPUプロセッサー, NPU性能(TOPS), GPU の各列を正確に抽出・CSV 展開。
 3. **スコアリング**: 収集された USP の全ペアについて N-gram コサイン類似度スコア配列を計算。
 4. **型番単位1行独立展開 CSV 出力**: `full_model_numbers` 配列内の各型番 (`single_model`) についてルーピングし、1 型番につき 1 行の独立行として `merged_pc_models.csv` へ出力。
 
