@@ -344,7 +344,7 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
    - 単一数値 (float/int) が抽出できる場合 ➔ **`true`**
    - 文章、配列等の場合 ➔ **`false`**
 4. **不適合概念ペアの評価対象外（スキップ）フィルター (`is_invalid_field_pair`)**:
-   - 単品価格（`indoor_unit.tax_*_yen`, `outdoor_unit.tax_*_yen`） ↔ トータルセット価格 (`price.tax_*_yen`) ➔ **評価対象外**
+   - 価格・金額関連比較全般（`price`, `tax_included_yen`, `tax_excluded_yen`） ➔ **前提・条件が異なるため全件評価対象外**
    - 単品型番（`indoor_unit.model_number`, `outdoor_unit.model_number`） ↔ トータルセット型番 (`model_number`) ➔ **評価対象外**
    - 暖房能力 (`heating`) ↔ 冷房能力 / 畳数基準能力 (`cooling`, `applicable_room_size`) ➔ **評価対象外**
    - 個別型番スペック能力 (`specs.cooling.capacity_kw`) ↔ カタログ代表畳数能力 (`applicable_room_size.capacity_kw`) ➔ **評価対象外**
@@ -357,22 +357,22 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
 {
   "evaluation_summary": {
     "total_evaluated_detail_items": 28,
-    "total_field_comparisons": 476,
-    "numeric_comparable_count": 138,
-    "numeric_exact_match_count (score=1)": 64,
-    "numeric_mismatch_count (score=0)": 74,
-    "text_comparable_count": 338,
-    "text_similarity_score_sum": 299.548,
-    "text_similarity_score_average": 0.886,
+    "total_field_comparisons": 381,
+    "numeric_comparable_count": 88,
+    "numeric_exact_match_count (score=1)": 58,
+    "numeric_mismatch_count (score=0)": 30,
+    "text_comparable_count": 293,
+    "text_similarity_score_sum": 254.548,
+    "text_similarity_score_average": 0.869,
     "breakdown_by_target": {
       "catalog_models": {
-        "total_field_comparisons": 381,
-        "numeric_comparable_count": 87,
-        "numeric_exact_match_count (score=1)": 42,
-        "numeric_mismatch_count (score=0)": 45,
-        "text_comparable_count": 294,
-        "text_similarity_score_sum": 275.548,
-        "text_similarity_score_average": 0.937
+        "total_field_comparisons": 286,
+        "numeric_comparable_count": 37,
+        "numeric_exact_match_count (score=1)": 36,
+        "numeric_mismatch_count (score=0)": 1,
+        "text_comparable_count": 249,
+        "text_similarity_score_sum": 230.548,
+        "text_similarity_score_average": 0.926
       },
       "technical_spec": {
         "total_field_comparisons": 95,

@@ -144,11 +144,9 @@ def is_invalid_field_pair(detail_field_name, target_field_name):
     df = str(detail_field_name).lower()
     tf = str(target_field_name).lower()
 
-    # 1. 室内機/室外機の単品価格 vs トータルセット価格
-    if ('indoor_unit' in df or 'outdoor_unit' in df) and ('tax_' in df or 'yen' in df):
-        if 'price' in tf or 'tax_' in tf:
-            if not ('indoor_unit' in tf or 'outdoor_unit' in tf):
-                return True
+    # 1. 価格・金額 (price, tax_*_yen) 関連の比較全般 (前提が異なるため一律評価対象外)
+    if 'price' in df or 'tax_' in df or 'yen' in df or 'price' in tf or 'tax_' in tf or 'yen' in tf:
+        return True
 
     # 2. 室内機/室外機の単品型番 vs システム総合型番
     if ('indoor_unit' in df or 'outdoor_unit' in df) and 'model_number' in df:
