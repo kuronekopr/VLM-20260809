@@ -218,6 +218,10 @@ def is_invalid_field_pair(detail_field_name, target_field_name):
     if ('low_temp' in df or '2c' in df) != ('low_temp' in tf or '2c' in tf):
         return True
 
+    # 7. 質量・重量 (weight_kg, weight_g, weight) 関連の比較全般 (前提条件が異なるため一律評価対象外)
+    if 'weight' in df or 'weight' in tf:
+        return True
+
     return False
 
 def find_target_field_and_value(target_item, detail_field_name):
