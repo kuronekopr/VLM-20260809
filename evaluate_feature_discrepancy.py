@@ -222,6 +222,10 @@ def is_invalid_field_pair(detail_field_name, target_field_name):
     if 'weight' in df or 'weight' in tf:
         return True
 
+    # 8. APF (通年エネルギー消費効率) 関連の比較 (業務利用しないため一律評価対象外)
+    if 'apf' in df or 'apf' in tf:
+        return True
+
     return False
 
 def find_target_field_and_value(target_item, detail_field_name):
