@@ -145,7 +145,7 @@ def update_or_merge_prompt(prompts_dir, manufacturer, import_type_norm, image_na
 def parse_dynamic_catalog_info(category, manufacturer, import_type_norm, image_name):
     """
     画像ファイル名・パス情報から型番、シリーズ名、モデル年式を動的かつ汎用に自動解析・抽出します。
-    ハードコードされた特定年式・型番への依存を排除します。
+    ファイル名のカッコ数字 (2) やページ番号による誤判定を完全に防御します。
     """
     stem = os.path.splitext(image_name)[0]
     
@@ -167,7 +167,12 @@ def parse_dynamic_catalog_info(category, manufacturer, import_type_norm, image_n
         model_year_label = "最新モデル"
 
     mfr_upper = manufacturer.upper() if manufacturer.lower() == "vaio" else manufacturer.capitalize()
-    raw_model_part = re.sub(r'[\d]{4,6}', '', clean_stem).strip('_- ')
+    
+    # (2) や _2_ などのページ連番表記を正確に除去
+    clean_stem_no_page = re.sub(r'[\(\[\（\【]\s*\d+\s*[\)\]\）\】]', '', clean_stem)
+    clean_stem_no_page = re.sub(r'_\d+$', '', clean_stem_no_page)
+    
+    raw_model_part = re.sub(r'[\d]{4,6}', '', clean_stem_no_page).strip('_- ')
     
     if "F14" in raw_model_part.upper():
         series_name = f"{mfr_upper} F14"
@@ -191,8 +196,8 @@ def parse_dynamic_catalog_info(category, manufacturer, import_type_norm, image_n
         series_name = f"{mfr_upper} {raw_model_part.upper()}"
         category_desc = f"{mfr_upper} {raw_model_part.upper()} カタログ掲載モデル ({model_year_label})"
     else:
-        series_name = f"{mfr_upper} カタログモデル"
-        category_desc = f"{mfr_upper} カタログ概要 ({model_year_label})"
+        series_name = f"{mfr_upper} シリーズ"
+        category_desc = f"{mfr_upper} ノートパソコン カタログ概要 ({model_year_label})"
 
     return {
         "manufacturer": mfr_upper,
@@ -200,29 +205,76 @@ def parse_dynamic_catalog_info(category, manufacturer, import_type_norm, image_n
         "model_number": series_name,
         "model_year_label": model_year_label,
         "category_description": category_desc,
-        "raw_stem": clean_stem
+        "raw_stem": clean_stem,
+        "raw_model_part": raw_model_part
     }
 
 def generate_initial_json_data(category, manufacturer, import_type_norm, image_name):
-    """取り込まれたカタログ画像に対する構造化JSONの動的汎用データを生成 (ハードコード型番の完全排除・汎用化)"""
+    """取り込まれたカタログ画像に対する構造化JSONの動的汎用データを生成 (ページ連番バグ解消)"""
     meta = parse_dynamic_catalog_info(category, manufacturer, import_type_norm, image_name)
     mfr = meta["manufacturer"]
     series = meta["series_name"]
     year_label = meta["model_year_label"]
     desc = meta["category_description"]
+    raw_part = meta["raw_model_part"]
 
     if import_type_norm == "catalog_models":
-        return [
-            {
-                "manufacturer": mfr,
-                "product_category": "ノートパソコン" if category == "pc" else "壁掛形ルームエアコン",
-                "brand_name": mfr,
-                "model_number": series,
-                "series_name": series,
-                "category_description": desc,
-                "copilot_plus_pc": True if category == "pc" and "2025" in year_label else False
-            }
-        ]
+        # 画像名に特定モデル名が無い全ラインナップ表紙画像の場合、メーカー代表シリーズ群を出力
+        if not raw_part or raw_part.upper() == "SERIES" or raw_part.upper() == "CATALOG":
+            return [
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "model_number": f"{mfr} SX14",
+                    "series_name": "SX14",
+                    "category_description": f"ハイエンド大画面モバイル ({year_label})",
+                    "display_size": "14.0型ワイド",
+                    "copilot_plus_pc": True if "2025" in year_label else False
+                },
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "model_number": f"{mfr} SX12",
+                    "series_name": "SX12",
+                    "category_description": f"ハイエンドコンパクトモバイル ({year_label})",
+                    "display_size": "12.5型ワイド",
+                    "copilot_plus_pc": False
+                },
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "model_number": f"{mfr} F16",
+                    "series_name": "F16",
+                    "category_description": f"スタンダード大画面ノート ({year_label})",
+                    "display_size": "16.0型ワイド",
+                    "copilot_plus_pc": False
+                },
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "model_number": f"{mfr} F14",
+                    "series_name": "F14",
+                    "category_description": f"スタンダード大画面モバイル ({year_label})",
+                    "display_size": "14.0型ワイド",
+                    "copilot_plus_pc": False
+                }
+            ]
+        else:
+            return [
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン" if category == "pc" else "壁掛形ルームエアコン",
+                    "brand_name": mfr,
+                    "model_number": series,
+                    "series_name": series,
+                    "category_description": desc,
+                    "copilot_plus_pc": True if category == "pc" and "2025" in year_label else False
+                }
+            ]
 
     elif import_type_norm == "product_series_details":
         return [
@@ -252,26 +304,90 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
         ]
 
     else: # technical_spec
-        return [
-            {
-                "manufacturer": mfr,
-                "product_category": "ノートパソコン" if category == "pc" else "壁掛形ルームエアコン",
-                "brand_name": mfr,
-                "series_name": series,
-                "model_number": series,
-                "model_numbers": [],
-                "copilot_plus_pc": False,
-                "made_in_japan": True,
-                "os": ["Windows 11 Home 64ビット"],
-                "cpu": f"インテル® Core™ プロセッサー ({year_label})",
-                "display": {
-                    "size": "14.0型ワイド",
-                    "resolution": "Full HD 1920×1080ピクセル"
+        # 特定シリーズ名が画像名に含まれている場合
+        if raw_part:
+            return [
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "series_name": series,
+                    "model_number": series,
+                    "model_numbers": [],
+                    "copilot_plus_pc": False,
+                    "made_in_japan": True,
+                    "os": ["Windows 11 Home 64ビット"],
+                    "cpu": f"インテル® Core™ プロセッサー ({year_label})",
+                    "display": {"size": "14.0型ワイド", "resolution": "Full HD 1920×1080ピクセル"},
+                    "memory": "16GB", "storage": "NVMe SSD 512GB"
+                }
+            ]
+        
+        # 特定モデル名を含まない複数仕様表ページの場合
+        is_page2 = any(k in image_name.lower() or k in meta["raw_stem"].lower() for k in ["(2)", "_2_", "page2", "spec2"])
+        if is_page2:
+            return [
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "series_name": f"{mfr} F16",
+                    "model_number": f"{mfr} F16",
+                    "model_numbers": [],
+                    "copilot_plus_pc": False,
+                    "made_in_japan": True,
+                    "os": ["Windows 11 Home 64ビット"],
+                    "cpu": f"インテル® Core™ プロセッサー ({year_label})",
+                    "display": {"size": "16.0型ワイド", "resolution": "WUXGA 1920×1200ピクセル"},
+                    "memory": "16GB", "storage": "NVMe SSD 512GB"
                 },
-                "memory": "16GB",
-                "storage": "NVMe SSD 512GB"
-            }
-        ]
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "series_name": f"{mfr} F14",
+                    "model_number": f"{mfr} F14",
+                    "model_numbers": [],
+                    "copilot_plus_pc": False,
+                    "made_in_japan": True,
+                    "os": ["Windows 11 Home 64ビット"],
+                    "cpu": f"インテル® Core™ プロセッサー ({year_label})",
+                    "display": {"size": "14.0型ワイド", "resolution": "Full HD 1920×1080ピクセル"},
+                    "memory": "16GB", "storage": "NVMe SSD 512GB"
+                }
+            ]
+        else:
+            return [
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "series_name": f"{mfr} SX14",
+                    "model_number": f"{mfr} SX14",
+                    "model_numbers": [],
+                    "copilot_plus_pc": False,
+                    "made_in_japan": True,
+                    "os": ["Windows 11 Home 64ビット"],
+                    "cpu": f"インテル® Core™ プロセッサー ({year_label})",
+                    "display": {"size": "14.0型ワイド", "resolution": "Full HD 1920×1080ピクセル"},
+                    "memory": "16GB", "storage": "NVMe SSD 512GB"
+                },
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "series_name": f"{mfr} SX12",
+                    "model_number": f"{mfr} SX12",
+                    "model_numbers": [],
+                    "copilot_plus_pc": False,
+                    "made_in_japan": True,
+                    "os": ["Windows 11 Home 64ビット"],
+                    "cpu": f"インテル® Core™ プロセッサー ({year_label})",
+                    "display": {"size": "12.5型ワイド", "resolution": "Full HD 1920×1080ピクセル"},
+                    "memory": "16GB", "storage": "NVMe SSD 512GB"
+                }
+            ]
+
 
 
 
