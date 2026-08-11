@@ -193,7 +193,7 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "display_size": "14.0型ワイド",
                     "color_count": 4,
                     "catalog_page": 3,
-                    "copilot_plus_pc": false
+                    "copilot_plus_pc": False
                 },
                 {
                     "manufacturer": "VAIO",
@@ -205,7 +205,7 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "display_size": "12.5型ワイド",
                     "color_count": 3,
                     "catalog_page": 5,
-                    "copilot_plus_pc": false
+                    "copilot_plus_pc": False
                 },
                 {
                     "manufacturer": "VAIO",
@@ -217,7 +217,7 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "display_size": "13.3型ワイド",
                     "color_count": 2,
                     "catalog_page": 7,
-                    "copilot_plus_pc": false
+                    "copilot_plus_pc": False
                 },
                 {
                     "manufacturer": "VAIO",
@@ -229,7 +229,7 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "display_size": "16.0型ワイド",
                     "color_count": 3,
                     "catalog_page": 9,
-                    "copilot_plus_pc": false
+                    "copilot_plus_pc": False
                 },
                 {
                     "manufacturer": "VAIO",
@@ -241,7 +241,7 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "display_size": "14.0型ワイド",
                     "color_count": 3,
                     "catalog_page": 11,
-                    "copilot_plus_pc": false
+                    "copilot_plus_pc": False
                 }
             ]
         return [
@@ -280,8 +280,8 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "series_name": "VAIO F16",
                     "model_number": "VAIO F16",
                     "model_numbers": ["VJF16290101L", "VJF16290102N", "VJF16290103S", "VJF16295104L", "VJF16295105N", "VJF16295106S"],
-                    "copilot_plus_pc": false,
-                    "made_in_japan": true,
+                    "copilot_plus_pc": False,
+                    "made_in_japan": True,
                     "os": ["Windows 11 Home 64ビット"],
                     "cpu": "インテル® Core™ 7 プロセッサー 150U / インテル® Core™ 5 プロセッサー 120U",
                     "display": {
@@ -300,8 +300,8 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "series_name": "VAIO F14",
                     "model_number": "VAIO F14",
                     "model_numbers": ["VJF14290101L", "VJF14290102N", "VJF14290103S", "VJF14295104L", "VJF14295105N", "VJF14295106S"],
-                    "copilot_plus_pc": false,
-                    "made_in_japan": true,
+                    "copilot_plus_pc": False,
+                    "made_in_japan": True,
                     "os": ["Windows 11 Home 64ビット"],
                     "cpu": "インテル® Core™ 7 プロセッサー 150U / インテル® Core™ 5 プロセッサー 120U",
                     "display": {
@@ -314,6 +314,7 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "weight_g": 1230
                 }
             ]
+
         return [
             {
                 "manufacturer": manufacturer.capitalize() if manufacturer != "vaio" else "VAIO",
