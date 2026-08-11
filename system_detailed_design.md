@@ -344,7 +344,7 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
    - 単一数値 (float/int) が抽出できる場合 ➔ **`true`**
    - 文章、配列等の場合 ➔ **`false`**
 4. **スコアリング**:
-   - **数値比較可能 (`true`)**: **完全一致 ➔ `0`**, **不一致 ➔ `1`**
+   - **数値比較可能 (`true`)**: **完全一致 ➔ `1`**, **不一致 ➔ `0`**
    - **数値比較不可能 (`false`)**: N-gram ベクトル空間アルゴリズムによる **テキストコサイン類似度** (0.0 〜 1.0)
 
 ### 7.2 評価出力形式 (`c:\json_data\feature_discrepancy_evaluation.json`)

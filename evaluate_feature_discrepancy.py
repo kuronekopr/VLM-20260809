@@ -179,9 +179,9 @@ def evaluate_single_field(detail_field_name, detail_val, target_item, target_nam
     
     if is_num_detail and is_num_target:
         is_numeric_comparable = True
-        # 数値比較: 完全一致 ➔ 0, 不一致 ➔ 1
+        # 数値比較: 完全一致 ➔ 1, 不一致 ➔ 0
         diff = abs(num_detail - num_target)
-        score = 0 if diff < 1e-4 else 1
+        score = 1 if diff < 1e-4 else 0
     else:
         is_numeric_comparable = False
         # コサイン類似度スコア (0.0 〜 1.0)
@@ -257,7 +257,7 @@ def main():
                             total_comparisons += 1
                             if res["is_numeric_comparable"]:
                                 numeric_comparable_count += 1
-                                if res["score"] == 0:
+                                if res["score"] == 1:
                                     numeric_exact_match_count += 1
                                 else:
                                     numeric_mismatch_count += 1
@@ -272,7 +272,7 @@ def main():
                             total_comparisons += 1
                             if res["is_numeric_comparable"]:
                                 numeric_comparable_count += 1
-                                if res["score"] == 0:
+                                if res["score"] == 1:
                                     numeric_exact_match_count += 1
                                 else:
                                     numeric_mismatch_count += 1
@@ -292,8 +292,8 @@ def main():
         "total_evaluated_detail_items": len(evaluations),
         "total_field_comparisons": total_comparisons,
         "numeric_comparable_count": numeric_comparable_count,
-        "numeric_exact_match_count (score=0)": numeric_exact_match_count,
-        "numeric_mismatch_count (score=1)": numeric_mismatch_count,
+        "numeric_exact_match_count (score=1)": numeric_exact_match_count,
+        "numeric_mismatch_count (score=0)": numeric_mismatch_count,
         "text_comparable_count": text_comparable_count
     }
 
@@ -311,7 +311,7 @@ def main():
     print(f"=== Product Series Details Feature Discrepancy Evaluation Completed ===")
     print(f"Total Detail Items Evaluated: {summary['total_evaluated_detail_items']}")
     print(f"Total Field Comparisons: {summary['total_field_comparisons']}")
-    print(f"  - Numeric Comparable: {summary['numeric_comparable_count']} (Match score=0: {numeric_exact_match_count}, Mismatch score=1: {numeric_mismatch_count})")
+    print(f"  - Numeric Comparable: {summary['numeric_comparable_count']} (Match score=1: {numeric_exact_match_count}, Mismatch score=0: {numeric_mismatch_count})")
     print(f"  - Text Cosine Similarity Comparable: {summary['text_comparable_count']}")
     print(f"Report successfully saved -> {out_path}")
 
