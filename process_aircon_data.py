@@ -327,22 +327,12 @@ def process_pc_data_integration(base_dir):
     rows = [headers]
 
     for item in merged_pc_list:
-        tech = item.get("technical_specifications") or {}
-        disp = tech.get("display") or {}
-        dim = tech.get("dimensions_mm") or {}
-        batt = tech.get("battery_life_hours") or {}
+        raw_tech = item.get("technical_specifications") or {}
+        tech_list = raw_tech if isinstance(raw_tech, list) else [raw_tech]
 
-        disp_str = f"{disp.get('size', '')} {disp.get('resolution', '')} {disp.get('finish', '')}".strip()
-        interfaces_str = " / ".join(tech.get("interfaces", [])) if isinstance(tech.get("interfaces"), list) else str(tech.get("interfaces", ""))
-
-        width = dim.get("width", "")
-        depth = dim.get("depth", "")
-        height = dim.get("height_min", "") or dim.get("height", "")
-
-        batt_video = batt.get("video_playback", "") if isinstance(batt, dict) else ""
-        batt_idle = batt.get("idle", "") if isinstance(batt, dict) else ""
-
-        os_str = " / ".join(tech.get("os", [])) if isinstance(tech.get("os"), list) else str(tech.get("os", ""))
+        full_models_list = item.get("full_model_numbers", [])
+        full_models_str = "; ".join(full_models_list)
+        target_models = full_models_list if full_models_list else [item.get("series_name", "")]
 
         usp_vals = " | ".join(item["unique_selling_point"]["values"]) if item.get("unique_selling_point") else ""
         usp_scrs = ", ".join(map(str, item["unique_selling_point"]["cosine_similarity_scores"])) if item.get("unique_selling_point") else ""
@@ -353,22 +343,51 @@ def process_pc_data_integration(base_dir):
         else:
             rec_str = str(rec_feat)
 
-        full_models_list = item.get("full_model_numbers", [])
-        full_models_str = "; ".join(full_models_list)
-
-        target_models = full_models_list if full_models_list else [""]
-
         for single_model in target_models:
+            matched_tech = {}
+            if single_model:
+                for sub in tech_list:
+                    sub_m_list = sub.get("model_numbers", []) or [sub.get("model_number", "")]
+                    if single_model in sub_m_list or sub.get("model_number", "") == single_model:
+                        matched_tech = sub
+                        break
+            if not matched_tech and tech_list:
+                matched_tech = tech_list[0]
+
+            disp = matched_tech.get("display") or {}
+            dim = matched_tech.get("dimensions_mm") or {}
+            batt = matched_tech.get("battery_life_hours") or {}
+
+            disp_str = f"{disp.get('size', '')} {disp.get('resolution', '')} {disp.get('finish', '')}".strip() if isinstance(disp, dict) else str(disp)
+            interfaces_str = " / ".join(matched_tech.get("interfaces", [])) if isinstance(matched_tech.get("interfaces"), list) else str(matched_tech.get("interfaces", ""))
+
+            if isinstance(dim, dict):
+                width = dim.get("width", "")
+                depth = dim.get("depth", "")
+                height = dim.get("height_min", "") or dim.get("height", "")
+            else:
+                width, depth, height = "", "", str(dim)
+
+            if isinstance(batt, dict):
+                batt_video = batt.get("video_playback", "")
+                batt_idle = batt.get("idle", "")
+            else:
+                batt_video, batt_idle = str(batt), ""
+
+            os_str = " / ".join(matched_tech.get("os", [])) if isinstance(matched_tech.get("os"), list) else str(matched_tech.get("os", ""))
+
             rows.append([
                 item["manufacturer"], item["product_category"], item["brand_name"], item["series_name"],
-                single_model, full_models_str, item["category_description"],
-                "はい" if item["copilot_plus_pc"] else "いいえ", "はい" if item["made_in_japan"] else "いいえ",
-                usp_vals, usp_scrs, os_str, tech.get("bundled_office", ""), disp_str,
-                get_pc_cpu(tech), get_pc_npu(tech), get_pc_gpu(tech),
-                tech.get("memory", ""), tech.get("storage", ""),
-                tech.get("wireless", "") if isinstance(tech.get("wireless"), str) else (tech.get("wireless", {}).get("wifi", "") if isinstance(tech.get("wireless"), dict) else ""),
-                interfaces_str, batt_video, batt_idle, width, depth, height, tech.get("weight_g", ""), rec_str
+                single_model if single_model else item["series_name"], full_models_str, item.get("category_description", ""),
+                "はい" if item.get("copilot_plus_pc") else "いいえ",
+                "はい" if matched_tech.get("made_in_japan", item.get("made_in_japan")) else "いいえ",
+                usp_vals, usp_scrs, os_str, matched_tech.get("office", matched_tech.get("bundled_office", "")), disp_str,
+                get_pc_cpu(matched_tech), get_pc_npu(matched_tech), get_pc_gpu(matched_tech),
+                matched_tech.get("memory", ""), matched_tech.get("storage", ""),
+                matched_tech.get("wireless", "") if isinstance(matched_tech.get("wireless"), str) else (matched_tech.get("wireless", {}).get("wifi", "") if isinstance(matched_tech.get("wireless"), dict) else ""),
+                interfaces_str, batt_video, batt_idle, width, depth, height, matched_tech.get("weight_g", ""), rec_str
             ])
+
 
     output_csv_path = os.path.join(target_dir, "merged_pc_models.csv")
     try:

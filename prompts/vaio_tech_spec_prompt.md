@@ -29,16 +29,16 @@
    - manufacturer: "VAIO"
    - product_category: "ノートパソコン"
    - brand_name: "VAIO"
-   - series_name: シリーズ名 (例: "VAIO SX14-R")
-2. 型番一覧 (model_numbers):
-   - 画像上部に記載されている型番リスト（例: ["VJS14R19011B", "VJS14R19021B", ...]）
-3. システム・CPU情報 (os / cpu_options):
+   - series_name: シリーズ名 (例: "VAIO SX12")
+2. 型番一覧 ＆ カラム別サブモデルの分割認識 (model_numbers / model_number):
+   - 同一シリーズ名の下に複数の型番（例: 左カラム `VJS12690111B` / 右カラム `VJS12690112B`, `VJS12690113T`, `VJS12690114P`）が並び、CPUやストレージ容量（SSD 512GB vs 256GB）が異なる場合は、**型番サブモデルごとに別々のJSONオブジェクトとして分割抽出**すること。
+3. システム・CPU情報 (os / cpu):
    - OSバージョン
-   - 選択可能プロセッサー (コア/スレッド数, TDP, NPU情報)
+   - 各型番カラムに対応するCPUプロセッサー (例: Core i7-1360P / Core i5-1340P)
 4. ディスプレイ・メモリ・ストレージ (display / memory / storage / camera):
    - 画面サイズ, アスペクト比, 解像度, 表面処理
    - メモリ容量
-   - ストレージ規格・容量
+   - 各型番カラムに対応するストレージ容量 (例: 第四世代 ハイスピードSSD 512GB / 256GB)
    - カメラ画素数
 5. 無線・インターフェース (wireless / interfaces / biometrics):
    - Wi-Fi規格, Bluetoothバージョン
@@ -47,7 +47,8 @@
 6. バッテリー・寸法・質量 (battery_life_hours / dimensions_mm / weight_kg):
    - 動画再生時間 / アイドル駆動時間
    - 外形寸法 (幅 × 高さmin〜max × 奥行 mm)
-   - 本体質量 (kg)
+   - 本体質量 (kg / g)
+
 
 【出力フォーマット】
 解説や挨拶文は不要です。以下のJSON構造のコードブロック（```json ... ```）のみを出力してください。
@@ -148,3 +149,19 @@
 - 画像: technical_spec_pc_vaio_202507 (2).png
 
 - 画像: technical_spec_pc_vaio_202507.png
+
+- 画像: technical_spec_pc_vaio_202406(2).png
+
+- 画像: technical_spec_pc_vaio_202406.png
+
+- 画像: technical_spec_pc_vaio_202406(2).png
+
+- 画像: technical_spec_pc_vaio_202406.png
+
+- 画像: technical_spec_pc_vaio_202406(2).png
+
+- 画像: technical_spec_pc_vaio_202406.png
+
+- 画像: technical_spec_pc_vaio_202406(2).png
+
+- 画像: technical_spec_pc_vaio_202406.png

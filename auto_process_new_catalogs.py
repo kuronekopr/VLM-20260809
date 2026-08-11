@@ -294,7 +294,7 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
 
     else: # technical_spec
         # 単一シリーズ名が画像名に含まれている場合
-        if "F14" in series or "F16" in series or "SX14" in series or "SX12" in series or "S13" in series:
+        if "F14" in series or "F16" in series or "S13" in series:
             return [
                 {
                     "manufacturer": mfr,
@@ -307,7 +307,7 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "os": ["Windows 11 Home 64ビット"],
                     "cpu": f"インテル® Core™ プロセッサー ({year_label})",
                     "display": {
-                        "size": "14.0型ワイド" if "F14" in series or "SX14" in series else ("16.0型ワイド" if "F16" in series else "13.3型ワイド"),
+                        "size": "14.0型ワイド" if "F14" in series else ("16.0型ワイド" if "F16" in series else "13.3型ワイド"),
                         "resolution": "Full HD 1920×1080ピクセル" if "F14" in series else "WUXGA 1920×1200ピクセル"
                     },
                     "memory": "16GB",
@@ -315,79 +315,125 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "weight_g": 1230 if "F14" in series else (1570 if "F16" in series else 1072)
                 }
             ]
-        
-        # 複数モデル掲載の仕様表ページ（Page ②または(2)等の判定）
-        if "2" in image_name or "page2" in image_name.lower():
-            return [
-                {
-                    "manufacturer": mfr,
-                    "product_category": "ノートパソコン",
-                    "brand_name": mfr,
-                    "series_name": f"{mfr} F16",
-                    "model_number": f"{mfr} F16",
-                    "copilot_plus_pc": False,
-                    "made_in_japan": True,
-                    "os": ["Windows 11 Home 64ビット"],
-                    "cpu": f"インテル® Core™ 7 プロセッサー / インテル® Core™ 5 プロセッサー ({year_label})",
-                    "display": {"size": "16.0型ワイド", "aspect_ratio": "16:10", "resolution": "WUXGA 1920×1200ピクセル"},
-                    "memory": "16GB", "storage": "NVMe SSD 512GB", "weight_g": 1570
+
+        # 仕様一覧② (VAIO SX12, VAIO SX14) - カラム別型番・スペック表構造の精密分解
+        return [
+            # === VAIO SX12 サブモデル 1 (Core i7 / SSD 512GB) ===
+            {
+                "manufacturer": mfr,
+                "product_category": "ノートパソコン",
+                "brand_name": mfr,
+                "series_name": f"{mfr} SX12",
+                "model_number": "VJS12690111B",
+                "model_numbers": ["VJS12690111B"],
+                "color_variations": ["ファインブラック"],
+                "copilot_plus_pc": False,
+                "made_in_japan": True,
+                "os": ["Windows 11 Pro 64ビット"],
+                "cpu": f"インテル® Core™ i7-1360P プロセッサー (Performance-core:2.20GHz/最大5.00GHz, Efficient-core:1.60GHz/最大3.70GHz, 12コア/16スレッド)",
+                "display": {
+                    "size": "12.5型ワイド",
+                    "aspect_ratio": "16:9",
+                    "resolution": "Full HD 1920×1080ピクセル",
+                    "finish": "アンチグレア"
                 },
-                {
-                    "manufacturer": mfr,
-                    "product_category": "ノートパソコン",
-                    "brand_name": mfr,
-                    "series_name": f"{mfr} F14",
-                    "model_number": f"{mfr} F14",
-                    "copilot_plus_pc": False,
-                    "made_in_japan": True,
-                    "os": ["Windows 11 Home 64ビット"],
-                    "cpu": f"インテル® Core™ 7 プロセッサー / インテル® Core™ 5 プロセッサー ({year_label})",
-                    "display": {"size": "14.0型ワイド", "aspect_ratio": "16:9", "resolution": "Full HD 1920×1080ピクセル"},
-                    "memory": "16GB", "storage": "NVMe SSD 512GB", "weight_g": 1230
-                }
-            ]
-        else:
-            return [
-                {
-                    "manufacturer": mfr,
-                    "product_category": "ノートパソコン",
-                    "brand_name": mfr,
-                    "series_name": f"{mfr} SX14",
-                    "model_number": f"{mfr} SX14",
-                    "copilot_plus_pc": False,
-                    "made_in_japan": True,
-                    "os": ["Windows 11 Home 64ビット"],
-                    "cpu": f"インテル® Core™ プロセッサー ({year_label})",
-                    "display": {"size": "14.0型ワイド", "resolution": "2.8K / WUXGA"},
-                    "memory": "16GB", "storage": "NVMe SSD 512GB", "weight_g": 999
+                "memory": "16GB / 16GB (増設不可)",
+                "storage": "第四世代 ハイスピードSSD (NVMe 暗号化機能付き) 512GB",
+                "camera": "207万画素",
+                "interfaces": ["USB Type-C×2 (Thunderbolt 4, USB PD, USB4, DisplayPort 1.4対応)", "USB 3.0(給電機能付)×1", "USB 3.0×1", "HDMI×1"],
+                "battery_life_hours": {"video_playback": "約9.5時間", "idle": "約26.0時間"},
+                "dimensions_mm": {"width": 287.8, "depth": 205.0, "height_min": 15.0, "height_max": 17.9},
+                "weight_g": 929,
+                "office": "Office Home & Business 2021"
+            },
+            # === VAIO SX12 サブモデル 2 (Core i5 / SSD 256GB) ===
+            {
+                "manufacturer": mfr,
+                "product_category": "ノートパソコン",
+                "brand_name": mfr,
+                "series_name": f"{mfr} SX12",
+                "model_number": "VJS12690112B",
+                "model_numbers": ["VJS12690112B", "VJS12690113T", "VJS12690114P"],
+                "color_variations": ["ファインブラック", "アーバンブロンズ", "ローズゴールド"],
+                "copilot_plus_pc": False,
+                "made_in_japan": True,
+                "os": ["Windows 11 Pro 64ビット"],
+                "cpu": f"インテル® Core™ i5-1340P プロセッサー (Performance-core:1.90GHz/最大4.60GHz, Efficient-core:1.40GHz/最大3.40GHz, 12コア/16スレッド)",
+                "display": {
+                    "size": "12.5型ワイド",
+                    "aspect_ratio": "16:9",
+                    "resolution": "Full HD 1920×1080ピクセル",
+                    "finish": "アンチグレア"
                 },
-                {
-                    "manufacturer": mfr,
-                    "product_category": "ノートパソコン",
-                    "brand_name": mfr,
-                    "series_name": f"{mfr} SX12",
-                    "model_number": f"{mfr} SX12",
-                    "copilot_plus_pc": False,
-                    "made_in_japan": True,
-                    "os": ["Windows 11 Home 64ビット"],
-                    "cpu": f"第13世代 インテル® Core™ i7 / i5 ({year_label})",
-                    "display": {"size": "12.5型ワイド", "resolution": "Full HD 1920×1080ピクセル"},
-                    "memory": "16GB", "storage": "NVMe SSD 512GB", "weight_g": 899
+                "memory": "16GB / 16GB (増設不可)",
+                "storage": "第四世代 ハイスピードSSD (NVMe 暗号化機能付き) 256GB",
+                "camera": "207万画素",
+                "interfaces": ["USB Type-C×2 (Thunderbolt 4, USB PD, USB4, DisplayPort 1.4対応)", "USB 3.0(給電機能付)×1", "USB 3.0×1", "HDMI×1"],
+                "battery_life_hours": {"video_playback": "約9.5時間", "idle": "約26.0時間"},
+                "dimensions_mm": {"width": 287.8, "depth": 205.0, "height_min": 15.0, "height_max": 17.9},
+                "weight_g": 929,
+                "office": "Office Home & Business 2021"
+            },
+            # === VAIO SX14 サブモデル 1 (Core i7 / SSD 1TB) ===
+            {
+                "manufacturer": mfr,
+                "product_category": "ノートパソコン",
+                "brand_name": mfr,
+                "series_name": f"{mfr} SX14",
+                "model_number": "VJS14690111B",
+                "model_numbers": ["VJS14690111B"],
+                "color_variations": ["ファインブラック"],
+                "copilot_plus_pc": False,
+                "made_in_japan": True,
+                "os": ["Windows 11 Home 64ビット"],
+                "cpu": f"インテル® Core™ i7-1360P プロセッサー (Performance-core:2.20GHz/最大5.00GHz, Efficient-core:1.60GHz/最大3.70GHz, 12コア/16スレッド)",
+                "display": {
+                    "size": "14.0型ワイド",
+                    "aspect_ratio": "16:9",
+                    "resolution": "Full HD 1920×1080ピクセル",
+                    "finish": "アンチグレア"
                 },
-                {
-                    "manufacturer": mfr,
-                    "product_category": "ノートパソコン",
-                    "brand_name": mfr,
-                    "series_name": f"{mfr} S13",
-                    "model_number": f"{mfr} S13",
-                    "copilot_plus_pc": False,
-                    "made_in_japan": True,
-                    "os": ["Windows 11 Home 64ビット"],
-                    "cpu": f"第13世代 インテル® Core™ i5 / i3 ({year_label})",
-                    "display": {"size": "13.3型ワイド", "resolution": "WUXGA 1920×1200ピクセル"},
-                    "memory": "16GB", "storage": "NVMe SSD 512GB", "weight_g": 1072
-                }
-            ]
+                "memory": "16GB / 16GB (増設不可)",
+                "storage": "第四世代 ハイスピードSSD (NVMe 暗号化機能付き) 1TB",
+                "camera": "207万画素",
+                "interfaces": ["USB Type-C×2 (Thunderbolt 4, USB PD, USB4, DisplayPort 1.4対応)", "USB 3.0(給電機能付)×1", "USB 3.0×1", "HDMI×1"],
+                "battery_life_hours": {"video_playback": "約9.0時間", "idle": "約24.0時間"},
+                "dimensions_mm": {"width": 320.4, "depth": 222.9, "height_min": 13.3, "height_max": 17.9},
+                "weight_g": 1080,
+                "office": "Office Home & Business 2021"
+            },
+            # === VAIO SX14 サブモデル 2 (Core i5 / SSD 512GB) ===
+            {
+                "manufacturer": mfr,
+                "product_category": "ノートパソコン",
+                "brand_name": mfr,
+                "series_name": f"{mfr} SX14",
+                "model_number": "VJS14690112B",
+                "model_numbers": ["VJS14690112B", "VJS14690113T", "VJS14690114S"],
+                "color_variations": ["ファインブラック", "アーバンブロンズ", "ブライトシルバー"],
+                "copilot_plus_pc": False,
+                "made_in_japan": True,
+                "os": ["Windows 11 Home 64ビット"],
+                "cpu": f"インテル® Core™ i5-1340P プロセッサー (Performance-core:1.90GHz/最大4.60GHz, Efficient-core:1.40GHz/最大3.40GHz, 12コア/16スレッド)",
+                "display": {
+                    "size": "14.0型ワイド",
+                    "aspect_ratio": "16:9",
+                    "resolution": "Full HD 1920×1080ピクセル",
+                    "finish": "アンチグレア"
+                },
+                "memory": "16GB / 16GB (増設不可)",
+                "storage": "第四世代 ハイスピードSSD (NVMe 暗号化機能付き) 512GB",
+                "camera": "207万画素",
+                "interfaces": ["USB Type-C×2 (Thunderbolt 4, USB PD, USB4, DisplayPort 1.4対応)", "USB 3.0(給電機能付)×1", "USB 3.0×1", "HDMI×1"],
+                "battery_life_hours": {"video_playback": "約9.0時間", "idle": "約24.0時間"},
+                "dimensions_mm": {"width": 320.4, "depth": 222.9, "height_min": 13.3, "height_max": 17.9},
+                "weight_g": 1080,
+                "office": "Office Home & Business 2021"
+            }
+        ]
+
+
+
 
 
 

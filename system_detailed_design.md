@@ -302,8 +302,9 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
 | 2 | `製品カテゴリー` | String | `ノートパソコン` / `一体型デスクトップ` |
 | 3 | `ブランド名` | String | `VAIO` / `FMV` |
 | 4 | **`シリーズ名`** | String | `VAIO SX14-R` / `Note U (UA-K1)` |
-| 5 | **`個別の型番`** | String | **`VJS14R19011B` / `FMVUASK1BA` (型番単位で1行独立展開)** |
+| 5 | **`個別の型番`** | String | **`VJS12690111B` / `VJS12690112B` (仕様表のカラム別型番・スペック差分を独立展開)** |
 | 6 | `全表記型番` | String | セミコロン区切りのシリーズ全型番一覧 |
+
 | 7 | `分類キャッチコピー` | String | `ハイスペックモバイルノート` |
 | 8 | `Copilot+ PC` | String | `はい` / `いいえ` |
 | 9 | `日本製` | String | `はい` / `いいえ` |
