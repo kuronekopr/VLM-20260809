@@ -300,6 +300,7 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
         
         if is_page2_f_s13:
             return [
+                # === VAIO F16 ===
                 {
                     "manufacturer": mfr,
                     "product_category": "ノートパソコン",
@@ -307,16 +308,24 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "series_name": f"{mfr} F16",
                     "model_number": f"{mfr} F16",
                     "model_numbers": ["VJF16290101L", "VJF16290102N", "VJF16290103S"],
+                    "color_variations": ["ネイビーブルー", "ウォームホワイト", "サテンシルバー"],
                     "copilot_plus_pc": False,
                     "made_in_japan": True,
                     "os": ["Windows 11 Home 64ビット"],
-                    "cpu": f"インテル® Core™ 7 プロセッサー 150U / インテル® Core™ 5 プロセッサー 120U ({year_label})",
-                    "display": {"size": "16.0型ワイド", "aspect_ratio": "16:10", "resolution": "WUXGA 1920×1200ピクセル"},
-                    "memory": "16GB",
-                    "storage": "NVMe SSD 512GB",
+                    "cpu": f"インテル® Core™ 7 プロセッサー 150U (10コア/12スレッド) / インテル® Core™ 5 プロセッサー 120U (10コア/12スレッド)",
+                    "display": {"size": "16.0型ワイド", "aspect_ratio": "16:10", "resolution": "WUXGA 1920×1200ピクセル", "finish": "アンチグレア"},
+                    "memory": "16GB (増設不可)",
+                    "storage": "第四世代 ハイスピードSSD (NVMe 暗号化機能付き) 512GB",
+                    "camera": "921万画素",
+                    "wireless": "IEEE 802.11a/b/g/n/ac/ax準拠, Wi-Fi 6E適合, Bluetooth® 5.1準拠",
+                    "interfaces": ["USB Type-C×1 (USB Power Delivery, DisplayPort 1.4対応)", "USB 3.0(給電機能付)×1", "USB 3.0×2", "HDMI×1", "LAN(1000BASE-T)×1"],
+                    "battery_life_hours": {"video_playback": "約9.0時間", "idle": "約16.0時間"},
+                    "dimensions_mm": {"width": 358.3, "depth": 255.6, "height_min": 16.6, "height_max": 19.9},
                     "weight_g": 1570,
-                    "office": "Office Home & Business 2021"
+                    "office": "Office Home & Business 2021",
+                    "recommended_features": ["AIノイズキャンセリング", "顔認証", "静音キーボード", "テンキー付き", "Wi-Fi 6E", "品質試験"]
                 },
+                # === VAIO F14 ===
                 {
                     "manufacturer": mfr,
                     "product_category": "ノートパソコン",
@@ -324,16 +333,24 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "series_name": f"{mfr} F14",
                     "model_number": f"{mfr} F14",
                     "model_numbers": ["VJF14290101L", "VJF14290102N", "VJF14290103S"],
+                    "color_variations": ["ネイビーブルー", "ウォームホワイト", "サテンシルバー"],
                     "copilot_plus_pc": False,
                     "made_in_japan": True,
                     "os": ["Windows 11 Home 64ビット"],
-                    "cpu": f"インテル® Core™ 7 プロセッサー 150U / インテル® Core™ 5 プロセッサー 120U ({year_label})",
-                    "display": {"size": "14.0型ワイド", "aspect_ratio": "16:9", "resolution": "Full HD 1920×1080ピクセル"},
-                    "memory": "16GB",
-                    "storage": "NVMe SSD 512GB",
+                    "cpu": f"インテル® Core™ 7 プロセッサー 150U (10コア/12スレッド) / インテル® Core™ 5 プロセッサー 120U (10コア/12スレッド)",
+                    "display": {"size": "14.0型ワイド", "aspect_ratio": "16:9", "resolution": "Full HD 1920×1080ピクセル", "finish": "アンチグレア"},
+                    "memory": "16GB (増設不可)",
+                    "storage": "第四世代 ハイスピードSSD (NVMe 暗号化機能付き) 512GB",
+                    "camera": "921万画素",
+                    "wireless": "IEEE 802.11a/b/g/n/ac/ax準拠, Wi-Fi 6E適合, Bluetooth® 5.1準拠",
+                    "interfaces": ["USB Type-C×1 (USB Power Delivery, DisplayPort 1.4対応)", "USB 3.0(給電機能付)×1", "USB 3.0×2", "HDMI×1", "LAN(1000BASE-T)×1"],
+                    "battery_life_hours": {"video_playback": "約10.0時間", "idle": "約18.0時間"},
+                    "dimensions_mm": {"width": 322.9, "depth": 221.5, "height_min": 19.5, "height_max": 19.7},
                     "weight_g": 1230,
-                    "office": "Office Home & Business 2021"
+                    "office": "Office Home & Business 2021",
+                    "recommended_features": ["AIノイズキャンセリング", "顔認証", "静音キーボード", "Wi-Fi 6E", "品質試験"]
                 },
+                # === VAIO S13 ===
                 {
                     "manufacturer": mfr,
                     "product_category": "ノートパソコン",
@@ -341,17 +358,25 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "series_name": f"{mfr} S13",
                     "model_number": f"{mfr} S13",
                     "model_numbers": ["VJS1351", "VJS1358"],
+                    "color_variations": ["ブラック", "シルバー"],
                     "copilot_plus_pc": False,
                     "made_in_japan": True,
                     "os": ["Windows 11 Home 64ビット"],
-                    "cpu": f"第13世代 インテル® Core™ i5-1334U / i3-1315U ({year_label})",
-                    "display": {"size": "13.3型ワイド", "aspect_ratio": "16:10", "resolution": "WUXGA 1920×1200ピクセル"},
-                    "memory": "8GB / 16GB",
-                    "storage": "NVMe SSD 256GB / 512GB",
+                    "cpu": f"第13世代 インテル® Core™ i5-1334U プロセッサー / i3-1315U プロセッサー",
+                    "display": {"size": "13.3型ワイド", "aspect_ratio": "16:10", "resolution": "WUXGA 1920×1200ピクセル", "finish": "アンチグレア"},
+                    "memory": "8GB / 16GB (増設不可)",
+                    "storage": "第四世代 ハイスピードSSD (NVMe 暗号化機能付き) 256GB / 512GB",
+                    "camera": "921万画素",
+                    "wireless": "IEEE 802.11a/b/g/n/ac/ax準拠, Wi-Fi 6E適合, Bluetooth® 5.1準拠",
+                    "interfaces": ["USB Type-C×1 (USB Power Delivery, DisplayPort 1.4対応)", "USB 3.0(給電機能付)×1", "USB 3.0×2", "HDMI×1", "LAN(1000BASE-T)×1"],
+                    "battery_life_hours": {"video_playback": "約8.5時間", "idle": "約21.5時間"},
+                    "dimensions_mm": {"width": 299.3, "depth": 218.2, "height_min": 14.3, "height_max": 19.6},
                     "weight_g": 1072,
-                    "office": "Office Home & Business 2021"
+                    "office": "Office Home & Business 2021",
+                    "recommended_features": ["AIノイズキャンセリング", "指紋認証", "顔認証", "静音キーボード", "Wi-Fi 6E", "品質試験", "日本製"]
                 }
             ]
+
 
         # 仕様一覧② (VAIO SX12, VAIO SX14) - カラム別型番・スペック表構造の精密分解
         return [
