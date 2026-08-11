@@ -161,7 +161,8 @@ def main():
         "model_evaluations": evaluations
     }
 
-    out_path = os.path.join(os.getcwd(), "feature_discrepancy_evaluation.json")
+    target_dir = r"c:\json_data" if os.path.exists(r"c:\json_data") else os.getcwd()
+    out_path = os.path.join(target_dir, "feature_discrepancy_evaluation.json")
     with open(out_path, 'w', encoding='utf-8') as f:
         json.dump(result_report, f, ensure_ascii=False, indent=2)
 

@@ -19,3 +19,6 @@ node_modules/
 
 # Data & Generated directories
 [Dd]ata/
+merged_*.csv
+merged_*.json
+feature_discrepancy_evaluation.json

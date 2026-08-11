@@ -267,7 +267,7 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
 #### ④ 新階層フォルダの画像自動検知・プロンプトスマートマージ ＆ 取り込み後 PNG 自動削除エンジン (`auto_process_new_catalogs.py`)
 `c:\json_data\new\{category}\{manufacturer}\{import_type}\` 階層フォルダ構造を全自動スキャンし、投入された `.png` カタログ画像から構造化 JSON を作成、ビジネスユーザー用プロンプト (`prompts/`) をスマートマージ更新したのち、**処理完了した `.png` ファイルを全自動削除 (`os.remove`)** して統合パイプラインを自動キックします。
 
-- **標準ファイル命名規則とストレージ一元化**: カタログ構造化 JSON ファイル群（`catalog_models_*.json`, `product_series_details_*.json`, `technical_spec_*.json`）は `c:\json_data\` ディレクトリへ完全集約・一元管理。
+- **標準ファイル命名規則とストレージ一元化**: カタログ構造化 JSON ファイル群（`catalog_models_*.json`, `product_series_details_*.json`, `technical_spec_*.json`）およびパイプライン統合出力成果物（`merged_*.json`, `merged_*.csv`）は `c:\json_data\` ディレクトリへ完全集約・一元管理。
 - **二重ロード防止機構**: 動的ローダー `load_and_merge_json_files()` は `c:\json_data\` をプライマリ・データストレージとして読み込み、重複ロードを自動防止。
 - **全取り込みタイプ対象・同名重複時の連番命名規則**:
   `catalog_models`, `product_series_details`, `technical_spec` の全タイプにおいて、既に同名 JSON ファイルが存在する場合、`get_unique_numbered_filename()` によりファイル末尾に 1 番からの連番 `(1)`, `(2)` ... を自動付与して出力・保存。

@@ -303,14 +303,11 @@ def process_pc_data_integration(base_dir):
             "technical_specifications": entry.get("technical_specifications")
         })
 
-    output_json_path = os.path.join(base_dir, "merged_pc_models.json")
+    target_dir = r"c:\json_data" if os.path.exists(r"c:\json_data") else base_dir
+    output_json_path = os.path.join(target_dir, "merged_pc_models.json")
     with open(output_json_path, 'w', encoding='utf-8') as f:
         json.dump(merged_pc_list, f, ensure_ascii=False, indent=2)
     print(f"Successfully saved PC merged JSON -> {output_json_path} (Total: {len(merged_pc_list)} PC series/models)")
-
-    target_dir = r"c:\json_data"
-    if os.path.exists(target_dir):
-        shutil.copy2(output_json_path, os.path.join(target_dir, "merged_pc_models.json"))
 
     # E. PC CSV ファイルの出力 (全28列 / シリーズ名 ＆ 個別の型番の分離 / BOM付き UTF-8: utf-8-sig)
     headers = [
@@ -366,17 +363,11 @@ def process_pc_data_integration(base_dir):
                 interfaces_str, batt_video, batt_idle, width, depth, height, tech.get("weight_g", ""), rec_str
             ])
 
-    output_csv_path = os.path.join(base_dir, "merged_pc_models.csv")
+    output_csv_path = os.path.join(target_dir, "merged_pc_models.csv")
     with open(output_csv_path, 'w', newline='', encoding='utf-8-sig') as f:
         writer = csv.writer(f)
         writer.writerows(rows)
-
-    target_dir = r"c:\json_data"
-    if os.path.exists(target_dir):
-        try:
-            shutil.copy2(output_csv_path, os.path.join(target_dir, os.path.basename(output_csv_path)))
-        except Exception as e:
-            print(f"Note: Could not copy {output_csv_path} to {target_dir}: {e}")
+    print(f"Successfully saved PC merged CSV -> {output_csv_path} (Total: {len(rows)-1} rows)")
 
     print(f"Successfully saved PC merged CSV -> {output_csv_path} (Total: {len(rows)-1} rows across individual model numbers)")
 
@@ -542,17 +533,11 @@ def main():
             "detail_functions": entry.get("detail_functions")
         })
 
-    output_json_path = os.path.join(base_dir, "merged_aircon_models.json")
+    target_dir = r"c:\json_data" if os.path.exists(r"c:\json_data") else base_dir
+    output_json_path = os.path.join(target_dir, "merged_aircon_models.json")
     with open(output_json_path, 'w', encoding='utf-8') as f:
         json.dump(merged_list, f, ensure_ascii=False, indent=2)
     print(f"Successfully saved multi-manufacturer merged JSON -> {output_json_path} (Total: {len(merged_list)} models)")
-
-    target_dir = r"c:\json_data"
-    if os.path.exists(target_dir):
-        try:
-            shutil.copy2(output_json_path, os.path.join(target_dir, "merged_aircon_models.json"))
-        except Exception as e:
-            print(f"Note: Could not copy {output_json_path} to {target_dir}: {e}")
 
     # --- H. CSV ファイルの出力 (全34列 / BOM付き UTF-8: utf-8-sig) ---
     headers = [
@@ -625,16 +610,10 @@ def main():
             pwr, pipe_l, pipe_g, heat_kw, heat_w, cool_kw, cool_w, ann_kwh, apf_v, ref_t, ref_kg, gwp_v, feat_str
         ])
 
-    output_csv_path = os.path.join(base_dir, "merged_aircon_models.csv")
+    output_csv_path = os.path.join(target_dir, "merged_aircon_models.csv")
     with open(output_csv_path, 'w', newline='', encoding='utf-8-sig') as f:
         writer = csv.writer(f)
         writer.writerows(rows)
-        
-    if os.path.exists(target_dir):
-        try:
-            shutil.copy2(output_csv_path, os.path.join(target_dir, "merged_aircon_models.csv"))
-        except Exception as e:
-            print(f"Note: Could not copy {output_csv_path} to {target_dir}: {e}")
 
     print(f"Successfully saved multi-manufacturer CSV -> {output_csv_path} (Total: {len(rows)-1} rows)")
 
