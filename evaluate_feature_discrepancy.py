@@ -164,18 +164,38 @@ def find_best_matched_item(det_item, target_list):
 
 # --- 3. 類似・関連項目の対応マップ定義 ---
 FIELD_ALIAS_MAP = {
-    "cooling.capacity_kw": ["cooling_capacity_kw", "detail_specs.cooling.capacity_kw", "cooling.rated_capacity_kw"],
-    "heating.capacity_kw": ["heating_capacity_kw", "detail_specs.heating.capacity_kw", "heating.rated_capacity_kw"],
+    # 暖房・冷房能力
+    "cooling.capacity_kw": ["cooling_capacity_kw", "detail_specs.cooling.capacity_kw", "cooling.rated_capacity_kw", "specs.cooling.capacity_kw"],
+    "heating.capacity_kw": ["heating_capacity_kw", "detail_specs.heating.capacity_kw", "heating.rated_capacity_kw", "specs.heating.capacity_kw"],
+    "specs.cooling.capacity_kw": ["cooling_capacity_kw", "cooling.rated_capacity_kw", "cooling.capacity_kw"],
+    "specs.heating.capacity_kw": ["heating_capacity_kw", "heating.rated_capacity_kw", "heating.capacity_kw"],
+
+    # 年間消費電力量 (必須評価項目)
     "energy_saving.annual_power_consumption_kwh": ["annual_power_consumption_kwh", "annual_power_consumption_kwh.annual_total"],
-    "energy_saving.apf": ["apf", "apf_value"],
-    "specs.energy_saving.apf": ["apf", "apf_value"],
-    "indoor_unit.weight_kg": ["indoor_unit_weight_kg", "weight_kg.indoor"],
-    "outdoor_unit.weight_kg": ["outdoor_unit_weight_kg", "weight_kg.outdoor"],
+    "specs.energy_saving.annual_power_consumption_kwh": ["annual_power_consumption_kwh", "annual_power_consumption_kwh.annual_total"],
+
+    # 室内機・室外機 寸法_mm (幅・高さ・奥行 - 必須評価項目)
+    "dimensions_mm.indoor.width": ["indoor_unit_dimensions_mm.width", "dimensions_mm.indoor.width", "indoor_unit.width"],
+    "dimensions_mm.indoor.height": ["indoor_unit_dimensions_mm.height", "dimensions_mm.indoor.height", "indoor_unit.height"],
+    "dimensions_mm.indoor.depth": ["indoor_unit_dimensions_mm.depth", "dimensions_mm.indoor.depth", "indoor_unit.depth"],
+    "dimensions_mm.outdoor.width": ["outdoor_unit_dimensions_mm.width", "dimensions_mm.outdoor.width", "outdoor_unit.width"],
+    "dimensions_mm.outdoor.height": ["outdoor_unit_dimensions_mm.height", "dimensions_mm.outdoor.height", "outdoor_unit.height"],
+    "dimensions_mm.outdoor.depth": ["outdoor_unit_dimensions_mm.depth", "dimensions_mm.outdoor.depth", "outdoor_unit.depth"],
+    "indoor_unit.dimensions_mm.width": ["indoor_unit_dimensions_mm.width", "dimensions_mm.indoor.width"],
+    "indoor_unit.dimensions_mm.height": ["indoor_unit_dimensions_mm.height", "dimensions_mm.indoor.height"],
+    "indoor_unit.dimensions_mm.depth": ["indoor_unit_dimensions_mm.depth", "dimensions_mm.indoor.depth"],
+    "outdoor_unit.dimensions_mm.width": ["outdoor_unit_dimensions_mm.width", "dimensions_mm.outdoor.width"],
+    "outdoor_unit.dimensions_mm.height": ["outdoor_unit_dimensions_mm.height", "dimensions_mm.outdoor.height"],
+    "outdoor_unit.dimensions_mm.depth": ["outdoor_unit_dimensions_mm.depth", "dimensions_mm.outdoor.depth"],
+
+    # 特徴・おすすめ機能・USP
     "unique_selling_point": ["unique_selling_point"],
     "recommended_features": ["recommended_features", "functions", "main_features"],
     "category_description": ["category_description"],
     "copilot_plus_pc": ["copilot_plus_pc"],
     "made_in_japan": ["made_in_japan"],
+
+    # PCスペック
     "weight_g": ["weight_g", "weight_kg", "weight"],
     "memory": ["memory"],
     "storage": ["storage"],
@@ -257,6 +277,23 @@ def find_target_field_and_value(target_item, detail_field_name):
     for tk, tv in flat_target.items():
         if normalize_key(last_key) == normalize_key(tk.split('.')[-1]) and not is_invalid_field_pair(detail_field_name, tk):
             return tk, tv
+
+    # 4. 寸法 (dimensions_mm) および 年間消費電力 (annual_power_consumption_kwh) のスマートマッチ
+    parts = detail_field_name.split('.')
+    if 'dimensions_mm' in detail_field_name:
+        loc = 'indoor' if 'indoor' in detail_field_name else ('outdoor' if 'outdoor' in detail_field_name else None)
+        dim_type = parts[-1]  # width, height, depth
+        if dim_type in ['width', 'height', 'depth']:
+            for tk, tv in flat_target.items():
+                if dim_type in tk and (loc is None or loc in tk):
+                    if not is_invalid_field_pair(detail_field_name, tk):
+                        return tk, tv
+
+    if 'annual_power_consumption_kwh' in detail_field_name:
+        for tk, tv in flat_target.items():
+            if 'annual_power_consumption_kwh' in tk:
+                if not is_invalid_field_pair(detail_field_name, tk):
+                    return tk, tv
 
     return None, None
 

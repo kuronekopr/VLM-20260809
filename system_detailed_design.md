@@ -339,6 +339,10 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
 
 ### 7.1 評価アルゴリズム
 1. **商品詳細アンカー探索**: 各 `product_series_details_*.json` エントリーのフィールドをフラット展開し、アンカー基準とする。
+   - `specs.heating.capacity_kw`, `specs.cooling.capacity_kw` (暖房・冷房能力)
+   - `specs.energy_saving.annual_power_consumption_kwh` / `annual_power_consumption_kwh` (年間消費電力量・必須評価項目)
+   - `dimensions_mm.indoor.width`, `height`, `depth`, `dimensions_mm.outdoor.width`, `height`, `depth` (室内機・室外機本体寸法・必須評価項目)
+   - `unique_selling_point`, `recommended_features`, `functions` (特徴・機能)
 2. **比較対象マッチング**: 型番 (`model_number`) および シリーズ名 (`series_name`) で一致する `catalog_models` および `technical_spec` のアイテムを紐づけ。
 3. **文章・定性テキスト記述フィールドの保護ポリシー (`is_text_field`)**:
    - `unique_selling_point`, `recommended_features`, `functions`, `series_nickname`, `category_description`, `os`, `cpu`, `gpu`, `display` 等の文章・キャッチコピーフィールドは、文字列内に数字が含まれていても数値比較ではなく**強制的に `is_numeric_comparable = false`** と判定し、**テキストコサイン類似度**で精度高くスコアリング。
