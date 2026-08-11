@@ -165,6 +165,11 @@ def is_invalid_field_pair(detail_field_name, target_field_name):
         if 'heating' in tf:
             return True
 
+    # 5. シリーズ代表畳数目安能力 (applicable_room_size) vs 個別型番スペック能力
+    if 'applicable_room_size' in tf:
+        if 'specs' in df or 'cooling' in df or 'heating' in df:
+            return True
+
     return False
 
 def find_target_field_and_value(target_item, detail_field_name):
