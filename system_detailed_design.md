@@ -335,39 +335,56 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
 
 ## 7. 機能乖離自動評価プログラム設計 (`evaluate_feature_discrepancy.py`)
 
-本プログラムは、カタログ一覧で訴求されている「おもなおすすめ機能」と、製品詳細ページで定義されている「機能詳細」の間に表現や存在の齟齬・乖離がないかを全自動で数学的に評価・検証するスクリプトです。
+本プログラムは、**商品詳細 JSON (`product_series_details_*.json`)** の各フィールドを基準（アンカー）とし、対応する **商品一覧 (`catalog_models`)** および **仕様表 (`technical_spec`)** の項目を比較して、各項目の数値比較判定可否 (`is_numeric_comparable`)、数値の完全一致/不一致 (0/1)、およびテキスト文章のコサイン類似度スコアを構造化 JSON レポート (`c:\json_data\feature_discrepancy_evaluation.json`) として全自動出力するスクリプトです。
 
 ### 7.1 評価アルゴリズム
-1. **カタログ一覧マップの構築**: `catalog_models_*.json` から型番別に `recommended_features` のフラット集合 $F_{\text{catalog}}$ を生成。
-2. **製品詳細マップの構築**: `product_series_details_*.json` から型番別に `functions` のフラット集合 $F_{\text{details}}$ を生成。
-3. **集合差分の算出**:
-   - カタログのみに存在: $D_{\text{catalog}} = F_{\text{catalog}} \setminus F_{\text{details}}$
-   - 詳細のみに存在: $D_{\text{details}} = F_{\text{details}} \setminus F_{\text{catalog}}$
-   - 共通一致機能: $C = F_{\text{catalog}} \cap F_{\text{details}}$
-4. **乖離判定**: $D_{\text{catalog}} \neq \emptyset$ または $D_{\text{details}} \neq \emptyset$ の場合、`has_discrepancy = true` と判定。
+1. **商品詳細アンカー探索**: 各 `product_series_details_*.json` エントリーのフィールドをフラット展開し、アンカー基準とする。
+2. **比較対象マッチング**: 型番 (`model_number`) および シリーズ名 (`series_name`) で一致する `catalog_models` および `technical_spec` のアイテムを紐づけ。
+3. **数値判定可否 (`is_numeric_comparable`) 判定**:
+   - 単一数値 (float/int) が抽出できる場合 ➔ **`true`**
+   - 文章、配列等の場合 ➔ **`false`**
+4. **スコアリング**:
+   - **数値比較可能 (`true`)**: **完全一致 ➔ `0`**, **不一致 ➔ `1`**
+   - **数値比較不可能 (`false`)**: N-gram ベクトル空間アルゴリズムによる **テキストコサイン類似度** (0.0 〜 1.0)
 
-### 7.2 評価出力形式 (`feature_discrepancy_evaluation.json`)
+### 7.2 評価出力形式 (`c:\json_data\feature_discrepancy_evaluation.json`)
 ```json
 {
   "evaluation_summary": {
-    "total_evaluated_models": 104,
-    "matched_models_count": 0,
-    "discrepancy_models_count": 104,
-    "discrepancy_rate_percent": 100.0
+    "total_evaluated_detail_items": 28,
+    "total_field_comparisons": 690,
+    "numeric_comparable_count": 352,
+    "numeric_exact_match_count (score=0)": 86,
+    "numeric_mismatch_count (score=1)": 266,
+    "text_comparable_count": 338
   },
-  "model_evaluations": [
+  "product_series_details_evaluations": [
     {
-      "manufacturer": "ダイキン",
-      "model_number": "S22ATRS",
-      "series_name": "RXシリーズ",
-      "has_discrepancy": true,
-      "discrepancy_details": {
-        "in_catalog_only_count": 4,
-        "in_catalog_only": ["うるさらAI", "給気換気", "無給水加湿", "水内部クリーン"],
-        "in_details_only_count": 12,
-        "in_details_only": ["AI快適自動運転", "サーキュレーション気流", "プレミアム冷房", "センサー風向"]
-      },
-      "comparison_pair": { ... }
+      "manufacturer": "日立",
+      "product_category": "壁掛形ルームエアコン",
+      "series_name": "Xシリーズ",
+      "model_number": "RAS-X2226S",
+      "field_evaluations_count": 27,
+      "detail_field_evaluations": [
+        {
+          "compared_target": "catalog_models",
+          "detail_field_name": "cooling.capacity_kw",
+          "detail_value": 2.2,
+          "target_field_name": "cooling_capacity_kw",
+          "target_value": 2.2,
+          "is_numeric_comparable": true,
+          "score": 0
+        },
+        {
+          "compared_target": "catalog_models",
+          "detail_field_name": "unique_selling_point",
+          "detail_value": "[LA自慢]・[凍結洗浄]...",
+          "target_field_name": "unique_selling_point",
+          "target_value": "プレミアムモデル",
+          "is_numeric_comparable": false,
+          "score": 0.745
+        }
+      ]
     }
   ]
 }
