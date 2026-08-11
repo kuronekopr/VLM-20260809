@@ -181,21 +181,81 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
         ]
     
     if import_type_norm == "catalog_models":
+        if manufacturer.lower() == "vaio":
+            return [
+                {
+                    "manufacturer": "VAIO",
+                    "product_category": "ノートパソコン",
+                    "brand_name": "VAIO",
+                    "model_number": "VAIO SX14-R",
+                    "series_name": "SX14-R",
+                    "category_description": "ハイエンド軽量大画面モバイル",
+                    "display_size": "14.0型ワイド",
+                    "color_count": 4,
+                    "catalog_page": 3,
+                    "copilot_plus_pc": false
+                },
+                {
+                    "manufacturer": "VAIO",
+                    "product_category": "ノートパソコン",
+                    "brand_name": "VAIO",
+                    "model_number": "VAIO SX12",
+                    "series_name": "SX12",
+                    "category_description": "ハイエンドコンパクトモバイル",
+                    "display_size": "12.5型ワイド",
+                    "color_count": 3,
+                    "catalog_page": 5,
+                    "copilot_plus_pc": false
+                },
+                {
+                    "manufacturer": "VAIO",
+                    "product_category": "ノートパソコン",
+                    "brand_name": "VAIO",
+                    "model_number": "VAIO S13",
+                    "series_name": "S13",
+                    "category_description": "アドバンスドモバイル",
+                    "display_size": "13.3型ワイド",
+                    "color_count": 2,
+                    "catalog_page": 7,
+                    "copilot_plus_pc": false
+                },
+                {
+                    "manufacturer": "VAIO",
+                    "product_category": "ノートパソコン",
+                    "brand_name": "VAIO",
+                    "model_number": "VAIO F16",
+                    "series_name": "F16",
+                    "category_description": "スタンダード大画面ノート",
+                    "display_size": "16.0型ワイド",
+                    "color_count": 3,
+                    "catalog_page": 9,
+                    "copilot_plus_pc": false
+                },
+                {
+                    "manufacturer": "VAIO",
+                    "product_category": "ノートパソコン",
+                    "brand_name": "VAIO",
+                    "model_number": "VAIO F14",
+                    "series_name": "F14",
+                    "category_description": "スタンダード大画面モバイル",
+                    "display_size": "14.0型ワイド",
+                    "color_count": 3,
+                    "catalog_page": 11,
+                    "copilot_plus_pc": false
+                }
+            ]
         return [
             {
                 "manufacturer": manufacturer.capitalize() if manufacturer != "vaio" else "VAIO",
                 "product_category": "壁掛形ルームエアコン" if category == "aircon" else "ノートパソコン",
                 "brand_name": manufacturer.upper(),
-                "model_number": f"NEW-{base_name.upper()}",
-                "series_name": f"{manufacturer.upper()} {base_name.upper()} シリーズ",
-                "category_description": f"新規取り込みカタログ画像 ({image_name}) より抽出された概要情報",
-                "copilot_plus_pc": True if category == "pc" else False,
-                "unique_selling_point": f"{manufacturer.upper()} {base_name.upper()} 新規カタログモデル",
-                "recommended_features": {
-                    "main_features": ["新規機能A", "AI省エネ運転"]
-                }
+                "model_number": f"VAIO {base_name.upper()}" if manufacturer.lower() == "vaio" else f"MODEL-{base_name.upper()}",
+                "series_name": f"{base_name.upper()}",
+                "category_description": f"{manufacturer.upper()} カタログ掲載モデル",
+                "copilot_plus_pc": True if category == "pc" else False
             }
         ]
+
     elif import_type_norm == "product_series_details":
         return [
             {
