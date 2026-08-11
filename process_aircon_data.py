@@ -48,19 +48,20 @@ def get_similarity_scores_for_list(val_list):
 
 # --- 2. 動的マルチファイル自動検索 ＆ グループマージ関数 ---
 def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
-    """
+    r"""
+    c:\json_data (およびフォールバックとして base_dir) から
     {import_type}_{category}_{manufacturer}*.json のパターンに該当するすべてのJSONファイルを
-    自動検索し、単一のデータリストにマージして返します。
+    一元検索し、重複なく単一のデータリストにマージして返します。
     """
     pattern = f"{import_type}_{category}_{manufacturer}*.json"
-    search_path = os.path.join(base_dir, pattern)
-    matched_files = glob.glob(search_path)
-    
-    # 互換性のため c:\json_data ディレクトリも探索
     target_dir = r"c:\json_data"
-    if os.path.exists(target_dir):
-        alt_search_path = os.path.join(target_dir, pattern)
-        for fpath in glob.glob(alt_search_path):
+    
+    search_dirs = [target_dir] if os.path.exists(target_dir) else [base_dir]
+    matched_files = []
+    
+    for d in search_dirs:
+        search_path = os.path.join(d, pattern)
+        for fpath in glob.glob(search_path):
             if fpath not in matched_files:
                 matched_files.append(fpath)
                 

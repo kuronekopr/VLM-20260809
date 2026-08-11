@@ -271,7 +271,8 @@ def process_new_catalogs():
         # 1. 構造化 JSON ファイルの動的連番生成 (フォーマット: [import_type]_[category]_[manufacturer]_[pngファイル名].json)
         base_json_filename = f"{import_type_norm}_{category}_{manufacturer}_{safe_image_stem}.json"
         
-        target_initial_path = os.path.join(project_dir, base_json_filename)
+        target_dir = json_data_dir if os.path.exists(json_data_dir) else project_dir
+        target_initial_path = os.path.join(target_dir, base_json_filename)
         json_output_path = get_unique_numbered_filename(target_initial_path)
         
         json_data = generate_initial_json_data(category, manufacturer, import_type_norm, image_filename)
@@ -279,13 +280,6 @@ def process_new_catalogs():
         with open(json_output_path, 'w', encoding='utf-8') as f:
             json.dump(json_data, f, ensure_ascii=False, indent=2)
         print(f"  [JSON Output] Generated -> {json_output_path}")
-
-        if os.path.exists(json_data_dir):
-            copy_dst_path = get_unique_numbered_filename(os.path.join(json_data_dir, os.path.basename(json_output_path)))
-            try:
-                shutil.copy2(json_output_path, copy_dst_path)
-            except Exception as e:
-                print(f"  [Warning] Copy error: {e}")
 
         # 2. ビジネスユーザー用プロンプトのスマートマージ更新
         update_or_merge_prompt(prompts_dir, manufacturer, import_type_norm, image_filename)
