@@ -187,6 +187,9 @@ def process_pc_data_integration(base_dir):
     for item in tech_vaio + tech_fujitsu:
         mfr = item.get("manufacturer", "")
         series = item.get("series_name", "")
+        # 'VAIO 2' などのゴミシリーズ名をブロック
+        if not series or series.endswith(" 2") or "(2)" in series or "_2_" in series:
+            continue
         models = extract_model_numbers_from_item(item)
         key = f"{mfr}_{series}".strip()
 
@@ -198,7 +201,7 @@ def process_pc_data_integration(base_dir):
                 "series_name": series,
                 "full_model_numbers": set(models),
                 "copilot_plus_pc": item.get("copilot_plus_pc", False),
-                "made_in_japan": item.get("made_in_japan", False),
+                "made_in_japan": item.get("made_in_japan", True),
                 "category_description": "",
                 "unique_selling_point_sources": [],
                 "recommended_features": [],
@@ -247,7 +250,7 @@ def process_pc_data_integration(base_dir):
                 "series_name": series or item.get("model_number", ""),
                 "full_model_numbers": set(models),
                 "copilot_plus_pc": item.get("copilot_plus_pc", False),
-                "made_in_japan": False,
+                "made_in_japan": True,
                 "category_description": item.get("category_description", ""),
                 "unique_selling_point_sources": [item.get("unique_selling_point")] if item.get("unique_selling_point") else [],
                 "recommended_features": item.get("recommended_features") if item.get("recommended_features") else [],
@@ -265,6 +268,8 @@ def process_pc_data_integration(base_dir):
             if entry["manufacturer"].lower() == mfr.lower():
                 entry_norm = normalize_pc_series_key(entry["series_name"])
                 if target_norm and entry_norm and (target_norm == entry_norm or target_norm in entry_norm or entry_norm in target_norm):
+                    if item.get("made_in_japan") is not None:
+                        entry["made_in_japan"] = item.get("made_in_japan")
                     if item.get("unique_selling_point"):
                         entry["unique_selling_point_sources"].append(item.get("unique_selling_point"))
                     if item.get("recommended_features"):

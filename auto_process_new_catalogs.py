@@ -220,14 +220,14 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
 
     if import_type_norm == "catalog_models":
         # 画像名に特定モデル名が無い全ラインナップ表紙画像の場合、メーカー代表シリーズ群を出力
-        if not raw_part or raw_part.upper() == "SERIES" or raw_part.upper() == "CATALOG":
+        if not raw_part or raw_part.upper() in ["SERIES", "CATALOG", "モデル", "製品"]:
             return [
                 {
                     "manufacturer": mfr,
                     "product_category": "ノートパソコン",
                     "brand_name": mfr,
                     "model_number": f"{mfr} SX14",
-                    "series_name": "SX14",
+                    "series_name": f"{mfr} SX14",
                     "category_description": f"ハイエンド大画面モバイル ({year_label})",
                     "display_size": "14.0型ワイド",
                     "copilot_plus_pc": True if "2025" in year_label else False
@@ -237,7 +237,7 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "product_category": "ノートパソコン",
                     "brand_name": mfr,
                     "model_number": f"{mfr} SX12",
-                    "series_name": "SX12",
+                    "series_name": f"{mfr} SX12",
                     "category_description": f"ハイエンドコンパクトモバイル ({year_label})",
                     "display_size": "12.5型ワイド",
                     "copilot_plus_pc": False
@@ -247,7 +247,7 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "product_category": "ノートパソコン",
                     "brand_name": mfr,
                     "model_number": f"{mfr} F16",
-                    "series_name": "F16",
+                    "series_name": f"{mfr} F16",
                     "category_description": f"スタンダード大画面ノート ({year_label})",
                     "display_size": "16.0型ワイド",
                     "copilot_plus_pc": False
@@ -257,7 +257,7 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
                     "product_category": "ノートパソコン",
                     "brand_name": mfr,
                     "model_number": f"{mfr} F14",
-                    "series_name": "F14",
+                    "series_name": f"{mfr} F14",
                     "category_description": f"スタンダード大画面モバイル ({year_label})",
                     "display_size": "14.0型ワイド",
                     "copilot_plus_pc": False
