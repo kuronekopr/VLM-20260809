@@ -235,25 +235,48 @@ def find_target_field_and_value(target_item, detail_field_name):
 
     return None, None
 
+def is_text_field(field_name):
+    """
+    文章・キャッチコピー・特徴記述・型番表示等のテキストフィールドかを判定する。
+    これらは文字列内に数字が含まれていても数値単体比較ではなくテキスト類似度評価を行う。
+    """
+    fn = str(field_name).lower()
+    text_keywords = [
+        'unique_selling_point', 'usp', 'recommended_features', 'functions',
+        'series_name', 'series_nickname', 'category_description', 'os', 'cpu',
+        'gpu', 'display', 'interface', 'communication', 'catchphrase', 'features',
+        'power_supply', 'power_plug', 'refrigerant', 'model_year', 'model_number',
+        'indoor_unit_model', 'outdoor_unit_model', 'copilot_plus_pc', 'made_in_japan'
+    ]
+    for kw in text_keywords:
+        if kw in fn:
+            return True
+    return False
+
 def evaluate_single_field(detail_field_name, detail_val, target_item, target_name):
     target_field, target_val = find_target_field_and_value(target_item, detail_field_name)
     
     if target_val is None or is_invalid_field_pair(detail_field_name, target_field):
         return None
 
-    # 数値比較判定
-    is_num_detail, num_detail = extract_numeric_value(detail_val)
-    is_num_target, num_target = extract_numeric_value(target_val)
-    
-    if is_num_detail and is_num_target:
-        is_numeric_comparable = True
-        # 数値比較: 完全一致 ➔ 1, 不一致 ➔ 0
-        diff = abs(num_detail - num_target)
-        score = 1 if diff < 1e-4 else 0
-    else:
+    # 文章・テキスト記述フィールドは強制的にテキストコサイン類似度評価 (is_numeric_comparable = False)
+    if is_text_field(detail_field_name) or is_text_field(target_field):
         is_numeric_comparable = False
-        # コサイン類似度スコア (0.0 〜 1.0)
         score = calculate_cosine_similarity(detail_val, target_val)
+    else:
+        # 純数値スペック比較判定
+        is_num_detail, num_detail = extract_numeric_value(detail_val)
+        is_num_target, num_target = extract_numeric_value(target_val)
+        
+        if is_num_detail and is_num_target:
+            is_numeric_comparable = True
+            # 数値比較: 完全一致 ➔ 1, 不一致 ➔ 0
+            diff = abs(num_detail - num_target)
+            score = 1 if diff < 1e-4 else 0
+        else:
+            is_numeric_comparable = False
+            # コサイン類似度スコア (0.0 〜 1.0)
+            score = calculate_cosine_similarity(detail_val, target_val)
 
     return {
         "compared_target": target_name,
