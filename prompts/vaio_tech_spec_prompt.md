@@ -132,3 +132,19 @@
 3. **ユニークセリングポイント (USP: `unique_selling_point`)**:
    - カタログ本文内の水色テキストの見出し文章（例: `最大約14.5時間駆動の驚異的スタミナ`, `AI新時代の高性能CPUを搭載`, `天板と底面にカーボンを採用しより軽く、強く、美しく`, `VAIOならではのスマート機能がもっと便利に、使いやすく`, `高精細で見やすい大画面`, `いろいろ繋がる豊富なインターフェース` など）を配列として認識・抽出すること。
 
+
+- 画像: technical_spec_pc_vaio_202507 (2).png
+
+- 画像: technical_spec_pc_vaio_202507.png
+
+- 画像: technical_spec_pc_vaio_202507 (2).png
+
+- 画像: technical_spec_pc_vaio_202507.png
+
+- 画像: technical_spec_pc_vaio_202507 (2).png
+
+- 画像: technical_spec_pc_vaio_202507.png
+
+- 画像: technical_spec_pc_vaio_202507 (2).png
+
+- 画像: technical_spec_pc_vaio_202507.png
