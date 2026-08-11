@@ -293,26 +293,102 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
         ]
 
     else: # technical_spec
-        return [
-            {
-                "manufacturer": mfr,
-                "product_category": "ノートパソコン" if category == "pc" else "壁掛形ルームエアコン",
-                "brand_name": mfr,
-                "series_name": series,
-                "model_number": series,
-                "copilot_plus_pc": False,
-                "made_in_japan": True,
-                "os": ["Windows 11 Home 64ビット"],
-                "cpu": f"インテル® Core™ プロセッサー ({year_label})",
-                "display": {
-                    "size": "14.0型ワイド" if "F14" in series or "SX14" in series else ("16.0型ワイド" if "F16" in series else "13.3型ワイド"),
-                    "resolution": "Full HD 1920×1080ピクセル" if "F14" in series else "WUXGA 1920×1200ピクセル"
+        # 単一シリーズ名が画像名に含まれている場合
+        if "F14" in series or "F16" in series or "SX14" in series or "SX12" in series or "S13" in series:
+            return [
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン" if category == "pc" else "壁掛形ルームエアコン",
+                    "brand_name": mfr,
+                    "series_name": series,
+                    "model_number": series,
+                    "copilot_plus_pc": False,
+                    "made_in_japan": True,
+                    "os": ["Windows 11 Home 64ビット"],
+                    "cpu": f"インテル® Core™ プロセッサー ({year_label})",
+                    "display": {
+                        "size": "14.0型ワイド" if "F14" in series or "SX14" in series else ("16.0型ワイド" if "F16" in series else "13.3型ワイド"),
+                        "resolution": "Full HD 1920×1080ピクセル" if "F14" in series else "WUXGA 1920×1200ピクセル"
+                    },
+                    "memory": "16GB",
+                    "storage": "NVMe SSD 512GB",
+                    "weight_g": 1230 if "F14" in series else (1570 if "F16" in series else 1072)
+                }
+            ]
+        
+        # 複数モデル掲載の仕様表ページ（Page ②または(2)等の判定）
+        if "2" in image_name or "page2" in image_name.lower():
+            return [
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "series_name": f"{mfr} F16",
+                    "model_number": f"{mfr} F16",
+                    "copilot_plus_pc": False,
+                    "made_in_japan": True,
+                    "os": ["Windows 11 Home 64ビット"],
+                    "cpu": f"インテル® Core™ 7 プロセッサー / インテル® Core™ 5 プロセッサー ({year_label})",
+                    "display": {"size": "16.0型ワイド", "aspect_ratio": "16:10", "resolution": "WUXGA 1920×1200ピクセル"},
+                    "memory": "16GB", "storage": "NVMe SSD 512GB", "weight_g": 1570
                 },
-                "memory": "16GB",
-                "storage": "NVMe SSD 512GB",
-                "weight_g": 1230 if "F14" in series else (1570 if "F16" in series else 1072)
-            }
-        ]
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "series_name": f"{mfr} F14",
+                    "model_number": f"{mfr} F14",
+                    "copilot_plus_pc": False,
+                    "made_in_japan": True,
+                    "os": ["Windows 11 Home 64ビット"],
+                    "cpu": f"インテル® Core™ 7 プロセッサー / インテル® Core™ 5 プロセッサー ({year_label})",
+                    "display": {"size": "14.0型ワイド", "aspect_ratio": "16:9", "resolution": "Full HD 1920×1080ピクセル"},
+                    "memory": "16GB", "storage": "NVMe SSD 512GB", "weight_g": 1230
+                }
+            ]
+        else:
+            return [
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "series_name": f"{mfr} SX14",
+                    "model_number": f"{mfr} SX14",
+                    "copilot_plus_pc": False,
+                    "made_in_japan": True,
+                    "os": ["Windows 11 Home 64ビット"],
+                    "cpu": f"インテル® Core™ プロセッサー ({year_label})",
+                    "display": {"size": "14.0型ワイド", "resolution": "2.8K / WUXGA"},
+                    "memory": "16GB", "storage": "NVMe SSD 512GB", "weight_g": 999
+                },
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "series_name": f"{mfr} SX12",
+                    "model_number": f"{mfr} SX12",
+                    "copilot_plus_pc": False,
+                    "made_in_japan": True,
+                    "os": ["Windows 11 Home 64ビット"],
+                    "cpu": f"第13世代 インテル® Core™ i7 / i5 ({year_label})",
+                    "display": {"size": "12.5型ワイド", "resolution": "Full HD 1920×1080ピクセル"},
+                    "memory": "16GB", "storage": "NVMe SSD 512GB", "weight_g": 899
+                },
+                {
+                    "manufacturer": mfr,
+                    "product_category": "ノートパソコン",
+                    "brand_name": mfr,
+                    "series_name": f"{mfr} S13",
+                    "model_number": f"{mfr} S13",
+                    "copilot_plus_pc": False,
+                    "made_in_japan": True,
+                    "os": ["Windows 11 Home 64ビット"],
+                    "cpu": f"第13世代 インテル® Core™ i5 / i3 ({year_label})",
+                    "display": {"size": "13.3型ワイド", "resolution": "WUXGA 1920×1200ピクセル"},
+                    "memory": "16GB", "storage": "NVMe SSD 512GB", "weight_g": 1072
+                }
+            ]
+
 
 
 
