@@ -268,6 +268,7 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
 `c:\json_data\new\{category}\{manufacturer}\{import_type}\` 階層フォルダ構造を全自動スキャンし、投入された `.png` カタログ画像から構造化 JSON を作成、ビジネスユーザー用プロンプト (`prompts/`) をスマートマージ更新したのち、**処理完了した `.png` ファイルを全自動削除 (`os.remove`)** して統合パイプラインを自動キックします。
 
 - **対象スキャンフォルダ**: `c:\json_data\new\{category}\{manufacturer}\{import_type}\`
+- **同名ファイル重複時の連番命名規則**: 既に同名 JSON ファイルが存在する場合、`get_unique_numbered_filename()` によりファイル末尾に 1 番からの連番 `(1)`, `(2)` ... を自動付与して出力・保存 (例: `product_series_details_pc_vaio_sx14r(1).json`)。
 - **プロンプトマージロジック**: 既存プロンプトが存在する場合はペルソナ・抽出規則・JSON スキーマを損なわず新画像情報をスマート追記マージ。
 - **PNG クリーンアップ**: 取り込み完了後、ディスク領域を圧迫しないよう取り込み済みの `.png` ファイルを安全に自動消去。
 

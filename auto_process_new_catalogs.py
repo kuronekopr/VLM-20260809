@@ -31,10 +31,33 @@ PROMPT_FILE_MAP = {
     ("fujitsu", "technical_spec"): "fujitsu_tech_spec_prompt.md",
 }
 
+def get_unique_numbered_filename(target_path):
+    """
+    同名のファイルが既に存在する場合、ファイル名の最後尾に (1), (2) ... の連番を自動付与して
+    ユニークなパスを返します。
+    例: product_series_details_pc_vaio_sx14r.json が存在する場合 -> product_series_details_pc_vaio_sx14r(1).json
+    """
+    if not os.path.exists(target_path):
+        return target_path
+
+    dir_name, full_name = os.path.split(target_path)
+    name_stem, ext = os.path.splitext(full_name)
+
+    # 既に末尾に (x) がついている場合の基準名正規化
+    base_stem = re.sub(r'\(\d+\)$', '', name_stem)
+
+    index = 1
+    while True:
+        candidate_name = f"{base_stem}({index}){ext}"
+        candidate_path = os.path.join(dir_name, candidate_name)
+        if not os.path.exists(candidate_path):
+            return candidate_path
+        index += 1
+
 def update_or_merge_prompt(prompts_dir, manufacturer, import_type_norm, image_name):
     """
     既存のプロンプトファイルが存在する場合は、ルールやスキーマを損なわず
-    新カタログ画像情報およびレイアウト抽出定義（添付1:おもなおすすめ機能, 添付2:分類キャッチコピー, 添付3:USP）をスマートに追記統合マージします。
+    新カタログ画像情報およびレイアウト抽出定義をスマートに追記統合マージします。
     """
     key = (manufacturer.lower(), import_type_norm)
     prompt_filename = PROMPT_FILE_MAP.get(key, f"{manufacturer}_{import_type_norm}_prompt.md")
@@ -66,7 +89,6 @@ def update_or_merge_prompt(prompts_dir, manufacturer, import_type_norm, image_na
             f.write(new_content)
         print(f"  [Prompt Smart Merge] Updated existing prompt -> {prompt_path}")
     else:
-        # 新規プロンプトテンプレート生成
         initial_content = f"""# {manufacturer.upper()} {import_type_norm} VLM 構造化データ抽出プロンプト
 
 ---
@@ -237,17 +259,16 @@ def process_new_catalogs():
         manufacturer = parts[1].lower()   # daikin / hitachi / vaio / fujitsu
         import_type_raw = parts[2].lower()# catalog_model / product_series_details / technical_spec
         image_filename = parts[3]
-        
-        # 安全な英数字ファイル名ステムの生成
-        safe_stem = re.sub(r'[^\w\-]', '_', os.path.splitext(image_filename)[0])
 
         import_type_norm = IMPORT_TYPE_MAP.get(import_type_raw, import_type_raw)
 
         print(f"\nProcessing: [{category} | {manufacturer} | {import_type_norm}] -> {image_filename}")
 
-        # 1. 構造化 JSON ファイルの自動生成 ＆ 保存
-        json_filename = f"{import_type_norm}_{category}_{manufacturer}_{safe_stem}.json"
-        json_output_path = os.path.join(project_dir, json_filename)
+        # 1. 構造化 JSON ファイルの自動連番生成 (同名存在時は (1), (2) ... を自動付与)
+        base_json_filename = f"{import_type_norm}_{category}_{manufacturer}_sx14r.json" if (manufacturer == "vaio" and import_type_norm == "product_series_details") else f"{import_type_norm}_{category}_{manufacturer}.json"
+        
+        target_initial_path = os.path.join(project_dir, base_json_filename)
+        json_output_path = get_unique_numbered_filename(target_initial_path)
         
         json_data = generate_initial_json_data(category, manufacturer, import_type_norm, image_filename)
 
@@ -256,7 +277,11 @@ def process_new_catalogs():
         print(f"  [JSON Output] Generated -> {json_output_path}")
 
         if os.path.exists(json_data_dir):
-            shutil.copy2(json_output_path, os.path.join(json_data_dir, json_filename))
+            copy_dst_path = get_unique_numbered_filename(os.path.join(json_data_dir, os.path.basename(json_output_path)))
+            try:
+                shutil.copy2(json_output_path, copy_dst_path)
+            except Exception as e:
+                print(f"  [Warning] Copy error: {e}")
 
         # 2. ビジネスユーザー用プロンプトのスマートマージ更新
         update_or_merge_prompt(prompts_dir, manufacturer, import_type_norm, image_filename)
