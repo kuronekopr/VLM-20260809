@@ -213,6 +213,27 @@ def main():
     numeric_mismatch_count = 0
     text_similarity_score_sum = 0.0
 
+    target_breakdown = {
+        "catalog_models": {
+            "total_field_comparisons": 0,
+            "numeric_comparable_count": 0,
+            "numeric_exact_match_count (score=1)": 0,
+            "numeric_mismatch_count (score=0)": 0,
+            "text_comparable_count": 0,
+            "text_similarity_score_sum": 0.0,
+            "text_similarity_score_average": 0.0
+        },
+        "technical_spec": {
+            "total_field_comparisons": 0,
+            "numeric_comparable_count": 0,
+            "numeric_exact_match_count (score=1)": 0,
+            "numeric_mismatch_count (score=0)": 0,
+            "text_comparable_count": 0,
+            "text_similarity_score_sum": 0.0,
+            "text_similarity_score_average": 0.0
+        }
+    }
+
     for cat in categories:
         for mfr in manufacturers[cat]:
             det_list = load_and_merge_json_files("product_series_details", cat, mfr)
@@ -256,14 +277,22 @@ def main():
                         if res:
                             item_evals.append(res)
                             total_comparisons += 1
+                            tb = target_breakdown["catalog_models"]
+                            tb["total_field_comparisons"] += 1
                             if res["is_numeric_comparable"]:
                                 numeric_comparable_count += 1
+                                tb["numeric_comparable_count"] += 1
                                 if res["score"] == 1:
                                     numeric_exact_match_count += 1
+                                    tb["numeric_exact_match_count (score=1)"] += 1
                                 else:
                                     numeric_mismatch_count += 1
+                                    tb["numeric_mismatch_count (score=0)"] += 1
                             else:
                                 text_comparable_count += 1
+                                tb["text_comparable_count"] += 1
+                                text_similarity_score_sum += res["score"]
+                                tb["text_similarity_score_sum"] += res["score"]
 
                     # 2. 仕様表 (technical_spec) との比較
                     if matched_tech_item:
@@ -271,15 +300,22 @@ def main():
                         if res:
                             item_evals.append(res)
                             total_comparisons += 1
+                            tb = target_breakdown["technical_spec"]
+                            tb["total_field_comparisons"] += 1
                             if res["is_numeric_comparable"]:
                                 numeric_comparable_count += 1
+                                tb["numeric_comparable_count"] += 1
                                 if res["score"] == 1:
                                     numeric_exact_match_count += 1
+                                    tb["numeric_exact_match_count (score=1)"] += 1
                                 else:
                                     numeric_mismatch_count += 1
+                                    tb["numeric_mismatch_count (score=0)"] += 1
                             else:
                                 text_comparable_count += 1
+                                tb["text_comparable_count"] += 1
                                 text_similarity_score_sum += res["score"]
+                                tb["text_similarity_score_sum"] += res["score"]
 
                 evaluations.append({
                     "manufacturer": mfr_name,
@@ -293,6 +329,10 @@ def main():
     text_similarity_score_sum = round(text_similarity_score_sum, 3)
     text_similarity_score_avg = round(text_similarity_score_sum / text_comparable_count, 3) if text_comparable_count > 0 else 0.0
 
+    for t_key, tb in target_breakdown.items():
+        tb["text_similarity_score_sum"] = round(tb["text_similarity_score_sum"], 3)
+        tb["text_similarity_score_average"] = round(tb["text_similarity_score_sum"] / tb["text_comparable_count"], 3) if tb["text_comparable_count"] > 0 else 0.0
+
     summary = {
         "total_evaluated_detail_items": len(evaluations),
         "total_field_comparisons": total_comparisons,
@@ -301,7 +341,8 @@ def main():
         "numeric_mismatch_count (score=0)": numeric_mismatch_count,
         "text_comparable_count": text_comparable_count,
         "text_similarity_score_sum": text_similarity_score_sum,
-        "text_similarity_score_average": text_similarity_score_avg
+        "text_similarity_score_average": text_similarity_score_avg,
+        "breakdown_by_target": target_breakdown
     }
 
     report = {
@@ -321,6 +362,12 @@ def main():
     print(f"  - Numeric Comparable: {summary['numeric_comparable_count']} (Match score=1: {numeric_exact_match_count}, Mismatch score=0: {numeric_mismatch_count})")
     print(f"  - Text Cosine Similarity Comparable: {summary['text_comparable_count']}")
     print(f"    -> Text Similarity Score Total Sum: {text_similarity_score_sum} (Average: {text_similarity_score_avg})")
+    print(f"\n--- Target Breakdown ---")
+    for t_key in ["catalog_models", "technical_spec"]:
+        tb = target_breakdown[t_key]
+        print(f"[{t_key}] Total Comparisons: {tb['total_field_comparisons']}")
+        print(f"  - Numeric: {tb['numeric_comparable_count']} (Match score=1: {tb['numeric_exact_match_count (score=1)']}, Mismatch score=0: {tb['numeric_mismatch_count (score=0)']})")
+        print(f"  - Text: {tb['text_comparable_count']} (Score Sum: {tb['text_similarity_score_sum']}, Avg: {tb['text_similarity_score_average']})")
     print(f"Report successfully saved -> {out_path}")
 
 if __name__ == "__main__":

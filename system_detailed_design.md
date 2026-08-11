@@ -357,8 +357,28 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
     "numeric_exact_match_count (score=1)": 86,
     "numeric_mismatch_count (score=0)": 266,
     "text_comparable_count": 338,
-    "text_similarity_score_sum": 18.935,
-    "text_similarity_score_average": 0.056
+    "text_similarity_score_sum": 294.483,
+    "text_similarity_score_average": 0.871,
+    "breakdown_by_target": {
+      "catalog_models": {
+        "total_field_comparisons": 541,
+        "numeric_comparable_count": 247,
+        "numeric_exact_match_count (score=1)": 48,
+        "numeric_mismatch_count (score=0)": 199,
+        "text_comparable_count": 294,
+        "text_similarity_score_sum": 275.548,
+        "text_similarity_score_average": 0.937
+      },
+      "technical_spec": {
+        "total_field_comparisons": 149,
+        "numeric_comparable_count": 105,
+        "numeric_exact_match_count (score=1)": 38,
+        "numeric_mismatch_count (score=0)": 67,
+        "text_comparable_count": 44,
+        "text_similarity_score_sum": 18.935,
+        "text_similarity_score_average": 0.43
+      }
+    }
   },
   "product_series_details_evaluations": [
     {
