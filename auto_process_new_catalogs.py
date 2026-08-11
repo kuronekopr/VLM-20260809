@@ -261,11 +261,15 @@ def process_new_catalogs():
         image_filename = parts[3]
 
         import_type_norm = IMPORT_TYPE_MAP.get(import_type_raw, import_type_raw)
+        
+        # pngファイル名（拡張子なし）をシリーズ名/詳細識別子として取り込み
+        image_stem = os.path.splitext(image_filename)[0]
+        safe_image_stem = re.sub(r'[^\w\-]', '_', image_stem)
 
         print(f"\nProcessing: [{category} | {manufacturer} | {import_type_norm}] -> {image_filename}")
 
-        # 1. 構造化 JSON ファイルの自動連番生成 (同名存在時は (1), (2) ... を自動付与)
-        base_json_filename = f"{import_type_norm}_{category}_{manufacturer}_sx14r.json" if (manufacturer == "vaio" and import_type_norm == "product_series_details") else f"{import_type_norm}_{category}_{manufacturer}.json"
+        # 1. 構造化 JSON ファイルの動的連番生成 (フォーマット: [import_type]_[category]_[manufacturer]_[pngファイル名].json)
+        base_json_filename = f"{import_type_norm}_{category}_{manufacturer}_{safe_image_stem}.json"
         
         target_initial_path = os.path.join(project_dir, base_json_filename)
         json_output_path = get_unique_numbered_filename(target_initial_path)
