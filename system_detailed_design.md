@@ -270,7 +270,9 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
 - **標準ファイル命名規則とストレージ一元化**: カタログ構造化 JSON ファイル群（`catalog_models_*.json`, `product_series_details_*.json`, `technical_spec_*.json`）およびパイプライン統合出力成果物（`merged_*.json`, `merged_*.csv`）は `c:\json_data\` ディレクトリへ完全集約・一元管理。
 - **二重ロード防止機構**: 動的ローダー `load_and_merge_json_files()` は `c:\json_data\` をプライマリ・データストレージとして読み込み、重複ロードを自動防止。
 - **全取り込みタイプ対象・同名重複時の連番命名規則**:
-  `catalog_models`, `product_series_details`, `technical_spec` の全タイプにおいて、既に同名 JSON ファイルが存在する場合、`get_unique_numbered_filename()` によりファイル末尾に 1 番からの連番 `(1)`, `(2)` ... を自動付与して出力・保存。
+  `catalog_models`, `product_series_details`, `technical_spec` の全タイプにおいて、既に同名 JSON ファイルが存在する場合、2. **自動連番 ＆ ファイル名プレフィックス重複防止判定 (`base_json_filename`)**:
+   - 入力画像ファイル名自体に `catalog_models_pc_vaio_` などのプレフィックスが既に含まれている場合でも、`catalog_models_pc_vaio_catalog_models_pc_vaio_202507.json` のような**2重プレフィックス重複を自動検知して除去統合**。
+   - `c:\json_data\` 直下に同一ファイル名が既に存在する場合、自動的に `(1)`, `(2)` 形式のナンバリングを付与し、既存データを事故上書きしない安全仕様。
   - 一覧表例: `catalog_models_aircon_daikin_p1(1).json`
   - 商品詳細例: `product_series_details_pc_vaio_sx14r(1).json`
   - 仕様表例: `technical_spec_pc_vaio_v1(1).json`

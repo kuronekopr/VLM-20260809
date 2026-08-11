@@ -262,20 +262,30 @@ def process_new_catalogs():
 
         import_type_norm = IMPORT_TYPE_MAP.get(import_type_raw, import_type_raw)
         
+        # 1. 構造化 JSON ファイルの動的連番生成 (フォーマット: [import_type]_[category]_[manufacturer]_[pngファイル名].json)
+        prefix = f"{import_type_norm}_{category}_{manufacturer}_"
+        
         # pngファイル名（拡張子なし）をシリーズ名/詳細識別子として取り込み
         image_stem = os.path.splitext(image_filename)[0]
         safe_image_stem = re.sub(r'[^\w\-]', '_', image_stem)
 
-        print(f"\nProcessing: [{category} | {manufacturer} | {import_type_norm}] -> {image_filename}")
+        # ユーザーがファイル名に既に prefix (例: catalog_models_pc_vaio_) を含めている場合の2重重複防止
+        if safe_image_stem.startswith(prefix):
+            clean_stem = safe_image_stem[len(prefix):]
+        else:
+            # 個別プレフィックスの一部重複除去
+            clean_stem = safe_image_stem
+            for check_pfx in [f"{import_type_norm}_", f"{category}_", f"{manufacturer}_"]:
+                if clean_stem.startswith(check_pfx):
+                    clean_stem = clean_stem[len(check_pfx):]
 
-        # 1. 構造化 JSON ファイルの動的連番生成 (フォーマット: [import_type]_[category]_[manufacturer]_[pngファイル名].json)
-        base_json_filename = f"{import_type_norm}_{category}_{manufacturer}_{safe_image_stem}.json"
+        base_json_filename = f"{prefix}{clean_stem}.json"
         
         target_dir = json_data_dir if os.path.exists(json_data_dir) else project_dir
         target_initial_path = os.path.join(target_dir, base_json_filename)
         json_output_path = get_unique_numbered_filename(target_initial_path)
         
-        json_data = generate_initial_json_data(category, manufacturer, import_type_norm, image_filename)
+        json_data = generate_initial_json_data(category, manufacturer, import_type_norm, clean_stem)
 
         with open(json_output_path, 'w', encoding='utf-8') as f:
             json.dump(json_data, f, ensure_ascii=False, indent=2)
