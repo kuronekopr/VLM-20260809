@@ -240,8 +240,32 @@ def calculate_cosine_similarity(str1, str2):
     return round(dot_product / (norm1 * norm2), 3)
 ```
 
-#### ② 変数名・パス命名の一貫化 ＆ 型番の正規化
-ダイキン・日立・VAIO・富士通の全メーカーにおいて、パス変数 (`path_daikin_cat`, `path_daikin_det`, `path_daikin_tech`, `path_hitachi_cat`, `path_hitachi_det`, `path_hitachi_tech` 等) および読み込み変数 (`cat_daikin`, `det_daikin`, `cat_hitachi`, `det_hitachi`, `cat_vaio`, `det_vaio` 等) を完全な統一ルールで一貫化。
+#### ② 動的マルチファイル自動検索 ＆ グループマージエンジン (`load_and_merge_json_files`)
+個別の固定ファイルパス (`path_daikin_cat` 等) のハードコードを全廃し、同一製品カテゴリー・同一メーカーで複数の取り込み JSON ファイルが存在する場合でも、パターン `{import_type}_{category}_{manufacturer}*.json` によるワイルドカード・パターンマッチングで全自動探索・単一データリストへの結合マージを実行します。
+
+```python
+def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
+    """
+    {import_type}_{category}_{manufacturer}*.json のパターンに該当するすべてのJSONファイルを
+    自動検索し、単一のデータリストにマージして返します。
+    """
+    pattern = f"{import_type}_{category}_{manufacturer}*.json"
+    search_path = os.path.join(base_dir, pattern)
+    matched_files = glob.glob(search_path)
+    
+    merged_list = []
+    for fpath in sorted(matched_files):
+        with open(fpath, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            if isinstance(data, list):
+                merged_list.extend(data)
+            elif isinstance(data, dict):
+                merged_list.append(data)
+    return merged_list
+```
+
+#### ③ 変数名・パス命名の一貫化 ＆ 型番の正規化
+ダイキン・日立・VAIO・富士通の全メーカーにおいて、取り込みパス探索および読み込み変数 (`cat_daikin`, `det_daikin`, `tech_daikin`, `cat_hitachi`, `det_hitachi`, `tech_hitachi`, `cat_vaio`, `det_vaio`, `tech_vaio`, `cat_fujitsu`, `det_fujitsu`, `tech_fujitsu` 等) を完全な統一ルールで一貫化。
 
 - `normalize_model_number(model_str)`: エアコン型番 (例: `S22ATRS-W(-C)` ➔ `S22ATRS`, `RAS-XR2226S` ➔ `RAS-X2226S`)
 - `normalize_pc_series_key(series_str)`: PCシリーズ名正規化 (例: `FMV Note U (UA-K1)` ➔ `note u`)

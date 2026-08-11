@@ -5,6 +5,7 @@ import re
 import csv
 import math
 import shutil
+import glob
 from collections import Counter
 
 # --- 1. N-gram 文字ベクトルによるコサイン類似度算出関数 ---
@@ -45,7 +46,47 @@ def get_similarity_scores_for_list(val_list):
             scores.append(calculate_cosine_similarity(v1, v2))
     return scores
 
-# --- 2. 型番の正規化関数 ---
+# --- 2. 動的マルチファイル自動検索 ＆ グループマージ関数 ---
+def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
+    """
+    {import_type}_{category}_{manufacturer}*.json のパターンに該当するすべてのJSONファイルを
+    自動検索し、単一のデータリストにマージして返します。
+    """
+    pattern = f"{import_type}_{category}_{manufacturer}*.json"
+    search_path = os.path.join(base_dir, pattern)
+    matched_files = glob.glob(search_path)
+    
+    # 互換性のため c:\json_data ディレクトリも探索
+    target_dir = r"c:\json_data"
+    if os.path.exists(target_dir):
+        alt_search_path = os.path.join(target_dir, pattern)
+        for fpath in glob.glob(alt_search_path):
+            if fpath not in matched_files:
+                matched_files.append(fpath)
+                
+    merged_list = []
+    loaded_filenames = []
+    
+    for fpath in sorted(matched_files):
+        try:
+            with open(fpath, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                if isinstance(data, list):
+                    merged_list.extend(data)
+                elif isinstance(data, dict):
+                    merged_list.append(data)
+                loaded_filenames.append(os.path.basename(fpath))
+        except Exception as e:
+            print(f"Warning: Failed to load {fpath}: {e}")
+            
+    if loaded_filenames:
+        print(f"Dynamic Loader [{import_type} | {category} | {manufacturer}]: Merged {len(loaded_filenames)} files ({', '.join(loaded_filenames)}) -> Total {len(merged_list)} items")
+    else:
+        print(f"Dynamic Loader [{import_type} | {category} | {manufacturer}]: No files found for pattern '{pattern}'")
+        
+    return merged_list
+
+# --- 3. 型番の正規化関数 ---
 def normalize_model_number(model_str):
     if not model_str:
         return ''
@@ -98,41 +139,17 @@ def get_cooling_power(item):
             return c["electrical_properties"]["max_power_w"]
     return ""
 
-# --- 3. PCデータ統合処理関数 (merged_pc_models.json / merged_pc_models.csv) ---
+# --- 4. PCデータ統合処理関数 (merged_pc_models.json / merged_pc_models.csv) ---
 def process_pc_data_integration(base_dir):
-    path_vaio_cat = os.path.join(base_dir, "catalog_models_pc_vaio.json")
-    path_fujitsu_cat = os.path.join(base_dir, "catalog_models_pc_fujitsu.json")
+    # 動的マルチファイル自動検索 ＆ マージ呼び出し
+    cat_vaio = load_and_merge_json_files(base_dir, "catalog_models", "pc", "vaio")
+    cat_fujitsu = load_and_merge_json_files(base_dir, "catalog_models", "pc", "fujitsu")
     
-    path_vaio_det = os.path.join(base_dir, "product_series_details_pc_vaio_sx14r.json")
-    path_fujitsu_det = os.path.join(base_dir, "product_series_details_pc_fujitsu_ua-k1_ux-k3.json")
+    det_vaio = load_and_merge_json_files(base_dir, "product_series_details", "pc", "vaio")
+    det_fujitsu = load_and_merge_json_files(base_dir, "product_series_details", "pc", "fujitsu")
     
-    path_vaio_tech = os.path.join(base_dir, "technical_spec_pc_vaio.json")
-    path_fujitsu_tech = os.path.join(base_dir, "technical_spec_pc_fujitsu.json")
-
-    cat_vaio, cat_fujitsu = [], []
-    det_vaio, det_fujitsu = [], []
-    tech_vaio, tech_fujitsu = [], []
-
-    if os.path.exists(path_vaio_cat):
-        with open(path_vaio_cat, 'r', encoding='utf-8') as f:
-            cat_vaio = json.load(f)
-    if os.path.exists(path_fujitsu_cat):
-        with open(path_fujitsu_cat, 'r', encoding='utf-8') as f:
-            cat_fujitsu = json.load(f)
-
-    if os.path.exists(path_vaio_det):
-        with open(path_vaio_det, 'r', encoding='utf-8') as f:
-            det_vaio = json.load(f)
-    if os.path.exists(path_fujitsu_det):
-        with open(path_fujitsu_det, 'r', encoding='utf-8') as f:
-            det_fujitsu = json.load(f)
-
-    if os.path.exists(path_vaio_tech):
-        with open(path_vaio_tech, 'r', encoding='utf-8') as f:
-            tech_vaio = json.load(f)
-    if os.path.exists(path_fujitsu_tech):
-        with open(path_fujitsu_tech, 'r', encoding='utf-8') as f:
-            tech_fujitsu = json.load(f)
+    tech_vaio = load_and_merge_json_files(base_dir, "technical_spec", "pc", "vaio")
+    tech_fujitsu = load_and_merge_json_files(base_dir, "technical_spec", "pc", "fujitsu")
 
     merged_pc_map = {}
 
@@ -323,26 +340,15 @@ def process_pc_data_integration(base_dir):
 def main():
     base_dir = os.getcwd()
 
-    path_daikin_cat = os.path.join(base_dir, "catalog_models_aircon_daikin.json")
-    path_daikin_det = os.path.join(base_dir, "product_series_details_aircon_daikin_rx.json")
-    path_daikin_tech = os.path.join(base_dir, "technical_spec_aircon_daikin.json")
-    path_hitachi_cat = os.path.join(base_dir, "catalog_models_aircon_hitachi.json")
-    path_hitachi_det = os.path.join(base_dir, "product_series_details_aircon_hitachi_x.json")
-    path_hitachi_tech = os.path.join(base_dir, "technical_spec_aircon_hitachi.json")
+    # 動的マルチファイル自動検索 ＆ グループマージ呼び出し
+    cat_daikin = load_and_merge_json_files(base_dir, "catalog_models", "aircon", "daikin")
+    det_daikin = load_and_merge_json_files(base_dir, "product_series_details", "aircon", "daikin")
+    tech_daikin = load_and_merge_json_files(base_dir, "technical_spec", "aircon", "daikin")
     
-    with open(path_daikin_cat, 'r', encoding='utf-8') as f:
-        cat_daikin = json.load(f)
-    with open(path_daikin_det, 'r', encoding='utf-8') as f:
-        det_daikin = json.load(f)
-    with open(path_daikin_tech, 'r', encoding='utf-8') as f:
-        tech_daikin = json.load(f)
-    with open(path_hitachi_cat, 'r', encoding='utf-8') as f:
-        cat_hitachi = json.load(f)
-    with open(path_hitachi_det, 'r', encoding='utf-8') as f:
-        det_hitachi = json.load(f)
-    with open(path_hitachi_tech, 'r', encoding='utf-8') as f:
-        tech_hitachi = json.load(f)
-        
+    cat_hitachi = load_and_merge_json_files(base_dir, "catalog_models", "aircon", "hitachi")
+    det_hitachi = load_and_merge_json_files(base_dir, "product_series_details", "aircon", "hitachi")
+    tech_hitachi = load_and_merge_json_files(base_dir, "technical_spec", "aircon", "hitachi")
+
     merged_map = {}
     
     # --- A. ダイキン catalog_models_aircon_daikin.json の統合 ---

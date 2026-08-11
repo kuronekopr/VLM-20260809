@@ -1,6 +1,7 @@
 import os
 import json
 import re
+import glob
 
 def normalize_model_number(model_str):
     if not model_str:
@@ -37,43 +38,40 @@ def extract_detail_functions_flat(func_dict):
                 functions.add(f)
     return functions
 
+def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
+    pattern = f"{import_type}_{category}_{manufacturer}*.json"
+    search_path = os.path.join(base_dir, pattern)
+    matched_files = glob.glob(search_path)
+    
+    target_dir = r"c:\json_data"
+    if os.path.exists(target_dir):
+        alt_search_path = os.path.join(target_dir, pattern)
+        for fpath in glob.glob(alt_search_path):
+            if fpath not in matched_files:
+                matched_files.append(fpath)
+                
+    merged_list = []
+    for fpath in sorted(matched_files):
+        try:
+            with open(fpath, 'r', encoding='utf-8') as f:
+                data = json.load(f)
+                if isinstance(data, list):
+                    merged_list.extend(data)
+                elif isinstance(data, dict):
+                    merged_list.append(data)
+        except Exception:
+            pass
+    return merged_list
+
 def main():
     base_dir = os.getcwd()
     
-    # 統一命名規則に基づくファイルパス指定 (ダイキン / 日立表記統一)
-    daikin_cat_path = os.path.join(base_dir, "catalog_models_aircon_daikin.json")
-    daikin_det_path = os.path.join(base_dir, "product_series_details_aircon_daikin_rx.json")
+    # 動的マルチファイルロード (エアコン)
+    cat_daikin = load_and_merge_json_files(base_dir, "catalog_models", "aircon", "daikin")
+    det_daikin = load_and_merge_json_files(base_dir, "product_series_details", "aircon", "daikin")
     
-    hitachi_cat_path = os.path.join(base_dir, "catalog_models_aircon_hitachi.json")
-    hitachi_det_path = os.path.join(base_dir, "product_series_details_aircon_hitachi_x.json")
-
-    # c:\json_data へのフォールバック対応
-    if not os.path.exists(daikin_cat_path):
-        base_dir = r"c:\json_data"
-        daikin_cat_path = os.path.join(base_dir, "catalog_models_aircon_daikin.json")
-        daikin_det_path = os.path.join(base_dir, "product_series_details_aircon_daikin_rx.json")
-        hitachi_cat_path = os.path.join(base_dir, "catalog_models_aircon_hitachi.json")
-        hitachi_det_path = os.path.join(base_dir, "product_series_details_aircon_hitachi_x.json")
-
-    # ダイキンデータの読み込み
-    cat_daikin = []
-    det_daikin = []
-    if os.path.exists(daikin_cat_path):
-        with open(daikin_cat_path, 'r', encoding='utf-8') as f:
-            cat_daikin = json.load(f)
-    if os.path.exists(daikin_det_path):
-        with open(daikin_det_path, 'r', encoding='utf-8') as f:
-            det_daikin = json.load(f)
-        
-    # 日立データの読み込み
-    cat_hitachi = []
-    det_hitachi = []
-    if os.path.exists(hitachi_cat_path):
-        with open(hitachi_cat_path, 'r', encoding='utf-8') as f:
-            cat_hitachi = json.load(f)
-    if os.path.exists(hitachi_det_path):
-        with open(hitachi_det_path, 'r', encoding='utf-8') as f:
-            det_hitachi = json.load(f)
+    cat_hitachi = load_and_merge_json_files(base_dir, "catalog_models", "aircon", "hitachi")
+    det_hitachi = load_and_merge_json_files(base_dir, "product_series_details", "aircon", "hitachi")
 
     # 1. カタログ一覧機能のマップ化 (型番 -> おすすめ機能集合)
     catalog_map = {}
