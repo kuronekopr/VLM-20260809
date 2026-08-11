@@ -103,8 +103,9 @@ def normalize_pc_series_key(series_str):
         return ''
     s = str(series_str).strip()
     s = re.sub(r'\(.*?\)', '', s)
-    s = s.replace('FMV ', '').replace('VAIO ', '').strip()
+    s = s.replace('FMV', '').replace('VAIO', '').replace('-', '').replace('_', '').replace(' ', '').strip()
     return s.lower()
+
 
 def extract_model_numbers_from_item(item):
     models = set()
@@ -211,37 +212,39 @@ def process_pc_data_integration(base_dir):
         mfr = item.get("manufacturer", "")
         series = item.get("series_name", "")
         models = extract_model_numbers_from_item(item)
+        target_norm = normalize_pc_series_key(series or item.get("model_number", ""))
 
-        matched = False
+        matched_entry = None
         for key, entry in merged_pc_map.items():
-            if entry["manufacturer"] == mfr:
-                if series and (normalize_pc_series_key(series) in normalize_pc_series_key(entry["series_name"]) or normalize_pc_series_key(entry["series_name"]) in normalize_pc_series_key(series)):
-                    matched = True
+            if entry["manufacturer"].lower() == mfr.lower():
+                entry_norm = normalize_pc_series_key(entry["series_name"])
+                if target_norm and entry_norm and (target_norm == entry_norm or target_norm in entry_norm or entry_norm in target_norm):
+                    matched_entry = entry
+                    break
                 elif models and any(m in entry["full_model_numbers"] for m in models):
-                    matched = True
+                    matched_entry = entry
+                    break
             
-            if matched:
-                entry["category_description"] = item.get("category_description", "")
-                if item.get("copilot_plus_pc"):
-                    entry["copilot_plus_pc"] = True
-                if item.get("unique_selling_point"):
-                    entry["unique_selling_point_sources"].append(item.get("unique_selling_point"))
-                if item.get("recommended_features"):
-                    if isinstance(item["recommended_features"], list):
-                        entry["recommended_features"].extend(item["recommended_features"])
-                    elif isinstance(item["recommended_features"], dict):
-                        entry["recommended_features"].append(item["recommended_features"])
-                if models:
-                    entry["full_model_numbers"].update(models)
-                break
-
-        if not matched:
-            key = f"{mfr}_{series}".strip()
+        if matched_entry:
+            matched_entry["category_description"] = item.get("category_description", "")
+            if item.get("copilot_plus_pc"):
+                matched_entry["copilot_plus_pc"] = True
+            if item.get("unique_selling_point"):
+                matched_entry["unique_selling_point_sources"].append(item.get("unique_selling_point"))
+            if item.get("recommended_features"):
+                if isinstance(item["recommended_features"], list):
+                    matched_entry["recommended_features"].extend(item["recommended_features"])
+                elif isinstance(item["recommended_features"], dict):
+                    matched_entry["recommended_features"].append(item["recommended_features"])
+            if models:
+                matched_entry["full_model_numbers"].update(models)
+        else:
+            key = f"{mfr}_{series or item.get('model_number', '')}".strip()
             merged_pc_map[key] = {
                 "manufacturer": mfr,
                 "product_category": item.get("product_category", "ノートパソコン"),
                 "brand_name": item.get("brand_name", ""),
-                "series_name": series,
+                "series_name": series or item.get("model_number", ""),
                 "full_model_numbers": set(models),
                 "copilot_plus_pc": item.get("copilot_plus_pc", False),
                 "made_in_japan": False,
@@ -256,10 +259,12 @@ def process_pc_data_integration(base_dir):
         mfr = item.get("manufacturer", "")
         series = item.get("series_name", "")
         models = extract_model_numbers_from_item(item)
+        target_norm = normalize_pc_series_key(series or item.get("model_number", ""))
 
         for key, entry in merged_pc_map.items():
-            if entry["manufacturer"] == mfr:
-                if series and (normalize_pc_series_key(series) in normalize_pc_series_key(entry["series_name"]) or normalize_pc_series_key(entry["series_name"]) in normalize_pc_series_key(series)):
+            if entry["manufacturer"].lower() == mfr.lower():
+                entry_norm = normalize_pc_series_key(entry["series_name"])
+                if target_norm and entry_norm and (target_norm == entry_norm or target_norm in entry_norm or entry_norm in target_norm):
                     if item.get("unique_selling_point"):
                         entry["unique_selling_point_sources"].append(item.get("unique_selling_point"))
                     if item.get("recommended_features"):
@@ -269,6 +274,8 @@ def process_pc_data_integration(base_dir):
                             entry["recommended_features"].append(item["recommended_features"])
                     if models:
                         entry["full_model_numbers"].update(models)
+                    break
+
 
     # D. 結合フラット PC JSON の生成 & コサイン類似度スコアリング
     merged_pc_list = []
