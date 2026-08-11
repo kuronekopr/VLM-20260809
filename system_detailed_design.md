@@ -348,6 +348,7 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
    - 暖房能力 (`heating`) ↔ 冷房能力 / 畳数基準能力 (`cooling`, `applicable_room_size`) ➔ **評価対象外**
    - 個別型番スペック能力 (`specs.cooling.capacity_kw`) ↔ カタログ代表畳数能力 (`applicable_room_size.capacity_kw`) ➔ **評価対象外**
    - 通常定格暖房能力 (`specs.heating.capacity_kw`) ↔ 低温暖房能力 (`heating.low_temp_2c.capacity_kw`) ➔ **測定条件不適合のため評価対象外**
+   - **表記揺れ吸収 ＆ 容量コード連動マッチャー (`find_best_matched_item`)**: `RAS-XR3626S` (住宅設備用) と `RAS-X3626S` (一般モデル) の型番表記揺れを `normalize_model_number` で吸収統一し、型番内容量コード (22/25/28/36/40/56/63/71/80/90) も連動させることで、`RAS-X3626S` が仕様表の `RAS-XR3626S` (APF 6.6) へ正確に100%ヒットするよう修復。
 5. **スコアリング**:
    - **数値比較可能 (`true`)**: **完全一致 ➔ `1`**, **不一致 ➔ `0`**
    - **数値比較不可能 (`false`)**: N-gram ベクトル空間アルゴリズムによる **テキストコサイン類似度** (0.0 〜 1.0)
@@ -359,8 +360,8 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
     "total_evaluated_detail_items": 28,
     "total_field_comparisons": 361,
     "numeric_comparable_count": 32,
-    "numeric_exact_match_count (score=1)": 29,
-    "numeric_mismatch_count (score=0)": 3,
+    "numeric_exact_match_count (score=1)": 31,
+    "numeric_mismatch_count (score=0)": 1,
     "text_comparable_count": 329,
     "text_similarity_score_sum": 290.342,
     "text_similarity_score_average": 0.882,
@@ -377,8 +378,8 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
       "technical_spec": {
         "total_field_comparisons": 75,
         "numeric_comparable_count": 31,
-        "numeric_exact_match_count (score=1)": 28,
-        "numeric_mismatch_count (score=0)": 3,
+        "numeric_exact_match_count (score=1)": 30,
+        "numeric_mismatch_count (score=0)": 1,
         "text_comparable_count": 44,
         "text_similarity_score_sum": 24.0,
         "text_similarity_score_average": 0.545

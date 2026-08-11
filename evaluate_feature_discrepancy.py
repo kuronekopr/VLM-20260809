@@ -59,7 +59,9 @@ def normalize_model_number(model_str):
     if m.startswith('S') and '-' in m:
         m = m.split('-')[0].strip()
     m = re.sub(r'\([A-Za-z0-9]+\)', '', m)
-    # 英数字のみに抽出正規化 (例: RAS-XR5626D -> RASXR5626D)
+    # 日立等の RAS-XR / RAS-X 表記揺れの統一 (例: RAS-XR3626S -> RAS-X3626S)
+    m = re.sub(r'RAS-?XR', 'RAS-X', m, flags=re.IGNORECASE)
+    # 英数字のみに抽出正規化 (例: RAS-X3626S -> RASX3626S)
     m = re.sub(r'[^A-Za-z0-9]', '', m)
     return m.upper()
 
@@ -122,12 +124,20 @@ def extract_model_numbers(item):
             models.add(normalize_model_number(m))
     return {m for m in models if m}
 
+def extract_capacity_code(model_str):
+    if not model_str:
+        return None
+    match = re.search(r'(22|25|28|36|40|56|63|71|80|90)', str(model_str))
+    return match.group(1) if match else None
+
 def find_best_matched_item(det_item, target_list):
     if not det_item or not target_list:
         return None
     
     det_models = extract_model_numbers(det_item)
     series_name = det_item.get("series_name", "")
+    raw_model = det_item.get("model_number") or det_item.get("base_model_number", "")
+    det_cap_code = extract_capacity_code(raw_model)
 
     # Phase 1: 型番完全・交差一致
     if det_models:
@@ -136,9 +146,16 @@ def find_best_matched_item(det_item, target_list):
             if det_models & t_models:
                 return t_item
 
-    # Phase 2: シリーズ名一致 (型番一致が存在しなかった場合のみ)
+    # Phase 2: シリーズ名一致 ＋ 容量コード一致 (型番直接一致しなかった場合のスマートフォールバック)
     if series_name:
         norm_series = normalize_key(series_name)
+        if det_cap_code:
+            for t_item in target_list:
+                if norm_series == normalize_key(t_item.get("series_name")):
+                    t_models = extract_model_numbers(t_item)
+                    for tm in t_models:
+                        if extract_capacity_code(tm) == det_cap_code:
+                            return t_item
         for t_item in target_list:
             if norm_series == normalize_key(t_item.get("series_name")):
                 return t_item
