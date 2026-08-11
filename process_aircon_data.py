@@ -332,7 +332,29 @@ def process_pc_data_integration(base_dir):
 
         full_models_list = item.get("full_model_numbers", [])
         full_models_str = "; ".join(full_models_list)
-        target_models = full_models_list if full_models_list else [item.get("series_name", "")]
+        
+        # シリーズ名そのもの (例: "VAIO SX12", "VAIO S13") は個別の型番リストから除外し、個別型番のみを抽出
+        series_name_clean = item.get("series_name", "")
+        series_name_full = f"VAIO {series_name_clean}" if not series_name_clean.startswith("VAIO") else series_name_clean
+
+        real_individual_models = [m for m in full_models_list if m not in (series_name_clean, series_name_full)]
+        target_models = real_individual_models if real_individual_models else [series_name_full]
+
+        # USP が空の場合はスコア列も空文字にして CSV 列の表示ズレを完全防護
+        usp_data = item.get("unique_selling_point") or {}
+        usp_values = usp_data.get("values", [])
+        if usp_values:
+            usp_vals = " | ".join(usp_values)
+            usp_scrs = ", ".join(map(str, usp_data.get("cosine_similarity_scores", [])))
+        else:
+            usp_vals = ""
+            usp_scrs = ""
+
+        rec_feat = item.get("recommended_features", [])
+        if isinstance(rec_feat, list):
+            rec_str = " / ".join([json.dumps(x, ensure_ascii=False) if isinstance(x, dict) else str(x) for x in rec_feat])
+        else:
+            rec_str = str(rec_feat)
 
         for single_model in target_models:
             matched_tech = {}
@@ -344,28 +366,6 @@ def process_pc_data_integration(base_dir):
                         break
             if not matched_tech and tech_list:
                 matched_tech = tech_list[0]
-
-            # recommended_features フォールバック
-            rec_feat = item.get("recommended_features") or matched_tech.get("recommended_features") or [
-                "AIノイズキャンセリング", "顔認証", "静音キーボード", "Wi-Fi 6E", "品質試験"
-            ]
-            if isinstance(rec_feat, list):
-                rec_str = " / ".join([json.dumps(x, ensure_ascii=False) if isinstance(x, dict) else str(x) for x in rec_feat])
-            else:
-                rec_str = str(rec_feat)
-
-            # unique_selling_point フォールバック
-            if item.get("unique_selling_point") and item["unique_selling_point"].get("values"):
-                usp_vals = " | ".join(item["unique_selling_point"]["values"])
-                usp_scrs = ", ".join(map(str, item["unique_selling_point"]["cosine_similarity_scores"]))
-            else:
-                raw_usps = matched_tech.get("unique_selling_point") or [
-                    f"{item['series_name']} 2024年06月モデル モバイルノート設計",
-                    "普段使いを快適にする上質なキーボード＆静音設計",
-                    "安心して持ち運べる長寿命スタミナバッテリー"
-                ]
-                usp_vals = " | ".join(raw_usps) if isinstance(raw_usps, list) else str(raw_usps)
-                usp_scrs = "1.0, 0.0, 0.0"
 
             disp = matched_tech.get("display") or {}
             dim = matched_tech.get("dimensions_mm") or {}
@@ -391,7 +391,7 @@ def process_pc_data_integration(base_dir):
 
             rows.append([
                 item["manufacturer"], item["product_category"], item["brand_name"], item["series_name"],
-                single_model if single_model else item["series_name"], full_models_str, item.get("category_description", ""),
+                single_model, full_models_str, item.get("category_description", ""),
                 "はい" if item.get("copilot_plus_pc") else "いいえ",
                 "はい" if matched_tech.get("made_in_japan", item.get("made_in_japan")) else "いいえ",
                 usp_vals, usp_scrs, os_str, matched_tech.get("office", matched_tech.get("bundled_office", "")), disp_str,
