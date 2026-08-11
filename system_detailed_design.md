@@ -349,6 +349,7 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
    - 暖房能力 (`heating`) ↔ 冷房能力 / 畳数基準能力 (`cooling`, `applicable_room_size`) ➔ **評価対象外**
    - 個別型番スペック能力 (`specs.cooling.capacity_kw`) ↔ カタログ代表畳数能力 (`applicable_room_size.capacity_kw`) ➔ **評価対象外**
    - 通常定格暖房能力 (`specs.heating.capacity_kw`) ↔ 低温暖房能力 (`heating.low_temp_2c.capacity_kw`) ➔ **測定条件不適合のため評価対象外**
+   - **型番完全一致優先マッチャー (`find_best_matched_item`)**: `RAS-XR5626D` 等の型番が仕様表の同名型番（APF 6.4）へ正しくヒットするよう、旧コードの「シリーズ名一致による先頭モデル (RAS-XR2226S, APF 7.3) への誤フォールバック誤爆」を根本修正・完全解消。
 5. **スコアリング**:
    - **数値比較可能 (`true`)**: **完全一致 ➔ `1`**, **不一致 ➔ `0`**
    - **数値比較不可能 (`false`)**: N-gram ベクトル空間アルゴリズムによる **テキストコサイン類似度** (0.0 〜 1.0)
@@ -359,27 +360,27 @@ def load_and_merge_json_files(base_dir, import_type, category, manufacturer):
   "evaluation_summary": {
     "total_evaluated_detail_items": 28,
     "total_field_comparisons": 361,
-    "numeric_comparable_count": 68,
-    "numeric_exact_match_count (score=1)": 58,
-    "numeric_mismatch_count (score=0)": 10,
-    "text_comparable_count": 293,
-    "text_similarity_score_sum": 254.548,
-    "text_similarity_score_average": 0.869,
+    "numeric_comparable_count": 69,
+    "numeric_exact_match_count (score=1)": 65,
+    "numeric_mismatch_count (score=0)": 4,
+    "text_comparable_count": 292,
+    "text_similarity_score_sum": 254.603,
+    "text_similarity_score_average": 0.872,
     "breakdown_by_target": {
       "catalog_models": {
         "total_field_comparisons": 286,
-        "numeric_comparable_count": 37,
-        "numeric_exact_match_count (score=1)": 36,
+        "numeric_comparable_count": 38,
+        "numeric_exact_match_count (score=1)": 37,
         "numeric_mismatch_count (score=0)": 1,
-        "text_comparable_count": 249,
-        "text_similarity_score_sum": 230.548,
-        "text_similarity_score_average": 0.926
+        "text_comparable_count": 248,
+        "text_similarity_score_sum": 230.603,
+        "text_similarity_score_average": 0.93
       },
       "technical_spec": {
         "total_field_comparisons": 75,
         "numeric_comparable_count": 31,
-        "numeric_exact_match_count (score=1)": 22,
-        "numeric_mismatch_count (score=0)": 9,
+        "numeric_exact_match_count (score=1)": 28,
+        "numeric_mismatch_count (score=0)": 3,
         "text_comparable_count": 44,
         "text_similarity_score_sum": 24.0,
         "text_similarity_score_average": 0.545

@@ -58,8 +58,9 @@ def normalize_model_number(model_str):
     m = str(model_str).strip()
     if m.startswith('S') and '-' in m:
         m = m.split('-')[0].strip()
-    m = re.sub(r'\([A-Z]\)', '', m)
-    m = re.sub(r'^RAS-XR', 'RAS-X', m)
+    m = re.sub(r'\([A-Za-z0-9]+\)', '', m)
+    # 英数字のみに抽出正規化 (例: RAS-XR5626D -> RASXR5626D)
+    m = re.sub(r'[^A-Za-z0-9]', '', m)
     return m.upper()
 
 def normalize_key(s):
@@ -112,10 +113,37 @@ def extract_model_numbers(item):
         models.add(normalize_model_number(item["model_number"]))
     if item.get("base_model_number"):
         models.add(normalize_model_number(item["base_model_number"]))
+    if item.get("indoor_unit_model"):
+        models.add(normalize_model_number(item["indoor_unit_model"]))
+    if item.get("outdoor_unit_model"):
+        models.add(normalize_model_number(item["outdoor_unit_model"]))
     if isinstance(item.get("model_numbers"), list):
         for m in item["model_numbers"]:
             models.add(normalize_model_number(m))
-    return models
+    return {m for m in models if m}
+
+def find_best_matched_item(det_item, target_list):
+    if not det_item or not target_list:
+        return None
+    
+    det_models = extract_model_numbers(det_item)
+    series_name = det_item.get("series_name", "")
+
+    # Phase 1: 型番完全・交差一致
+    if det_models:
+        for t_item in target_list:
+            t_models = extract_model_numbers(t_item)
+            if det_models & t_models:
+                return t_item
+
+    # Phase 2: シリーズ名一致 (型番一致が存在しなかった場合のみ)
+    if series_name:
+        norm_series = normalize_key(series_name)
+        for t_item in target_list:
+            if norm_series == normalize_key(t_item.get("series_name")):
+                return t_item
+
+    return None
 
 # --- 3. 類似・関連項目の対応マップ定義 ---
 FIELD_ALIAS_MAP = {
@@ -123,6 +151,7 @@ FIELD_ALIAS_MAP = {
     "heating.capacity_kw": ["heating_capacity_kw", "detail_specs.heating.capacity_kw", "heating.rated_capacity_kw"],
     "energy_saving.annual_power_consumption_kwh": ["annual_power_consumption_kwh", "annual_power_consumption_kwh.annual_total"],
     "energy_saving.apf": ["apf", "apf_value"],
+    "specs.energy_saving.apf": ["apf", "apf_value"],
     "indoor_unit.weight_kg": ["indoor_unit_weight_kg", "weight_kg.indoor"],
     "outdoor_unit.weight_kg": ["outdoor_unit_weight_kg", "weight_kg.outdoor"],
     "unique_selling_point": ["unique_selling_point"],
@@ -286,20 +315,10 @@ def main():
                 det_models = extract_model_numbers(det_item)
 
                 # マッチする商品一覧アイテムの探索
-                matched_cat_item = None
-                for c_item in cat_list:
-                    c_models = extract_model_numbers(c_item)
-                    if (det_models and c_models and det_models & c_models) or (series_name and normalize_key(series_name) == normalize_key(c_item.get("series_name"))):
-                        matched_cat_item = c_item
-                        break
+                matched_cat_item = find_best_matched_item(det_item, cat_list)
 
                 # マッチする仕様表アイテムの探索
-                matched_tech_item = None
-                for t_item in tech_list:
-                    t_models = extract_model_numbers(t_item)
-                    if (det_models and t_models and det_models & t_models) or (series_name and normalize_key(series_name) == normalize_key(t_item.get("series_name"))):
-                        matched_tech_item = t_item
-                        break
+                matched_tech_item = find_best_matched_item(det_item, tech_list)
 
                 # 商品詳細のフィールドをフラット展開
                 flat_detail = flatten_dict(det_item)
