@@ -29,28 +29,19 @@
    - manufacturer: "VAIO"
    - product_category: "ノートパソコン"
    - brand_name: "VAIO"
-   - model_number: 型番 (例: "VAIO SX14-R")
-   - series_category: 分類見出し (例: "ハイエンド軽量大画面モバイル")
-2. Unique Selling Point (unique_selling_point):
-   - 型番下のキャッチコピー文章テキスト（例: "毎日持ち選べる軽さと充実のパフォーマンス、すべてにおいて妥協したくない人へ。"）
-3. 便利機能アイコン群 (recommended_features):
-   - 添付1相当: 「主な機能」ヘッダー下に並ぶアイコン・ピクトグラム（例: ["VAIO TruePerformance", "VAIO User Sensing", "AIノイズキャンセリング", "指紋認証", "顔認証", "Wi-Fi 7", "ビデオチャット", "品質試験", "日本製"]）
-4. 分類キャッチコピー (category_description):
-   - 添付2相当: グレー帯枠囲み内の分類テキスト（例: "ハイエンド軽量大画面モバイル 14.0型ワイド"）
-5. Unique Selling Point 見出し集 (unique_selling_point):
-   - 添付3相当: カタログ内の水色テキストで書かれた主要なアピール見出し文章の一覧リスト（例: ["最大約14.5時間駆動の驚異的スタミナ", "AI新時代の高性能CPUを搭載", "天板と底面にカーボンを採用しより軽く、強く、美しく", "VAIOならではのスマート機能がもっと便利に、使いやすく", "高精細で見やすい大画面", "いろいろ繋がる豊富なインターフェース"]）
-6. ハードウェアスペック (display_spec / processor / storage / weight_g / battery_life / toughness / interfaces):
-   - ディスプレイサイズ・アスペクト比
-   - CPUプロセッサー名およびNPU性能
-   - ストレージ規格 (PCIe 5.0対応 SSDなど)
-   - 本体重量 (g) および 駆動時間 (動画再生/アイドル 時間)
-   - 耐久性規格 (MIL-STD-810Hなど)
-   - インターフェース端子一覧
-5. 製品説明セクション本文 (product_description_features):
-   - カタログ右ページの各見出し番号（01, 02, 03）ごとに記載されている特徴文言をリスト化して抽出してください。
+   - model_number / series_name: 画像左上に大きく記載されている正確なモデル名（例: 画像がVAIO F14の場合は "VAIO F14"、S13の場合は "VAIO S13"）
+   - series_category: 分類見出し（例: "スタンダード大画面モバイル" や "ハイエンド軽量大画面モバイル"）
+2. 便利機能アイコン群 (recommended_features):
+   - 画像左上の「主な機能」ヘッダーの下に横並びで配置されているピクトグラム/アイコン直下のテキストラベルを配列として漏れなく全件正確に抽出してください。
+   - （例: 添付画像が VAIO F14 の場合 ➔ `["AIノイズキャンセリング", "静音キーボード", "顔認証", "Wi-Fi 6E", "ビデオチャット", "品質試験"]`）
+3. 分類キャッチコピー (category_description):
+   - モデル名横のグレー帯枠囲み内の分類テキスト（例: "スタンダード大画面モバイル 14.0型ワイド"）
+4. Unique Selling Point 見出し集 (unique_selling_point):
+   - カタログ内の水色または強調テキストで書かれた主要なアピール見出し文章の一覧リスト（例: `["見やすい大画面を好きな場所へ持っていけます", "ふだん使いを快適にする “ちょっといい” パフォーマンス", "タイピング音の静かなキーボード", "信頼のスタミナバッテリー", "購入時から買った後まで VAIOなら安心して使えます", "きれいな映像と音声でオンラインコミュニケーションの好感度UP", "「顔」か「指紋」で安全に、素早くログイン", "美しさとタフさはハイエンドモデルゆずり", "たくさんの周辺機器をそのまま繋げる"]`）
 
 【出力フォーマット】
 解説や挨拶文は不要です。以下のJSON構造のコードブロック（```json ... ```）のみを出力してください。
+※プレースホルダー `<...>` には、必ず「添付画像から実際に読み取った文字列」を入れてください。
 
 ```json
 [
@@ -58,57 +49,25 @@
     "manufacturer": "VAIO",
     "product_category": "ノートパソコン",
     "brand_name": "VAIO",
-    "model_number": "VAIO SX14-R",
-    "series_name": "SX14-R",
-    "series_category": "ハイエンド軽量大画面モバイル",
-    "unique_selling_point": "毎日持ち選べる軽さと充実のパフォーマンス、すべてにおいて妥協したくない人へ。",
-    "recommended_features": [
-      "VAIO User Sensing",
-      "AI ノイズキャンセリング",
-      "Copilot+PC",
-      "指紋認証",
-      "顔認証",
-      "Wi-Fi 7",
-      "ビデオチャット",
-      "品質試験",
-      "JAPAN 日本製"
+    "series_name": "<画像左上のモデル名。例: VAIO F14>",
+    "model_number": "<モデル型番。例: VAIO F14>",
+    "series_category": "<画像右上の分類表現。例: スタンダード大画面モバイル>",
+    "category_description": "<分類テキスト。例: スタンダード大画面モバイル 14.0型ワイド>",
+    "unique_selling_point": [
+      "<画像内の水色アピール見出し1>",
+      "<画像内の水色アピール見出し2>"
     ],
-    "display_spec": {
-      "size": "14.0型ワイド",
-      "aspect_ratio": "16:10"
-    },
-    "processor": {
-      "name": "インテル® Core™ Ultra 5 シリーズ 3 プロセッサー",
-      "npu_performance": "最大47TOPS"
-    },
-    "storage": "第五世代ハイスピードSSD (PCIe 5.0対応 NVMe SSD)",
-    "weight_g": 967,
-    "battery_life": {
-      "video_playback_hours": 15.0,
-      "idle_hours": 27.0
-    },
-    "toughness": "アメリカ国防総省制定MIL規格準拠 (MIL-STD-810H)",
-    "interfaces": ["USB Type-C", "USB Type-A", "HDMI", "有線LAN", "ヘッドホン端子"],
-    "color_variations": ["ディープエメラルド", "ファインブラック"],
-    "product_description_features": {
-      "01_パワー_スリムボディ": [
-        "AI新時代の高性能CPUを搭載 (インテル Core Ultra 5 シリーズ3 NPU47TOPS)",
-        "天板と底面にカーボンを採用し、軽く、強く、美しく (約967g, MIL-STD 810H準拠)",
-        "第五世代ハイスピードSSD搭載 (PCIe 5.0対応)",
-        "モバイル利用に応える長時間駆動 (動画再生約15.0時間/アイドル約27.0時間)",
-        "14.0型ワイドディスプレイの見やすい大画面と、静かで快適に使えるキーボード (アスペクト比16:10)"
-      ],
-      "02_Copilot_Plus_PC": [
-        "Copilot+ PC対応でAI活用がもっと便利に (コクリエーター, リコールプレビュー)"
-      ],
-      "03_利便性_インターフェース": [
-        "VAIOならではのスマート機能がもっと便利に、使いやすく (AIノイズキャンセリング, VAIO User Sensing)",
-        "いろいろ繋がる、豊富なインターフェース (USB Type-C, USB Type-A, HDMI, 有線LAN, ヘッドホン端子)"
-      ]
-    }
+    "recommended_features": [
+      "<「主な機能」下のアイコンラベル1>",
+      "<「主な機能」下のアイコンラベル2>",
+      "<「主な機能」下のアイコンラベル3>"
+    ],
+    "copilot_plus_pc": false,
+    "made_in_japan": true
   }
 ]
 ```
+
 ```
 
 
@@ -128,3 +87,13 @@
 
 
 - 画像: sx14r.png
+
+- 画像: VAIOF14_202507.png
+
+- 画像: VAIOF16_202507.png
+
+- 画像: VAIOS12_202507.png
+
+- 画像: VAIOS13_202507.png
+
+- 画像: VAIOSX14R_202507.png
