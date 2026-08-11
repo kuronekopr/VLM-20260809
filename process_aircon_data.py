@@ -364,12 +364,18 @@ def process_pc_data_integration(base_dir):
             ])
 
     output_csv_path = os.path.join(target_dir, "merged_pc_models.csv")
-    with open(output_csv_path, 'w', newline='', encoding='utf-8-sig') as f:
-        writer = csv.writer(f)
-        writer.writerows(rows)
-    print(f"Successfully saved PC merged CSV -> {output_csv_path} (Total: {len(rows)-1} rows)")
+    try:
+        with open(output_csv_path, 'w', newline='', encoding='utf-8-sig') as f:
+            writer = csv.writer(f)
+            writer.writerows(rows)
+        print(f"Successfully saved PC merged CSV -> {output_csv_path} (Total: {len(rows)-1} rows)")
+    except PermissionError:
+        backup_csv_path = os.path.join(target_dir, "merged_pc_models_latest.csv")
+        with open(backup_csv_path, 'w', newline='', encoding='utf-8-sig') as f:
+            writer = csv.writer(f)
+            writer.writerows(rows)
+        print(f"Warning: 'merged_pc_models.csv' was locked by another process. Saved to -> {backup_csv_path} (Total: {len(rows)-1} rows)")
 
-    print(f"Successfully saved PC merged CSV -> {output_csv_path} (Total: {len(rows)-1} rows across individual model numbers)")
 
 
 def main():

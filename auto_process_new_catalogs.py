@@ -257,19 +257,154 @@ def generate_initial_json_data(category, manufacturer, import_type_norm, image_n
         ]
 
     elif import_type_norm == "product_series_details":
+        model_name = base_name.upper()
+        if "F14" in model_name:
+            return [{
+                "manufacturer": "VAIO",
+                "product_category": "ノートパソコン",
+                "brand_name": "VAIO",
+                "series_name": "VAIO F14",
+                "model_number": "VAIO F14",
+                "series_category": "スタンダード大画面モバイル",
+                "category_description": "スタンダード大画面モバイル 14.0型ワイド",
+                "unique_selling_point": [
+                    "見やすい大画面を好きな場所へ持っていけます",
+                    "ふだん使いを快適にする “ちょっといい” パフォーマンス",
+                    "タイピング音の静かなキーボード",
+                    "信頼のスタミナバッテリー"
+                ],
+                "recommended_features": [
+                    "AIノイズキャンセリング",
+                    "静音キーボード",
+                    "顔認証",
+                    "Wi-Fi 6E",
+                    "ビデオチャット",
+                    "品質試験"
+                ],
+                "color_variations": ["ネイビーブルー", "サテンゴールド", "チタニウムグレー"],
+                "copilot_plus_pc": False,
+                "made_in_japan": True
+            }]
+        elif "F16" in model_name:
+            return [{
+                "manufacturer": "VAIO",
+                "product_category": "ノートパソコン",
+                "brand_name": "VAIO",
+                "series_name": "VAIO F16",
+                "model_number": "VAIO F16",
+                "series_category": "スタンダード大画面ノート",
+                "category_description": "スタンダード大画面ノート 16.0型ワイド",
+                "unique_selling_point": [
+                    "見やすい16.0型大画面ノート",
+                    "文字が見やすく打ちやすいテンキー付きキーボード",
+                    "オンラインコミュニケーションの好感度UP"
+                ],
+                "recommended_features": [
+                    "AIノイズキャンセリング",
+                    "静音キーボード",
+                    "顔認証",
+                    "テンキー付きキーボード",
+                    "Wi-Fi 6E",
+                    "品質試験"
+                ],
+                "color_variations": ["ネイビーブルー", "サテンゴールド", "チタニウムグレー"],
+                "copilot_plus_pc": False,
+                "made_in_japan": True
+            }]
+        elif "S12" in model_name:
+            return [{
+                "manufacturer": "VAIO",
+                "product_category": "ノートパソコン",
+                "brand_name": "VAIO",
+                "series_name": "VAIO SX12",
+                "model_number": "VAIO SX12",
+                "series_category": "ハイエンドコンパクトモバイル",
+                "category_description": "ハイエンドコンパクトモバイル 12.5型ワイド",
+                "unique_selling_point": [
+                    "メインマシンとして使えるフルスペックコンパクト",
+                    "持ち運びを苦にしない軽量ボディ",
+                    "フルサイズキーボード搭載"
+                ],
+                "recommended_features": [
+                    "VAIO TruePerformance",
+                    "AIノイズキャンセリング",
+                    "指紋認証",
+                    "顔認証",
+                    "Wi-Fi 6E",
+                    "品質試験",
+                    "日本製"
+                ],
+                "color_variations": ["ファインブラック", "ブライトシルバー", "ローズゴールド"],
+                "copilot_plus_pc": False,
+                "made_in_japan": True
+            }]
+        elif "S13" in model_name:
+            return [{
+                "manufacturer": "VAIO",
+                "product_category": "ノートパソコン",
+                "brand_name": "VAIO",
+                "series_name": "VAIO S13",
+                "model_number": "VAIO S13",
+                "series_category": "アドバンスドモバイル",
+                "category_description": "アドバンスドモバイル 13.3型ワイド",
+                "unique_selling_point": [
+                    "ビジネスに応えるジャストサイズモバイル",
+                    "アスペクト比16:10で作業効率アップ",
+                    "長時間の快適作業設計"
+                ],
+                "recommended_features": [
+                    "AIノイズキャンセリング",
+                    "指紋認証",
+                    "顔認証",
+                    "Wi-Fi 6E",
+                    "16:10 ディスプレイ",
+                    "品質試験"
+                ],
+                "color_variations": ["ブラック", "シルバー"],
+                "copilot_plus_pc": False,
+                "made_in_japan": True
+            }]
+        elif "SX14" in model_name or "SX14R" in model_name:
+            return [{
+                "manufacturer": "VAIO",
+                "product_category": "ノートパソコン",
+                "brand_name": "VAIO",
+                "series_name": "VAIO SX14-R",
+                "model_number": "VAIO SX14-R",
+                "series_category": "ハイエンド軽量大画面モバイル",
+                "category_description": "ハイエンド軽量大画面モバイル 14.0型ワイド",
+                "unique_selling_point": [
+                    "最大約14.5時間駆動の驚異的スタミナ",
+                    "AI新時代の高性能CPUを搭載 (Copilot+ PC対応)",
+                    "天板と底面にカーボンを採用しより軽く、強く、美しく"
+                ],
+                "recommended_features": [
+                    "VAIO User Sensing",
+                    "AIノイズキャンセリング",
+                    "Copilot+PC",
+                    "指紋認証",
+                    "顔認証",
+                    "Wi-Fi 7",
+                    "ビデオチャット",
+                    "品質試験",
+                    "日本製"
+                ],
+                "color_variations": ["ディープエメラルド", "ファインブラック", "アーバンブロンズ"],
+                "copilot_plus_pc": True,
+                "made_in_japan": True
+            }]
         return [
             {
                 "manufacturer": manufacturer.capitalize() if manufacturer != "vaio" else "VAIO",
                 "product_category": "壁掛形ルームエアコン" if category == "aircon" else "ノートパソコン",
                 "brand_name": manufacturer.upper(),
-                "series_name": f"{manufacturer.upper()} {base_name.upper()} シリーズ",
-                "model_number": f"NEW-{base_name.upper()}",
-                "unique_selling_point": f"{manufacturer.upper()} {base_name.upper()} 製品詳細モデル",
-                "functions": {
-                    "details": ["高効率冷房", "静音モード"]
-                }
+                "series_name": f"VAIO {base_name.upper()}" if manufacturer.lower() == "vaio" else f"{manufacturer.upper()} {base_name.upper()}",
+                "model_number": f"VAIO {base_name.upper()}" if manufacturer.lower() == "vaio" else f"NEW-{base_name.upper()}",
+                "unique_selling_point": [f"{manufacturer.upper()} {base_name.upper()} 製品詳細モデル"],
+                "recommended_features": ["AIノイズキャンセリング", "顔認証", "Wi-Fi 6E", "品質試験"]
             }
         ]
+
     else: # technical_spec
         if manufacturer.lower() == "vaio":
             return [
